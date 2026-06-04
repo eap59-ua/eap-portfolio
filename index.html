@@ -105,6 +105,29 @@
             border-color: #c7d2fe;
             box-shadow: 0 8px 16px -8px rgba(79, 70, 229, 0.25);
         }
+        /* Stack principal: stack que mas uso y que defino mi posicionamiento profesional */
+        .tech-chip-primary {
+            background: linear-gradient(135deg, #eef2ff 0%, #ede9fe 100%);
+            border: 1.5px solid #c7d2fe;
+            color: #1e1b4b;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(79, 70, 229, 0.08);
+            position: relative;
+        }
+        .tech-chip-primary::after {
+            content: '★';
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            font-size: 9px;
+            color: #6366f1;
+            opacity: 0.7;
+        }
+        .tech-chip-primary:hover {
+            background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);
+            border-color: #a5b4fc;
+            box-shadow: 0 10px 20px -8px rgba(79, 70, 229, 0.35);
+        }
 
         .btn-primary {
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
@@ -259,9 +282,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <a href="#home" class="text-xl font-bold gradient-text code-font">&lt;EAP/&gt;</a>
-                <div class="hidden md:flex items-center space-x-8">
+                <div class="hidden md:flex items-center space-x-7">
                     <a href="#home" class="nav-link" data-i18n="nav.home">Inicio</a>
                     <a href="#about" class="nav-link" data-i18n="nav.about">Sobre mí</a>
+                    <a href="#experience" class="nav-link" data-i18n="nav.experience">Experiencia</a>
                     <a href="#skills" class="nav-link" data-i18n="nav.skills">Stack</a>
                     <a href="#projects" class="nav-link" data-i18n="nav.projects">Proyectos</a>
                     <a href="#contact" class="nav-link" data-i18n="nav.contact">Contacto</a>
@@ -279,6 +303,7 @@
             <div class="px-4 py-4 space-y-2">
                 <a href="#home" class="block nav-link py-2" data-i18n="nav.home">Inicio</a>
                 <a href="#about" class="block nav-link py-2" data-i18n="nav.about">Sobre mí</a>
+                <a href="#experience" class="block nav-link py-2" data-i18n="nav.experience">Experiencia</a>
                 <a href="#skills" class="block nav-link py-2" data-i18n="nav.skills">Stack</a>
                 <a href="#projects" class="block nav-link py-2" data-i18n="nav.projects">Proyectos</a>
                 <a href="#contact" class="block nav-link py-2" data-i18n="nav.contact">Contacto</a>
@@ -313,7 +338,7 @@
 
             <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto animate-slide-up" style="animation-delay: 0.6s;">
                 <div class="card p-5 text-center"><div class="text-3xl font-bold gradient-text">Open</div><div class="text-sm text-slate-600" data-i18n="stats.open">Full-Time</div></div>
-                <div class="card p-5 text-center"><div class="text-3xl font-bold gradient-text">4º</div><div class="text-sm text-slate-600" data-i18n="stats.year">Ing. Informática</div></div>
+                <div class="card p-5 text-center"><div class="text-3xl font-bold gradient-text">1.5+</div><div class="text-sm text-slate-600" data-i18n="stats.exp">Años de experiencia</div></div>
                 <div class="card p-5 text-center"><div class="text-3xl font-bold gradient-text">10+</div><div class="text-sm text-slate-600" data-i18n="stats.projects">Proyectos en GitHub</div></div>
                 <div class="card p-5 text-center"><div class="text-3xl font-bold gradient-text">TFG</div><div class="text-sm text-slate-600" data-i18n="stats.tfg">95% completado</div></div>
             </div>
@@ -358,7 +383,7 @@
 
                         <div class="flex flex-wrap gap-3 mt-8">
                             <a href="https://github.com/eap59-ua" target="_blank" rel="noopener" class="card px-4 py-2 flex items-center gap-2 text-slate-900"><i class="fab fa-github"></i>GitHub</a>
-                            <a href="mailto:eap59@alu.ua.es" class="card px-4 py-2 flex items-center gap-2 text-slate-900"><i class="fas fa-envelope"></i>Email</a>
+                            <a href="mailto:erardoap@gmail.com" class="card px-4 py-2 flex items-center gap-2 text-slate-900"><i class="fas fa-envelope"></i>Email</a>
                             <a href="https://github.com/eap59-ua/eap-portfolio" target="_blank" rel="noopener" class="card px-4 py-2 flex items-center gap-2 text-slate-900"><i class="fas fa-code"></i><span data-i18n="about.source">Código fuente</span></a>
                         </div>
                     </div>
@@ -367,11 +392,89 @@
         </div>
     </section>
 
+    <section id="experience" class="py-20 px-4 sm:px-6 lg:px-8 relative">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-4 text-slate-900">
+                <span class="section-title" data-i18n="experience.title">Experiencia profesional</span>
+            </h2>
+            <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto" data-i18n="experience.subtitle">
+                Más de 1 año y medio entre prácticas formativas en empresa, consultoría IT y proyectos con código en producción.
+            </p>
+
+            <div class="space-y-5 max-w-4xl mx-auto">
+
+                <article class="card p-7">
+                    <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-briefcase text-indigo-600"></i>
+                                <h3 class="text-xl font-bold text-slate-900">NTT Data</h3>
+                            </div>
+                            <div class="text-sm text-indigo-600 font-medium" data-i18n="exp.ntt.role">Becario IT — Consultoría / Sector público</div>
+                        </div>
+                        <span class="text-xs text-slate-500 code-font whitespace-nowrap" data-i18n="exp.ntt.period">nov 2025 — feb 2026 · 4 meses</span>
+                    </div>
+                    <p class="text-sm text-slate-700 leading-relaxed mb-4" data-i18n="exp.ntt.desc">Programa de incorporación en una de las consultoras IT más grandes del mundo. Bootcamp interno en <strong class="text-slate-900">Appian</strong> (plataforma low-code empresarial) y onboarding en proyecto del cliente <strong class="text-slate-900">ENAIRE</strong> (gestor del tráfico aéreo español). Primer contacto con metodología y dinámicas de consultoría corporativa.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">Appian</span>
+                        <span class="tag">Low-code</span>
+                        <span class="tag">Consultoría IT</span>
+                        <span class="tag">Sector público</span>
+                    </div>
+                </article>
+
+                <article class="card p-7">
+                    <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-industry text-violet-600"></i>
+                                <h3 class="text-xl font-bold text-slate-900">Autis Ingenieros</h3>
+                            </div>
+                            <div class="text-sm text-violet-600 font-medium" data-i18n="exp.autis.role">Desarrollador en prácticas — Ingeniería industrial</div>
+                        </div>
+                        <span class="text-xs text-slate-500 code-font whitespace-nowrap" data-i18n="exp.autis.period">feb 2020 — jun 2021 · 10 meses (2 períodos)</span>
+                    </div>
+                    <p class="text-sm text-slate-700 leading-relaxed mb-4" data-i18n="exp.autis.desc">Dos prácticas formativas en una empresa especializada en <strong class="text-slate-900">automatización industrial y visión artificial</strong>. Aprendí <strong class="text-slate-900">LabVIEW</strong> en profundidad y participé en un proyecto de inspección por cámaras para <strong class="text-slate-900">detectar defectos de pintura en piezas del sector automoción</strong>: captura, procesamiento de imagen y reglas de decisión sobre la línea de producción.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">LabVIEW</span>
+                        <span class="tag">Visión artificial</span>
+                        <span class="tag">Automatización industrial</span>
+                        <span class="tag">Automoción</span>
+                        <span class="tag">QA en línea</span>
+                    </div>
+                </article>
+
+                <article class="card p-7">
+                    <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-network-wired text-pink-600"></i>
+                                <h3 class="text-xl font-bold text-slate-900">App Informática</h3>
+                            </div>
+                            <div class="text-sm text-pink-600 font-medium" data-i18n="exp.app.role">Técnico en prácticas — Soporte y sistemas</div>
+                        </div>
+                        <span class="text-xs text-slate-500 code-font whitespace-nowrap" data-i18n="exp.app.period">feb 2018 — jun 2018 · 5 meses</span>
+                    </div>
+                    <p class="text-sm text-slate-700 leading-relaxed mb-4" data-i18n="exp.app.desc">Primer contacto formal con el sector como técnico en FCT del SMR. Soporte técnico a usuarios, configuración de redes domésticas y mantenimiento de equipos en cliente final.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">Redes</span>
+                        <span class="tag">Hardware</span>
+                        <span class="tag">Soporte técnico</span>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
     <section id="skills" class="py-20 px-4 sm:px-6 lg:px-8 relative">
         <div class="max-w-6xl mx-auto">
-            <h2 class="text-4xl font-bold text-center mb-16 text-slate-900">
+            <h2 class="text-4xl font-bold text-center mb-4 text-slate-900">
                 <span class="section-title" data-i18n="skills.title">Stack técnico</span>
             </h2>
+            <p class="text-center text-slate-600 mb-12 max-w-xl mx-auto text-sm" data-i18n="skills.legend">
+                <span class="text-indigo-600">★</span> = tecnologías estrella, las que mejor manejo y donde quiero seguir creciendo.
+            </p>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="card p-6">
                     <div class="flex items-center gap-3 mb-5">
@@ -379,8 +482,8 @@
                         <h3 class="text-lg font-bold text-slate-900" data-i18n="skills.backend">Backend</h3>
                     </div>
                     <div class="grid grid-cols-3 gap-3">
-                        <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-python text-2xl text-blue-500 mb-1"></i><span class="text-xs font-medium">Python</span></div>
-                        <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-bolt text-2xl text-teal-600 mb-1"></i><span class="text-xs font-medium">FastAPI</span></div>
+                        <div class="tech-chip tech-chip-primary flex flex-col items-center p-3"><i class="fab fa-python text-2xl text-blue-500 mb-1"></i><span class="text-xs font-medium">Python</span></div>
+                        <div class="tech-chip tech-chip-primary flex flex-col items-center p-3"><i class="fas fa-bolt text-2xl text-teal-600 mb-1"></i><span class="text-xs font-medium">FastAPI</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-node-js text-2xl text-green-600 mb-1"></i><span class="text-xs font-medium">Node.js</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-php text-2xl text-indigo-700 mb-1"></i><span class="text-xs font-medium">PHP</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-laravel text-2xl text-red-600 mb-1"></i><span class="text-xs font-medium">Laravel</span></div>
@@ -393,9 +496,9 @@
                         <h3 class="text-lg font-bold text-slate-900" data-i18n="skills.frontend">Frontend</h3>
                     </div>
                     <div class="grid grid-cols-3 gap-3">
-                        <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-react text-2xl text-cyan-500 mb-1"></i><span class="text-xs font-medium">React</span></div>
+                        <div class="tech-chip tech-chip-primary flex flex-col items-center p-3"><i class="fab fa-react text-2xl text-cyan-500 mb-1"></i><span class="text-xs font-medium">React</span></div>
+                        <div class="tech-chip tech-chip-primary flex flex-col items-center p-3"><i class="fas fa-code text-2xl text-blue-600 mb-1"></i><span class="text-xs font-medium">TypeScript</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-js text-2xl text-yellow-500 mb-1"></i><span class="text-xs font-medium">JavaScript</span></div>
-                        <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-code text-2xl text-blue-600 mb-1"></i><span class="text-xs font-medium">TypeScript</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-html5 text-2xl text-orange-600 mb-1"></i><span class="text-xs font-medium">HTML5</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-css3-alt text-2xl text-blue-600 mb-1"></i><span class="text-xs font-medium">CSS3</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-wind text-2xl text-cyan-600 mb-1"></i><span class="text-xs font-medium">Tailwind</span></div>
@@ -407,10 +510,10 @@
                         <h3 class="text-lg font-bold text-slate-900" data-i18n="skills.data">Data &amp; Infra</h3>
                     </div>
                     <div class="grid grid-cols-3 gap-3">
-                        <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-database text-2xl text-blue-700 mb-1"></i><span class="text-xs font-medium">PostgreSQL</span></div>
+                        <div class="tech-chip tech-chip-primary flex flex-col items-center p-3"><i class="fas fa-database text-2xl text-blue-700 mb-1"></i><span class="text-xs font-medium">PostgreSQL</span></div>
+                        <div class="tech-chip tech-chip-primary flex flex-col items-center p-3"><i class="fab fa-docker text-2xl text-blue-500 mb-1"></i><span class="text-xs font-medium">Docker</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-map-marked-alt text-2xl text-green-700 mb-1"></i><span class="text-xs font-medium">PostGIS</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-database text-2xl text-orange-500 mb-1"></i><span class="text-xs font-medium">MySQL</span></div>
-                        <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-docker text-2xl text-blue-500 mb-1"></i><span class="text-xs font-medium">Docker</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-linux text-2xl text-yellow-600 mb-1"></i><span class="text-xs font-medium">Linux</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-stream text-2xl text-slate-700 mb-1"></i><span class="text-xs font-medium">Kafka</span></div>
                     </div>
@@ -423,10 +526,10 @@
                     <div class="grid grid-cols-3 gap-3">
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-android text-2xl text-green-500 mb-1"></i><span class="text-xs font-medium">Android</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-code text-2xl text-blue-700 mb-1"></i><span class="text-xs font-medium">C / C++</span></div>
+                        <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-camera text-2xl text-amber-600 mb-1"></i><span class="text-xs font-medium">LabVIEW</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-robot text-2xl text-purple-600 mb-1"></i><span class="text-xs font-medium">scikit-learn</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fab fa-git-alt text-2xl text-orange-600 mb-1"></i><span class="text-xs font-medium">Git</span></div>
                         <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-vial text-2xl text-red-500 mb-1"></i><span class="text-xs font-medium">Pytest/Jest</span></div>
-                        <div class="tech-chip flex flex-col items-center p-3"><i class="fas fa-network-wired text-2xl text-slate-700 mb-1"></i><span class="text-xs font-medium">Redes</span></div>
                     </div>
                 </div>
             </div>
@@ -547,10 +650,10 @@
             <p class="text-center text-slate-600 mb-12 max-w-xl mx-auto" data-i18n="contact.subtitle">¿Eres reclutador, hiring manager o tech lead? Hablemos de cómo puedo encajar en tu equipo.</p>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-                <a href="mailto:eap59@alu.ua.es" class="card p-6 flex flex-col items-center text-center">
+                <a href="mailto:erardoap@gmail.com" class="card p-6 flex flex-col items-center text-center">
                     <div class="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center mb-4"><i class="fas fa-envelope text-xl text-indigo-600"></i></div>
                     <div class="font-semibold text-slate-900 mb-1">Email</div>
-                    <div class="text-sm text-slate-600 code-font">eap59@alu.ua.es</div>
+                    <div class="text-sm text-slate-600 code-font">erardoap@gmail.com</div>
                 </a>
                 <a href="https://github.com/eap59-ua" target="_blank" rel="noopener" class="card p-6 flex flex-col items-center text-center">
                     <div class="w-12 h-12 rounded-lg bg-slate-900 flex items-center justify-center mb-4"><i class="fab fa-github text-xl text-white"></i></div>
@@ -586,7 +689,7 @@
                         <div class="text-sm text-slate-600" data-i18n="contact.time">Respuesta en 24-48h · Inglés B2</div>
                     </div>
                 </div>
-                <a href="mailto:eap59@alu.ua.es" class="btn-primary"><i class="fas fa-paper-plane"></i><span data-i18n="contact.cta">Enviar email</span></a>
+                <a href="mailto:erardoap@gmail.com" class="btn-primary"><i class="fas fa-paper-plane"></i><span data-i18n="contact.cta">Enviar email</span></a>
             </div>
         </div>
     </section>
@@ -604,12 +707,12 @@
     <script>
         const translations = {
             es: {
-                'nav.home': 'Inicio', 'nav.about': 'Sobre mí', 'nav.skills': 'Stack', 'nav.projects': 'Proyectos', 'nav.contact': 'Contacto', 'nav.cv': 'CV',
+                'nav.home': 'Inicio', 'nav.about': 'Sobre mí', 'nav.experience': 'Experiencia', 'nav.skills': 'Stack', 'nav.projects': 'Proyectos', 'nav.contact': 'Contacto', 'nav.cv': 'CV',
                 'hero.tag': 'DESARROLLADOR_FULL_STACK.execute()',
                 'hero.role': 'Full-Stack Developer · Estudiante de Ingeniería Informática',
                 'hero.pitch': 'Construyo backends robustos con <span class="font-semibold text-indigo-600">Python/FastAPI</span>, interfaces modernas con <span class="font-semibold text-violet-600">React/TS</span> y sistemas distribuidos. Me importa la arquitectura limpia, los tests y el código que otros pueden leer.',
                 'hero.cta1': 'Ver proyectos', 'hero.cta2': 'Contacto',
-                'stats.open': 'Full-Time', 'stats.year': 'Ing. Informática', 'stats.projects': 'Proyectos en GitHub', 'stats.tfg': '95% completado',
+                'stats.open': 'Full-Time', 'stats.exp': 'Años de experiencia', 'stats.projects': 'Proyectos en GitHub', 'stats.tfg': '95% completado',
                 'about.title': 'Sobre mí',
                 'about.status': 'ABIERTO A OPORTUNIDADES FULL-TIME',
                 'about.greeting': '¡Hola! Soy Erardo 👋',
@@ -622,7 +725,20 @@
                 'edu.3.title': 'CFGS Desarrollo de Aplicaciones Web (DAW)', 'edu.3.sub': 'HTML, CSS, JavaScript, PHP, Laravel, MySQL',
                 'edu.4.title': 'CFGM Sistemas Microinformáticos y Redes (SMR)', 'edu.4.sub': 'Administración, redes, seguridad',
                 'edu.5.title': 'Inglés B2 · Cambridge', 'edu.5.sub': 'Certificación Cambridge English',
-                'skills.title': 'Stack técnico', 'skills.backend': 'Backend', 'skills.frontend': 'Frontend', 'skills.data': 'Data & Infra', 'skills.other': 'Otros',
+                'experience.title': 'Experiencia profesional',
+                'experience.subtitle': 'Más de 1 año y medio entre prácticas formativas en empresa, consultoría IT y proyectos con código en producción.',
+                'exp.ntt.role': 'Becario IT — Consultoría / Sector público',
+                'exp.ntt.period': 'nov 2025 — feb 2026 · 4 meses',
+                'exp.ntt.desc': 'Programa de incorporación en una de las consultoras IT más grandes del mundo. Bootcamp interno en <strong class="text-slate-900">Appian</strong> (plataforma low-code empresarial) y onboarding en proyecto del cliente <strong class="text-slate-900">ENAIRE</strong> (gestor del tráfico aéreo español). Primer contacto con metodología y dinámicas de consultoría corporativa.',
+                'exp.autis.role': 'Desarrollador en prácticas — Ingeniería industrial',
+                'exp.autis.period': 'feb 2020 — jun 2021 · 10 meses (2 períodos)',
+                'exp.autis.desc': 'Dos prácticas formativas en una empresa especializada en <strong class="text-slate-900">automatización industrial y visión artificial</strong>. Aprendí <strong class="text-slate-900">LabVIEW</strong> en profundidad y participé en un proyecto de inspección por cámaras para <strong class="text-slate-900">detectar defectos de pintura en piezas del sector automoción</strong>: captura, procesamiento de imagen y reglas de decisión sobre la línea de producción.',
+                'exp.app.role': 'Técnico en prácticas — Soporte y sistemas',
+                'exp.app.period': 'feb 2018 — jun 2018 · 5 meses',
+                'exp.app.desc': 'Primer contacto formal con el sector como técnico en FCT del SMR. Soporte técnico a usuarios, configuración de redes domésticas y mantenimiento de equipos en cliente final.',
+                'skills.title': 'Stack técnico',
+                'skills.legend': '<span class="text-indigo-600">★</span> = tecnologías estrella, las que mejor manejo y donde quiero seguir creciendo.',
+                'skills.backend': 'Backend', 'skills.frontend': 'Frontend', 'skills.data': 'Data & Infra', 'skills.other': 'Otros',
                 'projects.title': 'Proyectos reales',
                 'projects.subtitle': 'Trabajo académico, hackathons y proyectos colaborativos. Todo el código está público en GitHub.',
                 'projects.active': 'En desarrollo', 'projects.done': 'Entregado', 'projects.code': 'Ver código', 'projects.more': 'Ver todos los repos en GitHub',
@@ -641,12 +757,12 @@
                 'footer.built': 'Built with HTML, Tailwind CSS · Hosted on GitHub Pages'
             },
             en: {
-                'nav.home': 'Home', 'nav.about': 'About', 'nav.skills': 'Stack', 'nav.projects': 'Projects', 'nav.contact': 'Contact', 'nav.cv': 'CV',
+                'nav.home': 'Home', 'nav.about': 'About', 'nav.experience': 'Experience', 'nav.skills': 'Stack', 'nav.projects': 'Projects', 'nav.contact': 'Contact', 'nav.cv': 'CV',
                 'hero.tag': 'FULL_STACK_DEVELOPER.execute()',
                 'hero.role': 'Full-Stack Developer · Computer Engineering student',
                 'hero.pitch': 'I build solid backends with <span class="font-semibold text-indigo-600">Python/FastAPI</span>, modern interfaces with <span class="font-semibold text-violet-600">React/TS</span> and distributed systems. I care about clean architecture, tests, and code that others can read.',
                 'hero.cta1': 'See projects', 'hero.cta2': 'Contact',
-                'stats.open': 'Full-Time', 'stats.year': 'Computer Eng.', 'stats.projects': 'Projects on GitHub', 'stats.tfg': '95% complete',
+                'stats.open': 'Full-Time', 'stats.exp': 'Years of experience', 'stats.projects': 'Projects on GitHub', 'stats.tfg': '95% complete',
                 'about.title': 'About me',
                 'about.status': 'OPEN TO FULL-TIME OPPORTUNITIES',
                 'about.greeting': "Hi! I'm Erardo 👋",
@@ -659,7 +775,20 @@
                 'edu.3.title': 'Higher Degree in Web App Development (DAW)', 'edu.3.sub': 'HTML, CSS, JavaScript, PHP, Laravel, MySQL',
                 'edu.4.title': 'Mid-level Degree in Microcomputer Systems & Networks (SMR)', 'edu.4.sub': 'Sysadmin, networks, security',
                 'edu.5.title': 'English B2 · Cambridge', 'edu.5.sub': 'Cambridge English certification',
-                'skills.title': 'Tech stack', 'skills.backend': 'Backend', 'skills.frontend': 'Frontend', 'skills.data': 'Data & Infra', 'skills.other': 'Other',
+                'experience.title': 'Professional experience',
+                'experience.subtitle': 'Over a year and a half between vocational internships, IT consulting and projects with code in production.',
+                'exp.ntt.role': 'IT Intern — Consulting / Public sector',
+                'exp.ntt.period': 'Nov 2025 — Feb 2026 · 4 months',
+                'exp.ntt.desc': 'Onboarding program at one of the largest IT consulting firms in the world. Internal bootcamp on <strong class="text-slate-900">Appian</strong> (enterprise low-code platform) and onboarding on a project for <strong class="text-slate-900">ENAIRE</strong> (the Spanish air-traffic management authority). First contact with corporate consulting methodology and dynamics.',
+                'exp.autis.role': 'Developer intern — Industrial engineering',
+                'exp.autis.period': 'Feb 2020 — Jun 2021 · 10 months (2 periods)',
+                'exp.autis.desc': 'Two vocational internships at a company specialized in <strong class="text-slate-900">industrial automation and machine vision</strong>. Learned <strong class="text-slate-900">LabVIEW</strong> in depth and contributed to a camera-based inspection project to <strong class="text-slate-900">detect paint defects on automotive parts</strong>: image capture, image processing and decision rules running on the production line.',
+                'exp.app.role': 'Technician intern — Support and systems',
+                'exp.app.period': 'Feb 2018 — Jun 2018 · 5 months',
+                'exp.app.desc': 'First formal contact with the IT sector as a technician during my SMR vocational internship. User-facing technical support, configuration of home networks and equipment maintenance for end clients.',
+                'skills.title': 'Tech stack',
+                'skills.legend': '<span class="text-indigo-600">★</span> = star technologies, the ones I handle best and want to keep growing in.',
+                'skills.backend': 'Backend', 'skills.frontend': 'Frontend', 'skills.data': 'Data & Infra', 'skills.other': 'Other',
                 'projects.title': 'Real projects',
                 'projects.subtitle': 'Academic work, hackathons and collaborative projects. All code is open on GitHub.',
                 'projects.active': 'In progress', 'projects.done': 'Delivered', 'projects.code': 'View code', 'projects.more': 'See all repos on GitHub',
@@ -712,10 +841,4 @@
 
         window.addEventListener('load', () => {
             const loading = document.getElementById('loading');
-            loading.style.opacity = '0';
-            setTimeout(() => loading.style.display = 'none', 700);
-        });
-    </script>
-</body>
-</html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+            loading
