@@ -841,4 +841,19 @@
 
         window.addEventListener('load', () => {
             const loading = document.getElementById('loading');
-            loading
+            if (!loading) return;
+            loading.style.opacity = '0';
+            setTimeout(() => { loading.style.display = 'none'; }, 700);
+        });
+
+        // Failsafe: si por cualquier motivo no se dispara 'load', forzamos quitar el loading a los 3s
+        setTimeout(() => {
+            const loading = document.getElementById('loading');
+            if (loading && loading.style.display !== 'none') {
+                loading.style.opacity = '0';
+                setTimeout(() => { loading.style.display = 'none'; }, 700);
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
