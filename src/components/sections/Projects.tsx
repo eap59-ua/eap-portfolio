@@ -141,7 +141,7 @@ function ProjectCard({ project }: { project: Project }) {
   const footnote = project.footnoteKey ? t(project.footnoteKey) : project.footnote
 
   return (
-    <article data-glow className="card-surface card-hover glow-card flex h-full flex-col p-7">
+    <article data-glow data-tilt className="card-surface glow-card tilt-card flex h-full flex-col p-7">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <div className="mb-2 flex items-center gap-2">

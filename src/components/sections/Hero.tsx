@@ -1,3 +1,4 @@
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Rocket, Download } from 'lucide-react'
@@ -6,7 +7,13 @@ import { RichText } from '../ui/RichText'
 import { GitHubIcon } from '../ui/icons'
 import { ParticleField } from '../motion/ParticleField'
 import { ScrambleText } from '../motion/ScrambleText'
+import { Magnetic } from '../motion/Magnetic'
+import { Canvas3DBoundary } from '../motion/Canvas3DBoundary'
 import { SITE } from '../../lib/site'
+
+const HeroParticles3D = lazy(() =>
+  import('../motion/HeroParticles3D').then((m) => ({ default: m.HeroParticles3D })),
+)
 
 const CV_URL = '/Erardo-Aldana-Pessoa-CV-EN.pdf'
 
@@ -27,6 +34,11 @@ const item = {
 export function Hero() {
   const { t } = useTranslation()
   const reduce = useReducedMotion()
+  const [finePointer, setFinePointer] = useState(false)
+  useEffect(() => {
+    setFinePointer(!window.matchMedia('(pointer: coarse)').matches)
+  }, [])
+  const enable3D = !reduce && finePointer
 
   return (
     <section id="home" className="relative flex min-h-screen items-center overflow-hidden pb-20 pt-28">
@@ -34,7 +46,15 @@ export function Hero() {
         aria-hidden="true"
         className="absolute inset-0 -z-20 bg-grid-dark bg-grid [mask-image:radial-gradient(ellipse_60%_55%_at_50%_28%,#000_55%,transparent_100%)] [-webkit-mask-image:radial-gradient(ellipse_60%_55%_at_50%_28%,#000_55%,transparent_100%)]"
       />
-      <ParticleField className="absolute inset-0 -z-10 h-full w-full" />
+      {enable3D ? (
+        <Canvas3DBoundary fallback={<ParticleField className="absolute inset-0 -z-10 h-full w-full" />}>
+          <Suspense fallback={null}>
+            <HeroParticles3D />
+          </Suspense>
+        </Canvas3DBoundary>
+      ) : (
+        <ParticleField className="absolute inset-0 -z-10 h-full w-full" />
+      )}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-1/2 top-[-10%] h-[420px] w-[760px] -translate-x-1/2 rounded-full bg-accent-strong/18 blur-[150px]" />
       </div>
@@ -69,18 +89,24 @@ export function Hero() {
         </motion.div>
 
         <motion.div variants={item} className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <Button href="#projects" variant="primary" size="lg">
-            <Rocket className="h-4 w-4" />
-            {t('hero.cta1')}
-          </Button>
-          <Button href={CV_URL} download="Erardo-Aldana-Pessoa-CV.pdf" variant="outline" size="lg">
-            <Download className="h-4 w-4" />
-            {t('hero.cv')}
-          </Button>
-          <Button href={SITE.github} target="_blank" rel="noopener noreferrer" variant="soft" size="lg">
-            <GitHubIcon className="h-4 w-4" />
-            GitHub
-          </Button>
+          <Magnetic>
+            <Button href="#projects" variant="primary" size="lg">
+              <Rocket className="h-4 w-4" />
+              {t('hero.cta1')}
+            </Button>
+          </Magnetic>
+          <Magnetic>
+            <Button href={CV_URL} download="Erardo-Aldana-Pessoa-CV.pdf" variant="outline" size="lg">
+              <Download className="h-4 w-4" />
+              {t('hero.cv')}
+            </Button>
+          </Magnetic>
+          <Magnetic>
+            <Button href={SITE.github} target="_blank" rel="noopener noreferrer" variant="soft" size="lg">
+              <GitHubIcon className="h-4 w-4" />
+              GitHub
+            </Button>
+          </Magnetic>
         </motion.div>
 
         <motion.div variants={item} className="mt-16 grid w-full max-w-3xl grid-cols-2 gap-3 md:grid-cols-4">

@@ -157,6 +157,17 @@
   pointer-events: none;
 }
 
+.tilt-card {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+}
+.tilt-card:hover {
+  border-color: rgba(129, 140, 248, 0.4);
+  box-shadow: 0 24px 50px -28px rgba(99, 102, 241, 0.55);
+}
+
 html.lenis,
 html.lenis body {
   height: auto;

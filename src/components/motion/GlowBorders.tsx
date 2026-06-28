@@ -23,18 +23,33 @@ export function GlowBorders() {
         const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right)
         const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom)
         const dist = Math.hypot(dx, dy)
+
         if (dist > PROXIMITY) {
           card.style.setProperty('--glow', '0')
-          return
+        } else {
+          const cx = r.left + r.width / 2
+          const cy = r.top + r.height / 2
+          let angle = (Math.atan2(e.clientY - cy, e.clientX - cx) * 180) / Math.PI
+          if (angle < 0) angle += 360
+          card.style.setProperty('--glow', String(1 - dist / PROXIMITY))
+          card.style.setProperty('--start', String(angle + 90))
         }
-        const cx = r.left + r.width / 2
-        const cy = r.top + r.height / 2
-        let angle = (Math.atan2(e.clientY - cy, e.clientX - cx) * 180) / Math.PI
-        if (angle < 0) angle += 360
-        card.style.setProperty('--glow', String(1 - dist / PROXIMITY))
-        card.style.setProperty('--start', String(angle + 90))
-        card.style.setProperty('--gx', `${e.clientX - r.left}px`)
-        card.style.setProperty('--gy', `${e.clientY - r.top}px`)
+
+        if (card.hasAttribute('data-tilt')) {
+          const inside =
+            e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
+          if (inside) {
+            const px = (e.clientX - r.left) / r.width - 0.5
+            const py = (e.clientY - r.top) / r.height - 0.5
+            card.style.setProperty('--ry', `${px * 8}deg`)
+            card.style.setProperty('--rx', `${-py * 8}deg`)
+            card.style.setProperty('--ty', '-6px')
+          } else {
+            card.style.setProperty('--rx', '0deg')
+            card.style.setProperty('--ry', '0deg')
+            card.style.setProperty('--ty', '0px')
+          }
+        }
       })
     }
 
