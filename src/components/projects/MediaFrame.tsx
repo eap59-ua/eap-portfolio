@@ -2,11 +2,26 @@ import { Film } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 interface MediaFrameProps {
+  src?: string
+  poster?: string
   label?: string
   className?: string
 }
 
-export function MediaFrame({ label = 'Demo en vídeo · próximamente', className }: MediaFrameProps) {
+export function MediaFrame({ src, poster, label = 'Demo en vídeo · próximamente', className }: MediaFrameProps) {
+  if (src) {
+    return (
+      <video
+        className={cn('aspect-video w-full rounded-xl border border-line bg-ink-950 object-cover', className)}
+        src={src}
+        poster={poster}
+        controls
+        playsInline
+        preload="metadata"
+      />
+    )
+  }
+
   return (
     <div
       className={cn(

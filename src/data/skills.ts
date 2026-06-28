@@ -53,6 +53,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { label: 'FastAPI', star: true },
       { label: 'Node.js' },
       { label: 'Laravel' },
+      { label: 'Spring Boot' },
       { label: 'REST APIs' },
       { label: 'WebSockets' },
       { label: 'JWT' },
@@ -80,6 +81,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { label: 'CI/CD' },
       { label: 'Nginx' },
       { label: 'Linux' },
+      { label: 'Windows Server' },
       { label: 'Networking' },
       { label: 'Git' },
       { label: 'Kafka' },
@@ -114,6 +116,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { label: 'OpenAI / LLM APIs' },
       { label: 'LabVIEW' },
       { label: 'Android' },
+      { label: 'Flutter' },
     ],
   },
 ]

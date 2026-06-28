@@ -37,8 +37,10 @@ import {
   SiVuedotjs,
   SiBootstrap,
   SiNginx,
+  SiFlutter,
+  SiSpringboot,
 } from 'react-icons/si'
-import { FaJava } from 'react-icons/fa'
+import { FaJava, FaWindows } from 'react-icons/fa'
 import {
   Camera,
   Code2,
@@ -96,6 +98,7 @@ const TECH: Record<string, TechMeta> = {
   FastAPI: { Icon: SiFastapi, color: '#19BFA8' },
   'Node.js': { Icon: SiNodedotjs, color: '#6CC24A' },
   Laravel: { Icon: SiLaravel, color: '#FF5566' },
+  'Spring Boot': { Icon: SiSpringboot, color: '#7FB83E' },
   'REST APIs': { Icon: Webhook, color: '#9aa6bd' },
   REST: { Icon: Webhook, color: '#9aa6bd' },
   WebSockets: { Icon: ArrowLeftRight, color: '#22d3ee' },
@@ -117,6 +120,7 @@ const TECH: Record<string, TechMeta> = {
   'CI/CD': { Icon: Workflow, color: '#4C8DF6' },
   Nginx: { Icon: SiNginx, color: '#4FA64F' },
   Networking: { Icon: Network, color: '#818cf8' },
+  'Windows Server': { Icon: FaWindows, color: '#3FA0EF' },
   Linux: { Icon: SiLinux, color: '#FCC624' },
   Git: { Icon: SiGit, color: '#F05033' },
   Kafka: { Icon: SiApachekafka, color: '#C7CDD6' },
@@ -143,6 +147,7 @@ const TECH: Record<string, TechMeta> = {
 
   // Mobile & other
   Android: { Icon: SiAndroid, color: '#3DDC84' },
+  Flutter: { Icon: SiFlutter, color: '#54C5F8' },
   'Industrial Automation': { Icon: Factory, color: '#9aa6bd' },
   'Low-Code': { Icon: Blocks, color: '#9aa6bd' },
 

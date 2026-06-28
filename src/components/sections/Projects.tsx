@@ -127,7 +127,7 @@ function FeaturedProject({ project }: { project: Project }) {
         </div>
 
         <div className="order-1 flex items-center p-5 lg:order-2 lg:p-6">
-          <MediaFrame className="w-full" />
+          <MediaFrame src={project.video} poster={project.poster} className="w-full" />
         </div>
       </div>
     </article>

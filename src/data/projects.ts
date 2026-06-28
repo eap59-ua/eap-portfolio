@@ -26,6 +26,8 @@ export interface Project {
   featured?: boolean
   hero?: boolean
   highlight?: string
+  video?: string
+  poster?: string
 }
 
 export const PROJECTS: Project[] = [
@@ -39,6 +41,7 @@ export const PROJECTS: Project[] = [
     descKey: 'projects.p1',
     hero: true,
     highlight: 'Matrícula de Honor · 10/10',
+    video: '/media/ecoalerta-demo.mp4',
     tags: [
       { label: 'React 18', tone: 'react' },
       { label: 'Node.js', tone: 'node' },
