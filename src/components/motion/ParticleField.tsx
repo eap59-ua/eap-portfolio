@@ -4,15 +4,16 @@ import { useReducedMotion } from 'framer-motion'
 interface Particle {
   x: number
   y: number
-  ox: number
-  oy: number
   vx: number
   vy: number
-  phase: number
+  size: number
+  color: string
 }
 
-const REPEL = 150
-const LINK = 134
+// theme palette as rgb triplets: indigo, violet, pink, cyan, emerald
+const PALETTE = ['129,140,248', '167,139,250', '240,171,252', '34,211,238', '52,211,153']
+const LINK = 130
+const CURSOR = 165
 
 export function ParticleField({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -30,7 +31,6 @@ export function ParticleField({ className }: { className?: string }) {
     let height = 0
     let raf = 0
     let running = false
-    let time = 0
     const mouse = { x: -9999, y: -9999 }
     const particles: Particle[] = []
 
@@ -44,39 +44,28 @@ export function ParticleField({ className }: { className?: string }) {
     }
 
     const seed = () => {
-      const count = Math.min(120, Math.max(50, Math.floor(width / 11)))
+      const count = Math.min(95, Math.max(42, Math.floor(width / 14)))
       particles.length = 0
       for (let i = 0; i < count; i++) {
-        const x = Math.random() * width
-        const y = Math.random() * height
-        particles.push({ x, y, ox: x, oy: y, vx: 0, vy: 0, phase: Math.random() * Math.PI * 2 })
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.32,
+          vy: (Math.random() - 0.5) * 0.32,
+          size: 1.2 + Math.random() * 1.5,
+          color: PALETTE[(Math.random() * PALETTE.length) | 0],
+        })
       }
     }
 
     const draw = () => {
-      time += 0.016
       ctx.clearRect(0, 0, width, height)
 
       for (const p of particles) {
-        const homeX = p.ox + Math.cos(time * 0.5 + p.phase) * 7
-        const homeY = p.oy + Math.sin(time * 0.45 + p.phase) * 7
-
-        const dx = p.x - mouse.x
-        const dy = p.y - mouse.y
-        const d2 = dx * dx + dy * dy
-        if (d2 < REPEL * REPEL && d2 > 0.01) {
-          const d = Math.sqrt(d2)
-          const force = (1 - d / REPEL) * 2.4
-          p.vx += (dx / d) * force
-          p.vy += (dy / d) * force
-        }
-
-        p.vx += (homeX - p.x) * 0.022
-        p.vy += (homeY - p.y) * 0.022
-        p.vx *= 0.88
-        p.vy *= 0.88
         p.x += p.vx
         p.y += p.vy
+        if (p.x < 0 || p.x > width) p.vx *= -1
+        if (p.y < 0 || p.y > height) p.vy *= -1
       }
 
       for (let i = 0; i < particles.length; i++) {
@@ -87,7 +76,7 @@ export function ParticleField({ className }: { className?: string }) {
           const dy = p.y - q.y
           const dist = Math.hypot(dx, dy)
           if (dist < LINK) {
-            ctx.strokeStyle = `rgba(129,140,248,${0.22 * (1 - dist / LINK)})`
+            ctx.strokeStyle = `rgba(129,140,248,${0.16 * (1 - dist / LINK)})`
             ctx.lineWidth = 1
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
@@ -95,13 +84,24 @@ export function ParticleField({ className }: { className?: string }) {
             ctx.stroke()
           }
         }
+
         const md = Math.hypot(p.x - mouse.x, p.y - mouse.y)
-        const near = md < REPEL
-        ctx.fillStyle = near ? 'rgba(180,160,255,1)' : 'rgba(160,172,196,0.6)'
+        const near = md < CURSOR
+        if (near) {
+          ctx.strokeStyle = `rgba(${p.color},${0.32 * (1 - md / CURSOR)})`
+          ctx.lineWidth = 1
+          ctx.beginPath()
+          ctx.moveTo(p.x, p.y)
+          ctx.lineTo(mouse.x, mouse.y)
+          ctx.stroke()
+        }
+
+        ctx.fillStyle = `rgba(${p.color},${near ? 0.95 : 0.65})`
         ctx.beginPath()
-        ctx.arc(p.x, p.y, near ? 2.2 : 1.5, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, near ? p.size + 0.6 : p.size, 0, Math.PI * 2)
         ctx.fill()
       }
+
       raf = requestAnimationFrame(draw)
     }
 

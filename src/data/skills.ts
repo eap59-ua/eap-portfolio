@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { Server, LayoutTemplate, Database, Wrench } from 'lucide-react'
+import { Code2, LayoutTemplate, Server, Database, Cloud, Boxes, FlaskConical, Cpu } from 'lucide-react'
 
 export interface SkillChip {
   label: string
@@ -15,16 +15,18 @@ export interface SkillGroup {
 
 export const SKILL_GROUPS: SkillGroup[] = [
   {
-    titleKey: 'skills.backend',
-    icon: Server,
+    titleKey: 'skills.languages',
+    icon: Code2,
     accent: 'from-indigo-500/25 to-indigo-500/5 text-accent',
     chips: [
+      { label: 'TypeScript', star: true },
       { label: 'Python', star: true },
-      { label: 'FastAPI', star: true },
-      { label: 'Node.js' },
-      { label: 'PHP' },
-      { label: 'Laravel' },
+      { label: 'JavaScript' },
       { label: 'Java' },
+      { label: 'Kotlin' },
+      { label: 'PHP' },
+      { label: 'C / C++' },
+      { label: 'SQL' },
     ],
   },
   {
@@ -33,50 +35,102 @@ export const SKILL_GROUPS: SkillGroup[] = [
     accent: 'from-violet-500/25 to-violet-500/5 text-accent-violet',
     chips: [
       { label: 'React', star: true },
-      { label: 'TypeScript', star: true },
-      { label: 'JavaScript' },
+      { label: 'Tailwind' },
       { label: 'HTML5' },
       { label: 'CSS3' },
-      { label: 'Tailwind' },
+      { label: 'Vite' },
+    ],
+  },
+  {
+    titleKey: 'skills.backend',
+    icon: Server,
+    accent: 'from-fuchsia-500/25 to-fuchsia-500/5 text-accent-pink',
+    chips: [
+      { label: 'FastAPI', star: true },
+      { label: 'Node.js' },
+      { label: 'Laravel' },
+      { label: 'REST APIs' },
+      { label: 'WebSockets' },
+      { label: 'JWT' },
     ],
   },
   {
     titleKey: 'skills.data',
     icon: Database,
-    accent: 'from-fuchsia-500/25 to-fuchsia-500/5 text-accent-pink',
+    accent: 'from-sky-500/25 to-sky-500/5 text-sky-300',
     chips: [
       { label: 'PostgreSQL', star: true },
-      { label: 'Docker', star: true },
       { label: 'PostGIS' },
       { label: 'MySQL' },
+      { label: 'Redis' },
+      { label: 'SQLAlchemy' },
+    ],
+  },
+  {
+    titleKey: 'skills.devops',
+    icon: Cloud,
+    accent: 'from-blue-500/25 to-blue-500/5 text-blue-300',
+    chips: [
+      { label: 'Docker', star: true },
+      { label: 'GitHub Actions' },
+      { label: 'CI/CD' },
       { label: 'Linux' },
+      { label: 'Git' },
       { label: 'Kafka' },
     ],
   },
   {
-    titleKey: 'skills.other',
-    icon: Wrench,
+    titleKey: 'skills.arch',
+    icon: Boxes,
     accent: 'from-emerald-500/25 to-emerald-500/5 text-emerald-300',
     chips: [
-      { label: 'Android' },
-      { label: 'C / C++' },
-      { label: 'LabVIEW' },
-      { label: 'scikit-learn' },
-      { label: 'Git' },
-      { label: 'Pytest / Jest' },
+      { label: 'Hexagonal', star: true },
+      { label: 'Microservices' },
+      { label: 'Software Architecture' },
+      { label: 'OOP' },
+      { label: 'Agile' },
     ],
   },
+  {
+    titleKey: 'skills.testing',
+    icon: FlaskConical,
+    accent: 'from-cyan-500/25 to-cyan-500/5 text-cyan-300',
+    chips: [{ label: 'Pytest', star: true }, { label: 'Jest' }, { label: 'Playwright' }],
+  },
+  {
+    titleKey: 'skills.ai',
+    icon: Cpu,
+    accent: 'from-amber-500/25 to-amber-500/5 text-amber-300',
+    chips: [
+      { label: 'scikit-learn' },
+      { label: 'Computer Vision' },
+      { label: 'OpenAI / LLM APIs' },
+      { label: 'LabVIEW' },
+      { label: 'Android' },
+    ],
+  },
+]
+
+export const ROADMAP: string[] = [
+  'AWS',
+  'Kubernetes',
+  'Next.js',
+  'GraphQL',
+  'Terraform',
+  'MongoDB',
+  'PyTorch',
+  'LangChain',
 ]
 
 export const TECH_MARQUEE: string[] = [
   'Python',
   'FastAPI',
-  'React',
   'TypeScript',
+  'React',
+  'Node.js',
   'PostgreSQL',
   'PostGIS',
   'Docker',
-  'Node.js',
   'Redis',
   'Kafka',
   'scikit-learn',
@@ -85,4 +139,12 @@ export const TECH_MARQUEE: string[] = [
   'GitHub Actions',
   'Playwright',
   'Pytest',
+  'Jest',
+  'Tailwind',
+  'JavaScript',
+  'Java',
+  'Kotlin',
+  'Laravel',
+  'MySQL',
+  'Vite',
 ]

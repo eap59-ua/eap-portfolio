@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next'
+import { Sprout } from 'lucide-react'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Reveal } from '../motion/Reveal'
 import { RichText } from '../ui/RichText'
 import { TechLogo } from '../../data/techIcons'
-import { SKILL_GROUPS, TECH_MARQUEE } from '../../data/skills'
+import { SKILL_GROUPS, ROADMAP, TECH_MARQUEE } from '../../data/skills'
 import { cn } from '../../lib/utils'
 
 export function Skills() {
@@ -21,7 +22,7 @@ export function Skills() {
           {SKILL_GROUPS.map((group, index) => {
             const Icon = group.icon
             return (
-              <Reveal key={group.titleKey} delay={index * 0.07}>
+              <Reveal key={group.titleKey} delay={(index % 4) * 0.06}>
                 <div data-glow className="card-surface card-hover glow-card h-full p-6">
                   <div className="mb-5 flex items-center gap-3">
                     <span
@@ -58,7 +59,28 @@ export function Skills() {
           })}
         </div>
 
-        <Reveal className="mt-16">
+        <Reveal className="mt-6">
+          <div className="card-surface p-6">
+            <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-emerald-300">
+              <Sprout className="h-4 w-4" />
+              {t('skills.roadmap')}
+            </div>
+            <p className="mb-4 mt-1 text-sm text-slate-400">{t('skills.roadmap_sub')}</p>
+            <div className="flex flex-wrap gap-2">
+              {ROADMAP.map((label) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-line-strong bg-white/[0.02] px-2.5 py-1.5 text-xs font-medium text-slate-300"
+                >
+                  <TechLogo label={label} className="h-3.5 w-3.5" />
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal className="mt-12">
           <p className="mb-5 text-center font-mono text-xs uppercase tracking-[0.18em] text-slate-400">
             // stack en producción
           </p>

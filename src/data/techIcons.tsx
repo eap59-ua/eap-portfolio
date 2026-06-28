@@ -23,9 +23,39 @@ import {
   SiPytest,
   SiRedis,
   SiGithubactions,
+  SiKotlin,
+  SiVite,
+  SiJest,
+  SiGraphql,
+  SiKubernetes,
+  SiTerraform,
+  SiMongodb,
+  SiNextdotjs,
+  SiPytorch,
+  SiOpenai,
 } from 'react-icons/si'
 import { FaJava } from 'react-icons/fa'
-import { Camera, Code2, Map, FlaskConical } from 'lucide-react'
+import {
+  Camera,
+  Code2,
+  Map,
+  FlaskConical,
+  Database,
+  Webhook,
+  ArrowLeftRight,
+  KeyRound,
+  Hexagon,
+  Boxes,
+  Component,
+  Repeat,
+  Eye,
+  Workflow,
+  Factory,
+  Blocks,
+  Network,
+  Cloud,
+  Cable,
+} from 'lucide-react'
 
 type IconComp = ComponentType<{ className?: string; style?: CSSProperties }>
 
@@ -35,34 +65,83 @@ interface TechMeta {
 }
 
 const TECH: Record<string, TechMeta> = {
+  // Languages
   Python: { Icon: SiPython, color: '#6FA8DC' },
-  FastAPI: { Icon: SiFastapi, color: '#19BFA8' },
-  'Node.js': { Icon: SiNodedotjs, color: '#6CC24A' },
-  PHP: { Icon: SiPhp, color: '#8993BE' },
-  Laravel: { Icon: SiLaravel, color: '#FF5566' },
-  Java: { Icon: FaJava, color: '#E76F00' },
-  React: { Icon: SiReact, color: '#61DAFB' },
   TypeScript: { Icon: SiTypescript, color: '#4F8CF0' },
   JavaScript: { Icon: SiJavascript, color: '#F7DF1E' },
+  Java: { Icon: FaJava, color: '#E76F00' },
+  Kotlin: { Icon: SiKotlin, color: '#A97BFF' },
+  PHP: { Icon: SiPhp, color: '#8993BE' },
+  'C / C++': { Icon: SiCplusplus, color: '#5C9FD3' },
+  SQL: { Icon: Database, color: '#6699E0' },
   HTML5: { Icon: SiHtml5, color: '#E96228' },
   CSS3: { Icon: SiCss, color: '#3C9CD7' },
+
+  // Frontend
+  React: { Icon: SiReact, color: '#61DAFB' },
   Tailwind: { Icon: SiTailwindcss, color: '#38BDF8' },
+  Vite: { Icon: SiVite, color: '#A879FF' },
+
+  // Backend & APIs
+  FastAPI: { Icon: SiFastapi, color: '#19BFA8' },
+  'Node.js': { Icon: SiNodedotjs, color: '#6CC24A' },
+  Laravel: { Icon: SiLaravel, color: '#FF5566' },
+  'REST APIs': { Icon: Webhook, color: '#9aa6bd' },
+  REST: { Icon: Webhook, color: '#9aa6bd' },
+  WebSockets: { Icon: ArrowLeftRight, color: '#22d3ee' },
+  WebSocket: { Icon: ArrowLeftRight, color: '#22d3ee' },
+  JWT: { Icon: KeyRound, color: '#f0abfc' },
+  'Swagger / OpenAPI': { Icon: Webhook, color: '#85C540' },
+
+  // Databases
   PostgreSQL: { Icon: SiPostgresql, color: '#6699E0' },
-  Docker: { Icon: SiDocker, color: '#4AA0EE' },
   PostGIS: { Icon: Map, color: '#34D399' },
   MySQL: { Icon: SiMysql, color: '#6E9CC4' },
-  Linux: { Icon: SiLinux, color: '#FCC624' },
-  Kafka: { Icon: SiApachekafka, color: '#C7CDD6' },
-  Android: { Icon: SiAndroid, color: '#3DDC84' },
-  'C / C++': { Icon: SiCplusplus, color: '#5C9FD3' },
-  LabVIEW: { Icon: Camera, color: '#FBBF24' },
-  'scikit-learn': { Icon: SiScikitlearn, color: '#F7931E' },
-  Git: { Icon: SiGit, color: '#F05033' },
-  'Pytest / Jest': { Icon: SiPytest, color: '#5FC9E8' },
-  Pytest: { Icon: SiPytest, color: '#5FC9E8' },
   Redis: { Icon: SiRedis, color: '#FF5C49' },
+  SQLAlchemy: { Icon: Database, color: '#9aa6bd' },
+  'SQLAlchemy 2.0': { Icon: Database, color: '#9aa6bd' },
+
+  // DevOps & Cloud
+  Docker: { Icon: SiDocker, color: '#4AA0EE' },
   'GitHub Actions': { Icon: SiGithubactions, color: '#4C8DF6' },
+  'CI/CD': { Icon: Workflow, color: '#4C8DF6' },
+  Linux: { Icon: SiLinux, color: '#FCC624' },
+  Git: { Icon: SiGit, color: '#F05033' },
+  Kafka: { Icon: SiApachekafka, color: '#C7CDD6' },
+
+  // Architecture, testing & methods
+  'Software Architecture': { Icon: Network, color: '#818cf8' },
+  Hexagonal: { Icon: Hexagon, color: '#a78bfa' },
+  'Hexagonal Architecture': { Icon: Hexagon, color: '#a78bfa' },
+  Microservices: { Icon: Boxes, color: '#818cf8' },
+  OOP: { Icon: Component, color: '#34d399' },
+  Agile: { Icon: Repeat, color: '#34d399' },
+  Pytest: { Icon: SiPytest, color: '#5FC9E8' },
+  'Pytest / Jest': { Icon: SiPytest, color: '#5FC9E8' },
+  Jest: { Icon: SiJest, color: '#E36F8B' },
   Playwright: { Icon: FlaskConical, color: '#4CC25A' },
+
+  // AI & vision
+  'scikit-learn': { Icon: SiScikitlearn, color: '#F7931E' },
+  'Computer Vision': { Icon: Eye, color: '#FBBF24' },
+  'Machine Vision': { Icon: Eye, color: '#FBBF24' },
+  LabVIEW: { Icon: Camera, color: '#FBBF24' },
+  'OpenAI / LLM APIs': { Icon: SiOpenai, color: '#cbd5e1' },
+
+  // Mobile & other
+  Android: { Icon: SiAndroid, color: '#3DDC84' },
+  'Industrial Automation': { Icon: Factory, color: '#9aa6bd' },
+  'Low-Code': { Icon: Blocks, color: '#9aa6bd' },
+
+  // Roadmap / learning
+  AWS: { Icon: Cloud, color: '#FF9D2E' },
+  Kubernetes: { Icon: SiKubernetes, color: '#5B8DEF' },
+  'Next.js': { Icon: SiNextdotjs, color: '#cbd5e1' },
+  GraphQL: { Icon: SiGraphql, color: '#E64D9C' },
+  Terraform: { Icon: SiTerraform, color: '#9B6BE8' },
+  MongoDB: { Icon: SiMongodb, color: '#4CC56A' },
+  PyTorch: { Icon: SiPytorch, color: '#EE6C3C' },
+  LangChain: { Icon: Cable, color: '#34d399' },
 }
 
 const FALLBACK: TechMeta = { Icon: Code2, color: '#94a3b8' }
