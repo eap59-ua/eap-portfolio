@@ -28,6 +28,7 @@ export interface Project {
   highlight?: string
   video?: string
   poster?: string
+  captions?: string
 }
 
 export const PROJECTS: Project[] = [
@@ -42,6 +43,7 @@ export const PROJECTS: Project[] = [
     hero: true,
     highlight: 'Matrícula de Honor · 10/10',
     video: '/media/ecoalerta-demo.mp4',
+    captions: '/media/ecoalerta-demo.es.vtt',
     tags: [
       { label: 'React 18', tone: 'react' },
       { label: 'Node.js', tone: 'node' },

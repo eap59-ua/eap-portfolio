@@ -1,72 +1,86 @@
-import { useRef } from 'react'
-import { Film, Play } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import { Film } from 'lucide-react'
+import { useReducedMotion } from 'framer-motion'
 import { cn } from '../../lib/utils'
 
 interface MediaFrameProps {
   src?: string
   poster?: string
+  captions?: string
   label?: string
-  hoverPlay?: boolean
+  autoplay?: boolean
   className?: string
 }
 
 export function MediaFrame({
   src,
   poster,
+  captions,
   label = 'Demo en vídeo · próximamente',
-  hoverPlay,
+  autoplay,
   className,
 }: MediaFrameProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const reduce = useReducedMotion()
+  const inViewPlay = Boolean(src) && Boolean(autoplay) && !reduce
 
-  if (src && hoverPlay) {
-    return (
-      <div
-        className="group relative"
-        onMouseEnter={() => {
-          videoRef.current?.play().catch(() => {})
-        }}
-        onMouseLeave={() => {
-          const v = videoRef.current
-          if (v) {
-            v.pause()
-            v.currentTime = 0
-          }
-        }}
-      >
+  useEffect(() => {
+    if (!inViewPlay) return
+    const video = videoRef.current
+    if (!video) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) video.play().catch(() => {})
+          else video.pause()
+        }
+      },
+      { threshold: 0.25 },
+    )
+    io.observe(video)
+    return () => io.disconnect()
+  }, [inViewPlay])
+
+  if (src) {
+    const videoClass = cn(
+      'aspect-video w-full rounded-xl border border-line bg-ink-950 object-cover',
+      className,
+    )
+    const track = captions ? (
+      <track kind="captions" src={captions} srcLang="es" label="Español" />
+    ) : null
+
+    if (inViewPlay) {
+      return (
         <video
           ref={videoRef}
-          className={cn('aspect-video w-full rounded-xl border border-line bg-ink-950 object-cover', className)}
+          className={videoClass}
           src={src}
           poster={poster}
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           aria-label="Vídeo de demostración del proyecto"
-        />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-300 group-hover:opacity-0">
-          <span className="flex items-center gap-2 rounded-full border border-line-strong bg-ink-900/70 px-4 py-2 font-mono text-xs font-medium text-white backdrop-blur-sm">
-            <Play className="h-3.5 w-3.5 fill-accent text-accent" />
-            demo
-          </span>
-        </div>
-      </div>
-    )
-  }
+        >
+          {track}
+        </video>
+      )
+    }
 
-  if (src) {
     return (
       <video
         ref={videoRef}
-        className={cn('aspect-video w-full rounded-xl border border-line bg-ink-950 object-cover', className)}
+        className={videoClass}
         src={src}
         poster={poster}
         controls
         playsInline
         preload="metadata"
         aria-label="Vídeo de demostración del proyecto"
-      />
+      >
+        {track}
+      </video>
     )
   }
 

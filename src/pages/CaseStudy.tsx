@@ -88,7 +88,12 @@ export function CaseStudy() {
         </header>
 
         <div className="mt-10">
-          <MediaFrame src={project.video} poster={project.poster} className="w-full" />
+          <MediaFrame
+            src={project.video}
+            poster={project.poster}
+            captions={project.captions}
+            className="w-full"
+          />
         </div>
 
         <Section label={t('cs.problem')}>

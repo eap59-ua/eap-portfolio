@@ -39,6 +39,7 @@ import {
   SiNginx,
   SiFlutter,
   SiSpringboot,
+  SiSwift,
 } from 'react-icons/si'
 import { FaJava, FaWindows } from 'react-icons/fa'
 import {
@@ -65,7 +66,7 @@ import {
   GitBranch,
 } from 'lucide-react'
 
-type IconComp = ComponentType<{ className?: string; style?: CSSProperties }>
+type IconComp = ComponentType<{ className?: string; style?: CSSProperties; 'aria-hidden'?: boolean }>
 
 interface TechMeta {
   Icon: IconComp
@@ -79,6 +80,7 @@ const TECH: Record<string, TechMeta> = {
   JavaScript: { Icon: SiJavascript, color: '#F7DF1E' },
   Java: { Icon: FaJava, color: '#E76F00' },
   Kotlin: { Icon: SiKotlin, color: '#A97BFF' },
+  Swift: { Icon: SiSwift, color: '#F58A4B' },
   Dart: { Icon: SiDart, color: '#3FC3F0' },
   'Bash / Shell': { Icon: Terminal, color: '#cbd5e1' },
   PHP: { Icon: SiPhp, color: '#8993BE' },
@@ -147,6 +149,7 @@ const TECH: Record<string, TechMeta> = {
 
   // Mobile & other
   Android: { Icon: SiAndroid, color: '#3DDC84' },
+  'iOS (Swift)': { Icon: SiSwift, color: '#F58A4B' },
   Flutter: { Icon: SiFlutter, color: '#54C5F8' },
   'Industrial Automation': { Icon: Factory, color: '#9aa6bd' },
   'Low-Code': { Icon: Blocks, color: '#9aa6bd' },
@@ -170,5 +173,5 @@ export function getTech(label: string): TechMeta {
 
 export function TechLogo({ label, className }: { label: string; className?: string }) {
   const { Icon, color } = getTech(label)
-  return <Icon className={className} style={{ color }} />
+  return <Icon className={className} style={{ color }} aria-hidden />
 }
