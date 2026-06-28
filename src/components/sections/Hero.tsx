@@ -4,6 +4,8 @@ import { Rocket, Download } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { RichText } from '../ui/RichText'
 import { GitHubIcon } from '../ui/icons'
+import { ParticleField } from '../motion/ParticleField'
+import { ScrambleText } from '../motion/ScrambleText'
 import { SITE } from '../../lib/site'
 
 const CV_URL = '/Erardo-Aldana-Pessoa-CV-EN.pdf'
@@ -32,12 +34,9 @@ export function Hero() {
         aria-hidden="true"
         className="absolute inset-0 -z-20 bg-grid-dark bg-grid [mask-image:radial-gradient(ellipse_60%_55%_at_50%_28%,#000_55%,transparent_100%)] [-webkit-mask-image:radial-gradient(ellipse_60%_55%_at_50%_28%,#000_55%,transparent_100%)]"
       />
+      <ParticleField className="absolute inset-0 -z-10 h-full w-full" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute left-1/2 top-[-10%] h-[420px] w-[760px] -translate-x-1/2 rounded-full bg-accent-strong/20 blur-[150px]" />
-        <div
-          className="absolute right-[6%] top-1/4 h-80 w-80 rounded-full bg-accent-violet/20 blur-[130px] animate-float"
-          style={{ animationDelay: '1.6s' }}
-        />
+        <div className="absolute left-1/2 top-[-10%] h-[420px] w-[760px] -translate-x-1/2 rounded-full bg-accent-strong/18 blur-[150px]" />
       </div>
 
       <motion.div
@@ -47,7 +46,7 @@ export function Hero() {
         animate={reduce ? false : 'show'}
       >
         <motion.p variants={item} className="mb-6 font-mono text-sm tracking-[0.12em] text-accent">
-          {t('hero.tag')}
+          <ScrambleText text={t('hero.tag')} />
           <span className="ml-0.5 inline-block animate-blink text-accent-violet">_</span>
         </motion.p>
 
