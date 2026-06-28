@@ -4,9 +4,15 @@ import { useReducedMotion } from 'framer-motion'
 interface Particle {
   x: number
   y: number
+  ox: number
+  oy: number
   vx: number
   vy: number
+  phase: number
 }
+
+const REPEL = 150
+const LINK = 134
 
 export function ParticleField({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -24,6 +30,7 @@ export function ParticleField({ className }: { className?: string }) {
     let height = 0
     let raf = 0
     let running = false
+    let time = 0
     const mouse = { x: -9999, y: -9999 }
     const particles: Particle[] = []
 
@@ -40,31 +47,47 @@ export function ParticleField({ className }: { className?: string }) {
       const count = Math.min(120, Math.max(50, Math.floor(width / 11)))
       particles.length = 0
       for (let i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.35,
-          vy: (Math.random() - 0.5) * 0.35,
-        })
+        const x = Math.random() * width
+        const y = Math.random() * height
+        particles.push({ x, y, ox: x, oy: y, vx: 0, vy: 0, phase: Math.random() * Math.PI * 2 })
       }
     }
 
     const draw = () => {
+      time += 0.016
       ctx.clearRect(0, 0, width, height)
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i]
+
+      for (const p of particles) {
+        const homeX = p.ox + Math.cos(time * 0.5 + p.phase) * 7
+        const homeY = p.oy + Math.sin(time * 0.45 + p.phase) * 7
+
+        const dx = p.x - mouse.x
+        const dy = p.y - mouse.y
+        const d2 = dx * dx + dy * dy
+        if (d2 < REPEL * REPEL && d2 > 0.01) {
+          const d = Math.sqrt(d2)
+          const force = (1 - d / REPEL) * 2.4
+          p.vx += (dx / d) * force
+          p.vy += (dy / d) * force
+        }
+
+        p.vx += (homeX - p.x) * 0.022
+        p.vy += (homeY - p.y) * 0.022
+        p.vx *= 0.88
+        p.vy *= 0.88
         p.x += p.vx
         p.y += p.vy
-        if (p.x < 0 || p.x > width) p.vx *= -1
-        if (p.y < 0 || p.y > height) p.vy *= -1
+      }
 
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i]
         for (let j = i + 1; j < particles.length; j++) {
           const q = particles[j]
           const dx = p.x - q.x
           const dy = p.y - q.y
           const dist = Math.hypot(dx, dy)
-          if (dist < 132) {
-            ctx.strokeStyle = `rgba(129,140,248,${0.22 * (1 - dist / 132)})`
+          if (dist < LINK) {
+            ctx.strokeStyle = `rgba(129,140,248,${0.22 * (1 - dist / LINK)})`
             ctx.lineWidth = 1
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
@@ -72,23 +95,11 @@ export function ParticleField({ className }: { className?: string }) {
             ctx.stroke()
           }
         }
-
-        const mdx = p.x - mouse.x
-        const mdy = p.y - mouse.y
-        const mdist = Math.hypot(mdx, mdy)
-        const near = mdist < 180
-        if (near) {
-          ctx.strokeStyle = `rgba(167,139,250,${0.45 * (1 - mdist / 180)})`
-          ctx.lineWidth = 1
-          ctx.beginPath()
-          ctx.moveTo(p.x, p.y)
-          ctx.lineTo(mouse.x, mouse.y)
-          ctx.stroke()
-        }
-
-        ctx.fillStyle = near ? 'rgba(180,160,255,1)' : 'rgba(160,172,196,0.62)'
+        const md = Math.hypot(p.x - mouse.x, p.y - mouse.y)
+        const near = md < REPEL
+        ctx.fillStyle = near ? 'rgba(180,160,255,1)' : 'rgba(160,172,196,0.6)'
         ctx.beginPath()
-        ctx.arc(p.x, p.y, near ? 2.1 : 1.5, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, near ? 2.2 : 1.5, 0, Math.PI * 2)
         ctx.fill()
       }
       raf = requestAnimationFrame(draw)

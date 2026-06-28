@@ -31,7 +31,7 @@ export function About() {
           </Reveal>
 
           <Reveal delay={0.1} className="lg:col-span-3">
-            <div className="card-surface p-7 sm:p-8">
+            <div data-glow className="card-surface glow-card p-7 sm:p-8">
               <div className="mb-6 flex items-center gap-3">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-emerald-400" />

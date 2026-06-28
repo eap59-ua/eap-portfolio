@@ -18,10 +18,10 @@ const STATS = [
 ]
 
 const EASE = [0.22, 1, 0.36, 1] as const
-const container = { hidden: {}, show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } } }
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.16, delayChildren: 0.1 } } }
 const item = {
   hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: EASE } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.85, ease: EASE } },
 }
 
 export function Hero() {
@@ -46,7 +46,7 @@ export function Hero() {
         animate={reduce ? false : 'show'}
       >
         <motion.p variants={item} className="mb-6 font-mono text-sm tracking-[0.12em] text-accent">
-          <ScrambleText text={t('hero.tag')} />
+          <ScrambleText text={t('hero.tag')} duration={2000} />
           <span className="ml-0.5 inline-block animate-blink text-accent-violet">_</span>
         </motion.p>
 

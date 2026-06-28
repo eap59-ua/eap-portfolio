@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
 import { SmoothScroll } from './components/layout/SmoothScroll'
+import { ScrollProgress } from './components/layout/ScrollProgress'
 import { AuroraCursor } from './components/motion/AuroraCursor'
 import { CustomCursor } from './components/motion/CustomCursor'
 import { GlowBorders } from './components/motion/GlowBorders'
@@ -25,6 +26,7 @@ function App() {
   return (
     <BrowserRouter>
       <SmoothScroll />
+      <ScrollProgress />
       <AuroraCursor />
       <CustomCursor />
       <GlowBorders />

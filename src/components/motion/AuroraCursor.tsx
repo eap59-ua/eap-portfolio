@@ -22,7 +22,7 @@ export function AuroraCursor() {
     const loop = () => {
       current.x += (target.x - current.x) * 0.06
       current.y += (target.y - current.y) * 0.06
-      el.style.transform = `translate3d(${current.x - 190}px, ${current.y - 190}px, 0)`
+      el.style.transform = `translate3d(${current.x - 150}px, ${current.y - 150}px, 0)`
       raf = requestAnimationFrame(loop)
     }
 
@@ -38,10 +38,10 @@ export function AuroraCursor() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 -z-10 h-[380px] w-[380px] will-change-transform"
+      className="pointer-events-none fixed left-0 top-0 -z-10 h-[300px] w-[300px] will-change-transform"
     >
       <div
-        className="h-full w-full animate-spin-slow rounded-full opacity-40 blur-[72px]"
+        className="h-full w-full animate-spin-slow rounded-full opacity-[0.28] blur-[64px]"
         style={{
           background: 'conic-gradient(from 0deg, #6366f1, #a78bfa, #f0abfc, #22d3ee, #34d399, #6366f1)',
           mixBlendMode: 'screen',
