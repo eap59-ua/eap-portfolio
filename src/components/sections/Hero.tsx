@@ -85,7 +85,7 @@ export function Hero() {
 
         <motion.div variants={item} className="mt-16 grid w-full max-w-3xl grid-cols-2 gap-3 md:grid-cols-4">
           {STATS.map((stat) => (
-            <div key={stat.key} className="card-surface card-hover px-4 py-5">
+            <div key={stat.key} data-glow className="card-surface card-hover glow-card px-4 py-5">
               <div className="gradient-text text-3xl font-bold">{stat.value}</div>
               <div className="mt-1 text-sm text-slate-400">{t(stat.key)}</div>
             </div>

@@ -80,14 +80,19 @@ function ContactCard({
   )
 
   const className =
-    'card-surface card-hover flex flex-col items-start p-5'
+    'card-surface card-hover glow-card flex flex-col items-start p-5'
 
   if (!href) {
-    return <div className={className}>{inner}</div>
+    return (
+      <div data-glow className={className}>
+        {inner}
+      </div>
+    )
   }
 
   return (
     <a
+      data-glow
       href={href}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       className={className}

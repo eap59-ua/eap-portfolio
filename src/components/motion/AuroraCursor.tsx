@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'framer-motion'
 
-export function CursorGlow() {
+export function AuroraCursor() {
   const ref = useRef<HTMLDivElement>(null)
   const reduce = useReducedMotion()
 
@@ -20,10 +20,9 @@ export function CursorGlow() {
       target.y = e.clientY
     }
     const loop = () => {
-      current.x += (target.x - current.x) * 0.15
-      current.y += (target.y - current.y) * 0.15
-      el.style.setProperty('--mx', `${current.x}px`)
-      el.style.setProperty('--my', `${current.y}px`)
+      current.x += (target.x - current.x) * 0.06
+      current.y += (target.y - current.y) * 0.06
+      el.style.transform = `translate3d(${current.x - 190}px, ${current.y - 190}px, 0)`
       raf = requestAnimationFrame(loop)
     }
 
@@ -39,11 +38,15 @@ export function CursorGlow() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10"
-      style={{
-        background:
-          'radial-gradient(560px circle at var(--mx, 50%) var(--my, 50%), rgba(99,102,241,0.09), transparent 65%)',
-      }}
-    />
+      className="pointer-events-none fixed left-0 top-0 -z-10 h-[380px] w-[380px] will-change-transform"
+    >
+      <div
+        className="h-full w-full animate-spin-slow rounded-full opacity-40 blur-[72px]"
+        style={{
+          background: 'conic-gradient(from 0deg, #6366f1, #a78bfa, #f0abfc, #22d3ee, #34d399, #6366f1)',
+          mixBlendMode: 'screen',
+        }}
+      />
+    </div>
   )
 }

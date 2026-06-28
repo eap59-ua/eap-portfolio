@@ -32,13 +32,13 @@ export function Experience() {
                     <Icon className={cn('h-4 w-4 sm:h-5 sm:w-5', exp.accent)} />
                   </span>
 
-                  <div className="card-surface card-hover p-6">
+                  <div data-glow className="card-surface card-hover glow-card p-6">
                     <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
                       <div>
                         <h3 className="text-lg font-bold text-white">{exp.company}</h3>
                         <div className={cn('text-sm font-medium', exp.accent)}>{t(exp.roleKey)}</div>
                       </div>
-                      <span className="whitespace-nowrap font-mono text-xs text-slate-500">
+                      <span className="whitespace-nowrap font-mono text-xs text-slate-400">
                         {t(exp.periodKey)}
                       </span>
                     </div>

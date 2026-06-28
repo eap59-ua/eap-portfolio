@@ -96,12 +96,12 @@ function FeaturedProject({ project }: { project: Project }) {
   const footnote = project.footnoteKey ? t(project.footnoteKey) : project.footnote
 
   return (
-    <article className="card-surface card-hover overflow-hidden">
+    <article data-glow className="card-surface card-hover glow-card overflow-hidden">
       <div className="grid lg:grid-cols-2">
         <div className="order-2 flex flex-col p-7 lg:order-1 lg:p-9">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <Icon className={cn('h-5 w-5', project.iconColor)} />
-            <span className="font-mono text-xs text-slate-500">{project.context}</span>
+            <span className="font-mono text-xs text-slate-400">{project.context}</span>
             <StatusBadge status={project.status} />
             {project.highlight && (
               <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs font-medium text-amber-200">
@@ -121,7 +121,7 @@ function FeaturedProject({ project }: { project: Project }) {
           </div>
 
           <div className="mt-6 flex items-center border-t border-line pt-4">
-            {footnote && <span className="font-mono text-xs text-slate-500">{footnote}</span>}
+            {footnote && <span className="font-mono text-xs text-slate-400">{footnote}</span>}
             <ProjectLinks project={project} />
           </div>
         </div>
@@ -141,12 +141,12 @@ function ProjectCard({ project }: { project: Project }) {
   const footnote = project.footnoteKey ? t(project.footnoteKey) : project.footnote
 
   return (
-    <article className="card-surface card-hover flex h-full flex-col p-7">
+    <article data-glow className="card-surface card-hover glow-card flex h-full flex-col p-7">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <div className="mb-2 flex items-center gap-2">
             <Icon className={cn('h-5 w-5', project.iconColor)} />
-            <span className="font-mono text-xs text-slate-500">{project.context}</span>
+            <span className="font-mono text-xs text-slate-400">{project.context}</span>
           </div>
           <h3 className="text-xl font-bold text-white">{title}</h3>
         </div>
@@ -162,7 +162,7 @@ function ProjectCard({ project }: { project: Project }) {
       </div>
 
       <div className="mt-auto flex items-center border-t border-line pt-4">
-        {footnote && <span className="font-mono text-xs text-slate-500">{footnote}</span>}
+        {footnote && <span className="font-mono text-xs text-slate-400">{footnote}</span>}
         <ProjectLinks project={project} />
       </div>
     </article>

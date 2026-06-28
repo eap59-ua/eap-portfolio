@@ -3,7 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
 import { SmoothScroll } from './components/layout/SmoothScroll'
-import { CursorGlow } from './components/motion/CursorGlow'
+import { AuroraCursor } from './components/motion/AuroraCursor'
+import { CustomCursor } from './components/motion/CustomCursor'
+import { GlowBorders } from './components/motion/GlowBorders'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 
@@ -23,7 +25,9 @@ function App() {
   return (
     <BrowserRouter>
       <SmoothScroll />
-      <CursorGlow />
+      <AuroraCursor />
+      <CustomCursor />
+      <GlowBorders />
       <Navbar />
       <main>
         <Suspense fallback={<RouteFallback />}>

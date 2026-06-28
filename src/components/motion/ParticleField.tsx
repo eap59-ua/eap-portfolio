@@ -37,7 +37,7 @@ export function ParticleField({ className }: { className?: string }) {
     }
 
     const seed = () => {
-      const count = Math.min(80, Math.max(34, Math.floor(width / 16)))
+      const count = Math.min(120, Math.max(50, Math.floor(width / 11)))
       particles.length = 0
       for (let i = 0; i < count; i++) {
         particles.push({
@@ -63,8 +63,8 @@ export function ParticleField({ className }: { className?: string }) {
           const dx = p.x - q.x
           const dy = p.y - q.y
           const dist = Math.hypot(dx, dy)
-          if (dist < 118) {
-            ctx.strokeStyle = `rgba(129,140,248,${0.13 * (1 - dist / 118)})`
+          if (dist < 132) {
+            ctx.strokeStyle = `rgba(129,140,248,${0.22 * (1 - dist / 132)})`
             ctx.lineWidth = 1
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
@@ -76,9 +76,9 @@ export function ParticleField({ className }: { className?: string }) {
         const mdx = p.x - mouse.x
         const mdy = p.y - mouse.y
         const mdist = Math.hypot(mdx, mdy)
-        const near = mdist < 170
+        const near = mdist < 180
         if (near) {
-          ctx.strokeStyle = `rgba(167,139,250,${0.3 * (1 - mdist / 170)})`
+          ctx.strokeStyle = `rgba(167,139,250,${0.45 * (1 - mdist / 180)})`
           ctx.lineWidth = 1
           ctx.beginPath()
           ctx.moveTo(p.x, p.y)
@@ -86,9 +86,9 @@ export function ParticleField({ className }: { className?: string }) {
           ctx.stroke()
         }
 
-        ctx.fillStyle = near ? 'rgba(167,139,250,0.9)' : 'rgba(148,163,184,0.45)'
+        ctx.fillStyle = near ? 'rgba(180,160,255,1)' : 'rgba(160,172,196,0.62)'
         ctx.beginPath()
-        ctx.arc(p.x, p.y, near ? 1.9 : 1.4, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, near ? 2.1 : 1.5, 0, Math.PI * 2)
         ctx.fill()
       }
       raf = requestAnimationFrame(draw)

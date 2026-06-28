@@ -14,12 +14,12 @@ export function Footer() {
           <a href="#home" className="gradient-text font-mono text-lg font-bold">
             &lt;EAP/&gt;
           </a>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-400">
             © {year} {SITE.name}
           </p>
         </div>
 
-        <p className="order-last text-center font-mono text-xs text-slate-500 md:order-none">
+        <p className="order-last text-center font-mono text-xs text-slate-400 md:order-none">
           {t('footer.built')}
         </p>
 

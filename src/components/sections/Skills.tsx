@@ -22,7 +22,7 @@ export function Skills() {
             const Icon = group.icon
             return (
               <Reveal key={group.titleKey} delay={index * 0.07}>
-                <div className="card-surface card-hover h-full p-6">
+                <div data-glow className="card-surface card-hover glow-card h-full p-6">
                   <div className="mb-5 flex items-center gap-3">
                     <span
                       className={cn(
@@ -59,7 +59,7 @@ export function Skills() {
         </div>
 
         <Reveal className="mt-16">
-          <p className="mb-5 text-center font-mono text-xs uppercase tracking-[0.18em] text-slate-500">
+          <p className="mb-5 text-center font-mono text-xs uppercase tracking-[0.18em] text-slate-400">
             // stack en producción
           </p>
           <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
