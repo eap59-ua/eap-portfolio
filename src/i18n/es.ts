@@ -27,6 +27,7 @@ export const es = {
   'about.p1': `<strong class="text-white">Ingeniero Informático</strong> por la Universidad de Alicante con <strong class="text-accent">Trabajo de Fin de Grado calificado con Matrícula de Honor (10/10)</strong>, defendido el 11 de junio de 2026. <strong class="text-white">Desarrollador Full-Stack</strong> basado en Alicante, con más de año y medio de experiencia entre consultoría IT (NTT Data) y automatización industrial con visión artificial (Autis Ingenieros).`,
   'about.p2': `Me apasiona la <strong class="text-accent">arquitectura de software</strong> y los sistemas bien diseñados. Trabajo con <strong class="text-accent-violet">Python/FastAPI</strong> en backend, <strong class="text-accent">React/TypeScript</strong> en frontend, y <strong class="text-white">PostgreSQL</strong> (incluido PostGIS para GIS). Cómodo con Docker, testing, y patrones como arquitectura hexagonal.`,
   'about.p3': `Mi objetivo es unirme a un <strong class="text-white">equipo de producto Full-Time</strong> donde pueda aportar desde el día uno y seguir escalando hacia la <strong class="text-accent">arquitectura cloud</strong>. <strong class="text-white">Abierto a reubicación dentro de la UE.</strong>`,
+  'about.grit': `Me costeé la formación compaginándola con varios años de trabajo en logística y producción — de ahí mi constancia y mi mentalidad práctica.`,
   'about.edu': `Formación`,
   'about.source': `Código fuente`,
 

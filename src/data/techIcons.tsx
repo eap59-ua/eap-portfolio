@@ -33,6 +33,10 @@ import {
   SiNextdotjs,
   SiPytorch,
   SiOpenai,
+  SiDart,
+  SiVuedotjs,
+  SiBootstrap,
+  SiNginx,
 } from 'react-icons/si'
 import { FaJava } from 'react-icons/fa'
 import {
@@ -55,6 +59,8 @@ import {
   Network,
   Cloud,
   Cable,
+  Terminal,
+  GitBranch,
 } from 'lucide-react'
 
 type IconComp = ComponentType<{ className?: string; style?: CSSProperties }>
@@ -71,6 +77,8 @@ const TECH: Record<string, TechMeta> = {
   JavaScript: { Icon: SiJavascript, color: '#F7DF1E' },
   Java: { Icon: FaJava, color: '#E76F00' },
   Kotlin: { Icon: SiKotlin, color: '#A97BFF' },
+  Dart: { Icon: SiDart, color: '#3FC3F0' },
+  'Bash / Shell': { Icon: Terminal, color: '#cbd5e1' },
   PHP: { Icon: SiPhp, color: '#8993BE' },
   'C / C++': { Icon: SiCplusplus, color: '#5C9FD3' },
   SQL: { Icon: Database, color: '#6699E0' },
@@ -80,6 +88,8 @@ const TECH: Record<string, TechMeta> = {
   // Frontend
   React: { Icon: SiReact, color: '#61DAFB' },
   Tailwind: { Icon: SiTailwindcss, color: '#38BDF8' },
+  'Vue.js': { Icon: SiVuedotjs, color: '#54C99A' },
+  'Bootstrap / SASS': { Icon: SiBootstrap, color: '#A77BF0' },
   Vite: { Icon: SiVite, color: '#A879FF' },
 
   // Backend & APIs
@@ -105,6 +115,8 @@ const TECH: Record<string, TechMeta> = {
   Docker: { Icon: SiDocker, color: '#4AA0EE' },
   'GitHub Actions': { Icon: SiGithubactions, color: '#4C8DF6' },
   'CI/CD': { Icon: Workflow, color: '#4C8DF6' },
+  Nginx: { Icon: SiNginx, color: '#4FA64F' },
+  Networking: { Icon: Network, color: '#818cf8' },
   Linux: { Icon: SiLinux, color: '#FCC624' },
   Git: { Icon: SiGit, color: '#F05033' },
   Kafka: { Icon: SiApachekafka, color: '#C7CDD6' },
@@ -114,6 +126,7 @@ const TECH: Record<string, TechMeta> = {
   Hexagonal: { Icon: Hexagon, color: '#a78bfa' },
   'Hexagonal Architecture': { Icon: Hexagon, color: '#a78bfa' },
   Microservices: { Icon: Boxes, color: '#818cf8' },
+  UML: { Icon: GitBranch, color: '#a78bfa' },
   OOP: { Icon: Component, color: '#34d399' },
   Agile: { Icon: Repeat, color: '#34d399' },
   Pytest: { Icon: SiPytest, color: '#5FC9E8' },

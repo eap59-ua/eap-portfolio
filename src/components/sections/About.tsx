@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { GraduationCap, Mail, Code2 } from 'lucide-react'
+import { GraduationCap, Mail, Code2, Sparkles } from 'lucide-react'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Reveal } from '../motion/Reveal'
 import { RichText } from '../ui/RichText'
@@ -51,6 +51,11 @@ export function About() {
                 <RichText html={t('about.p2')} />
                 <RichText html={t('about.p3')} />
               </div>
+
+              <p className="mt-5 flex items-start gap-2 border-l-2 border-accent/40 pl-3 text-sm italic text-slate-400">
+                <Sparkles className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent" />
+                {t('about.grit')}
+              </p>
 
               <h4 className="mt-8 flex items-center gap-2 text-lg font-bold text-white">
                 <GraduationCap className="h-5 w-5 text-accent" />

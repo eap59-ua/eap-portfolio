@@ -27,6 +27,7 @@ export const en = {
   'about.p1': `<strong class="text-white">Computer Engineer</strong> from the University of Alicante with my <strong class="text-accent">Final Degree Project graded 10/10 with Distinction (Matrícula de Honor)</strong>, defended on June 11th, 2026. <strong class="text-white">Full-Stack developer</strong> based in Alicante, with over a year and a half of experience between IT consulting (NTT Data) and industrial automation with machine vision (Autis Ingenieros).`,
   'about.p2': `I'm passionate about <strong class="text-accent">software architecture</strong> and well-designed systems. I work with <strong class="text-accent-violet">Python/FastAPI</strong> on the backend, <strong class="text-accent">React/TypeScript</strong> on the frontend, and <strong class="text-white">PostgreSQL</strong> (including PostGIS for GIS). Comfortable with Docker, testing, and patterns such as hexagonal architecture.`,
   'about.p3': `My goal is to join a <strong class="text-white">product team Full-Time</strong> where I can contribute from day one and keep scaling toward <strong class="text-accent">cloud architecture</strong>. <strong class="text-white">Open to relocation within the EU.</strong>`,
+  'about.grit': `I funded my education while working for several years in logistics and production — hence my persistence and pragmatic mindset.`,
   'about.edu': `Education`,
   'about.source': `Source code`,
 
