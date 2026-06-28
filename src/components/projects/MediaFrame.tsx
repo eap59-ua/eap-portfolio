@@ -43,6 +43,7 @@ export function MediaFrame({
           loop
           playsInline
           preload="metadata"
+          aria-label="Vídeo de demostración del proyecto"
         />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-300 group-hover:opacity-0">
           <span className="flex items-center gap-2 rounded-full border border-line-strong bg-ink-900/70 px-4 py-2 font-mono text-xs font-medium text-white backdrop-blur-sm">
@@ -64,6 +65,7 @@ export function MediaFrame({
         controls
         playsInline
         preload="metadata"
+        aria-label="Vídeo de demostración del proyecto"
       />
     )
   }

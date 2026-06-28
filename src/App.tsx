@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
 import { SmoothScroll } from './components/layout/SmoothScroll'
@@ -41,6 +42,7 @@ function App() {
         </Suspense>
       </main>
       <Footer />
+      <Analytics />
     </BrowserRouter>
   )
 }
