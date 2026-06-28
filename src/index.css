@@ -59,7 +59,8 @@
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent;
+    color: #fff;
+    -webkit-text-fill-color: transparent;
   }
 
   .glass {

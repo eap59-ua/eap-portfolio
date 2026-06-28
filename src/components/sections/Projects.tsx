@@ -67,12 +67,14 @@ function StatusBadge({ status }: { status: Project['status'] }) {
 
 function ProjectLinks({ project }: { project: Project }) {
   const { t } = useTranslation()
+  const title = project.titleKey ? t(project.titleKey) : project.title
   return (
     <div className="ml-auto flex items-center gap-4">
       <a
         href={project.repo}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label={`${t('projects.code')} — ${title} (GitHub)`}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 transition-colors hover:text-white"
       >
         <GitHubIcon className="h-4 w-4" />
@@ -80,6 +82,7 @@ function ProjectLinks({ project }: { project: Project }) {
       </a>
       <Link
         to={`/projects/${project.slug}`}
+        aria-label={`${t('projects.casestudy')} — ${title}`}
         className="inline-flex items-center gap-1 text-sm font-semibold text-accent transition-colors hover:text-accent-violet"
       >
         {t('projects.casestudy')}
