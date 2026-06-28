@@ -8,5 +8,5 @@ export const SITE = {
   linkedin: 'https://www.linkedin.com/in/erardo-aldana/',
   repo: 'https://github.com/eap59-ua/eap-portfolio',
   location: 'Alicante',
-  url: 'https://eap59-ua.github.io/eap-portfolio/',
+  url: 'https://eap-portfolio.vercel.app',
 } as const

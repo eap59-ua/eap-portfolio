@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://eap-portfolio.vercel.app/</loc><priority>1.0</priority></url>
+  <url><loc>https://eap-portfolio.vercel.app/projects/ecoalerta</loc><priority>0.8</priority></url>
+  <url><loc>https://eap-portfolio.vercel.app/projects/hydrofulness</loc><priority>0.8</priority></url>
+  <url><loc>https://eap-portfolio.vercel.app/projects/food-donation</loc><priority>0.8</priority></url>
+  <url><loc>https://eap-portfolio.vercel.app/projects/studysync</loc><priority>0.8</priority></url>
+  <url><loc>https://eap-portfolio.vercel.app/projects/chaos-crew</loc><priority>0.8</priority></url>
+</urlset>
