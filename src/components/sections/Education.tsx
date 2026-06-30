@@ -208,14 +208,27 @@ export function Education() {
           <div
             ref={b2Ref}
             data-glow
-            className="card-surface card-hover glow-card mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3.5"
+            style={
+              {
+                '--glow-a': '#fbbf24',
+                '--glow-b': '#f59e0b',
+                '--glow-shadow': 'rgba(245,158,11,0.45)',
+              } as CSSProperties
+            }
+            className="card-surface card-hover glow-card relative mt-6 overflow-hidden px-5 py-3.5"
           >
-            <span className="inline-flex items-center gap-2 text-sm text-slate-200">
-              <Languages className="h-4 w-4 text-accent" />
-              {t('edu.cert')}
-            </span>
-            <span className="hidden h-4 w-px bg-line-strong sm:block" aria-hidden="true" />
-            <span className="text-xs text-slate-400">{t('edu.fct')}</span>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-br from-amber-500/[0.12] via-transparent to-amber-700/[0.05]"
+            />
+            <div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
+              <span className="inline-flex items-center gap-2 text-sm text-slate-200">
+                <Languages className="h-4 w-4 text-amber-300" />
+                {t('edu.cert')}
+              </span>
+              <span className="hidden h-4 w-px bg-line-strong sm:block" aria-hidden="true" />
+              <span className="text-xs text-slate-400">{t('edu.fct')}</span>
+            </div>
           </div>
         </div>
       </div>
