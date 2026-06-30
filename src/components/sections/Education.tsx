@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useReducedMotion } from 'framer-motion'
-import { GraduationCap, Award, Languages, Sparkles } from 'lucide-react'
+import { Award, Languages, Sparkles } from 'lucide-react'
 import { SectionHeading } from '../ui/SectionHeading'
 import { DEGREE, FP_ITEMS } from '../../data/education'
 import { cn } from '../../lib/utils'
@@ -18,58 +18,66 @@ export function Education() {
     const root = rootRef.current
     if (!root) return
 
-    let ctx: { revert: () => void } | null = null
-    let cancelled = false
+    let killed = false
+    let io: IntersectionObserver | null = null
+    let tl: { kill: () => void } | null = null
 
     void (async () => {
-      const gsapMod = await import('gsap')
-      const stMod = await import('gsap/ScrollTrigger')
-      if (cancelled) return
-      const gsap = gsapMod.gsap ?? gsapMod.default
-      const ScrollTrigger = stMod.ScrollTrigger ?? stMod.default
-      gsap.registerPlugin(ScrollTrigger)
+      const mod = await import('gsap')
+      if (killed) return
+      const gsap = mod.gsap ?? mod.default
+      const cards = root.querySelectorAll('.edu-fp')
 
-      ctx = gsap.context(() => {
-        if (degreeRef.current) {
-          gsap.from(degreeRef.current, {
-            opacity: 0,
-            y: 40,
-            scale: 0.97,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: { trigger: root, start: 'top 75%' },
-          })
-        }
-        if (lineRef.current) {
-          gsap.fromTo(
-            lineRef.current,
-            { scaleX: 0 },
+      // pre-hide now (the section is still below the fold) so there's no
+      // visible→hidden flash when it scrolls into view
+      if (degreeRef.current) gsap.set(degreeRef.current, { opacity: 0, y: 44, scale: 0.97 })
+      if (lineRef.current) gsap.set(lineRef.current, { scaleX: 0, transformOrigin: 'left center' })
+      gsap.set(cards, {
+        opacity: 0,
+        y: 72,
+        scale: 0.82,
+        rotateX: 16,
+        transformPerspective: 900,
+        transformOrigin: 'center bottom',
+      })
+
+      // IntersectionObserver reveal — rock-solid under Lenis smooth scroll
+      io = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0].isIntersecting) return
+          io?.disconnect()
+          const t = gsap.timeline({ defaults: { ease: 'power3.out' } })
+          if (degreeRef.current) {
+            t.to(degreeRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.75, clearProps: 'transform' })
+          }
+          if (lineRef.current) {
+            t.to(lineRef.current, { scaleX: 1, duration: 0.55, ease: 'power2.inOut' }, '-=0.2')
+          }
+          t.to(
+            cards,
             {
-              scaleX: 1,
-              ease: 'none',
-              transformOrigin: 'left center',
-              scrollTrigger: { trigger: root, start: 'top 68%', end: 'center 62%', scrub: true },
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              rotateX: 0,
+              duration: 0.8,
+              stagger: 0.16,
+              ease: 'back.out(1.4)',
+              clearProps: 'transform',
             },
+            '-=0.25',
           )
-        }
-        gsap.from('.edu-fp', {
-          opacity: 0,
-          y: 52,
-          rotateX: 8,
-          transformPerspective: 800,
-          duration: 0.7,
-          stagger: 0.12,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: '.edu-fp-grid', start: 'top 82%' },
-        })
-      }, root)
-      // recalc trigger positions now that the lazy chunk + Lenis are live
-      ScrollTrigger.refresh()
+          tl = t
+        },
+        { threshold: 0.15 },
+      )
+      io.observe(root)
     })()
 
     return () => {
-      cancelled = true
-      if (ctx) ctx.revert()
+      killed = true
+      if (io) io.disconnect()
+      if (tl) tl.kill()
     }
   }, [reduce])
 
@@ -82,11 +90,16 @@ export function Education() {
           subtitle={t('education.subtitle')}
         />
 
-        <div ref={rootRef} className="mx-auto mt-16 max-w-5xl">
+        <div ref={rootRef} className="mx-auto mt-16 max-w-5xl [perspective:1200px]">
           <div ref={degreeRef} data-glow className="card-surface card-hover glow-card p-7 sm:p-8">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-              <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-accent/25 to-accent-violet/10 text-accent">
-                <GraduationCap className="h-7 w-7" />
+              <span className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white p-2.5 shadow-sm">
+                <img
+                  src="/universidad-de-alicante-1-logo-png-transparent.png"
+                  alt="Universidad de Alicante"
+                  className="h-full w-full object-contain"
+                  loading="lazy"
+                />
               </span>
               <div className="flex-1">
                 <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
@@ -125,7 +138,7 @@ export function Education() {
             />
           </div>
 
-          <div className="edu-fp-grid grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="edu-fp-grid grid grid-cols-1 gap-5 md:grid-cols-3">
             {FP_ITEMS.map((item) => {
               const Icon = item.icon
               return (
