@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { GraduationCap, Mail, Code2, Sparkles } from 'lucide-react'
+import { Mail, Code2, Sparkles } from 'lucide-react'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Reveal } from '../motion/Reveal'
 import { RichText } from '../ui/RichText'
 import { GitHubIcon, LinkedInIcon } from '../ui/icons'
-import { EDUCATION } from '../../data/education'
 import { SITE } from '../../lib/site'
-import { cn } from '../../lib/utils'
 
 export function About() {
   const { t } = useTranslation()
@@ -56,22 +54,6 @@ export function About() {
                 <Sparkles className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent" />
                 {t('about.grit')}
               </p>
-
-              <h4 className="mt-8 flex items-center gap-2 text-lg font-bold text-white">
-                <GraduationCap className="h-5 w-5 text-accent" />
-                {t('about.edu')}
-              </h4>
-              <ul className="mt-4 space-y-3">
-                {EDUCATION.map((edu) => (
-                  <li key={edu.titleKey} className="flex items-start gap-3">
-                    <span className={cn('mt-2 h-2 w-2 flex-shrink-0 rounded-full', edu.dot)} />
-                    <div>
-                      <div className="font-medium text-white">{t(edu.titleKey)}</div>
-                      <div className="text-sm text-slate-400">{t(edu.subKey)}</div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
 
               <div className="mt-8 flex flex-wrap gap-2.5">
                 <SocialPill href={SITE.linkedin} label="LinkedIn">

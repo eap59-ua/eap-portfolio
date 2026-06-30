@@ -135,11 +135,15 @@ export function ParticleField({ className }: { className?: string }) {
 
         const md = Math.sqrt((ax - mouse.x) * (ax - mouse.x) + (ay - mouse.y) * (ay - mouse.y))
         if (md < CURSOR) {
-          ctx.strokeStyle = `rgba(${particles[i].color},${0.32 * (1 - md / CURSOR)})`
+          // links that thread to the cursor: brighter, thicker — the cursor "pulls" harder
+          const pull = 1 - md / CURSOR
+          ctx.lineWidth = 1.6
+          ctx.strokeStyle = `rgba(196,181,253,${0.3 + 0.6 * pull})`
           ctx.beginPath()
           ctx.moveTo(ax, ay)
           ctx.lineTo(mouse.x, mouse.y)
           ctx.stroke()
+          ctx.lineWidth = 1
         }
       }
 

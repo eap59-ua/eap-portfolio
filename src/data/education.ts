@@ -1,13 +1,60 @@
-export interface EduItem {
+import type { LucideIcon } from 'lucide-react'
+import { Globe, Smartphone, Network } from 'lucide-react'
+
+export interface DegreeInfo {
   titleKey: string
-  subKey: string
-  dot: string
+  org: string
+  period: string
+  badgeKey: string
+  descKey: string
+  activities: string[]
 }
 
-export const EDUCATION: EduItem[] = [
-  { titleKey: 'edu.1.title', subKey: 'edu.1.sub', dot: 'bg-accent' },
-  { titleKey: 'edu.2.title', subKey: 'edu.2.sub', dot: 'bg-accent-violet' },
-  { titleKey: 'edu.3.title', subKey: 'edu.3.sub', dot: 'bg-accent-pink' },
-  { titleKey: 'edu.4.title', subKey: 'edu.4.sub', dot: 'bg-emerald-400' },
-  { titleKey: 'edu.5.title', subKey: 'edu.5.sub', dot: 'bg-sky-400' },
+export const DEGREE: DegreeInfo = {
+  titleKey: 'edu.degree.title',
+  org: 'Universidad de Alicante',
+  period: 'sept. 2022 — jun. 2026',
+  badgeKey: 'edu.degree.badge',
+  descKey: 'edu.degree.desc',
+  activities: ['NASA Space Apps 2025', 'Hackathon AMAEM 2026'],
+}
+
+export interface FpItem {
+  titleKey: string
+  org: string
+  period: string
+  grade?: string
+  tags: string[]
+  icon: LucideIcon
+  accent: string
+}
+
+// most recent first (DAW → DAM → SMR)
+export const FP_ITEMS: FpItem[] = [
+  {
+    titleKey: 'edu.daw.title',
+    org: 'IES María Enríquez',
+    period: '2020 — 2021',
+    grade: '8.5',
+    tags: ['PHP', 'Laravel', 'JavaScript', 'MySQL'],
+    icon: Globe,
+    accent: 'text-accent-pink',
+  },
+  {
+    titleKey: 'edu.dam.title',
+    org: 'IES Jaume II el Just',
+    period: '2018 — 2020',
+    grade: '9',
+    tags: ['Java', 'Kotlin', 'Dart', 'Android'],
+    icon: Smartphone,
+    accent: 'text-accent-violet',
+  },
+  {
+    titleKey: 'edu.smr.title',
+    org: 'IES Jaume II el Just',
+    period: '2016 — 2018',
+    tags: ['Networking', 'Sysadmin', 'Security'],
+    icon: Network,
+    accent: 'text-accent',
+  },
 ]
