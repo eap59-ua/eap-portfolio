@@ -81,7 +81,9 @@
   .card-hover:hover {
     transform: translateY(-4px);
     border-color: rgba(129, 140, 248, 0.4);
-    box-shadow: 0 24px 50px -28px rgba(99, 102, 241, 0.55);
+    box-shadow:
+      0 24px 50px -28px var(--glow-shadow, rgba(99, 102, 241, 0.55)),
+      0 0 26px -12px var(--glow-shadow, transparent);
   }
 
   .nav-link {
@@ -144,8 +146,8 @@
   background: conic-gradient(
     from calc(var(--start, 0) * 1deg),
     transparent 0deg,
-    #a78bfa 12deg,
-    #818cf8 48deg,
+    var(--glow-a, #a78bfa) 12deg,
+    var(--glow-b, #818cf8) 48deg,
     transparent 112deg
   );
   -webkit-mask:
@@ -166,7 +168,9 @@
 }
 .tilt-card:hover {
   border-color: rgba(129, 140, 248, 0.4);
-  box-shadow: 0 24px 50px -28px rgba(99, 102, 241, 0.55);
+  box-shadow:
+    0 24px 50px -28px var(--glow-shadow, rgba(99, 102, 241, 0.55)),
+    0 0 26px -12px var(--glow-shadow, transparent);
 }
 
 html.lenis,

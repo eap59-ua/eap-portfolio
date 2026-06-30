@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useReducedMotion } from 'framer-motion'
 import { Award, Languages, Sparkles } from 'lucide-react'
@@ -9,9 +9,11 @@ import { cn } from '../../lib/utils'
 // inverted-pyramid layout: each tier narrower than the one above, centered.
 // width + subtle background emphasis encode the academic level.
 const FP_LAYOUT = [
-  { width: 'md:w-[86%]', overlay: 'from-white/[0.05] to-transparent' }, // DAW — CFGS
-  { width: 'md:w-[86%]', overlay: 'from-white/[0.05] to-transparent' }, // DAM — CFGS
-  { width: 'md:w-[68%]', overlay: 'from-white/[0.02] to-transparent' }, // SMR — CFGM
+  // DAW & DAM (CFGS) — deep space-navy identity
+  { width: 'md:w-[86%]', overlay: 'from-blue-500/[0.08] to-transparent', glow: { a: '#60a5fa', b: '#1e40af', shadow: 'rgba(37,99,235,0.4)' } },
+  { width: 'md:w-[86%]', overlay: 'from-blue-500/[0.08] to-transparent', glow: { a: '#60a5fa', b: '#1e40af', shadow: 'rgba(37,99,235,0.4)' } },
+  // SMR (CFGM) — distinct teal tone
+  { width: 'md:w-[68%]', overlay: 'from-teal-500/[0.08] to-transparent', glow: { a: '#2dd4bf', b: '#0d9488', shadow: 'rgba(20,184,166,0.38)' } },
 ]
 
 export function Education() {
@@ -149,6 +151,13 @@ export function Education() {
                 <div
                   key={item.titleKey}
                   data-glow
+                  style={
+                    {
+                      '--glow-a': layout.glow.a,
+                      '--glow-b': layout.glow.b,
+                      '--glow-shadow': layout.glow.shadow,
+                    } as CSSProperties
+                  }
                   className={cn(
                     'edu-fp card-surface card-hover glow-card relative w-full overflow-hidden p-5 sm:p-6',
                     layout.width,

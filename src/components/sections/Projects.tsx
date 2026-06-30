@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type CSSProperties } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -13,6 +13,20 @@ import { MediaFrame } from '../projects/MediaFrame'
 import { PROJECTS, type Project } from '../../data/projects'
 import { SITE } from '../../lib/site'
 import { cn } from '../../lib/utils'
+
+// per-project hover glow — the lit border + ambient halo take the project's own colour
+const GLOW: Record<string, { a: string; b: string; shadow: string }> = {
+  ecoalerta: { a: '#34d399', b: '#10b981', shadow: 'rgba(16,185,129,0.5)' },
+  hydrofulness: { a: '#38bdf8', b: '#0ea5e9', shadow: 'rgba(14,165,233,0.5)' },
+  'food-donation': { a: '#f0abfc', b: '#e879f9', shadow: 'rgba(232,121,249,0.45)' },
+  studysync: { a: '#a78bfa', b: '#818cf8', shadow: 'rgba(129,140,248,0.5)' },
+  easycab: { a: '#fbbf24', b: '#f59e0b', shadow: 'rgba(245,158,11,0.5)' },
+}
+
+function glowStyle(slug: string): CSSProperties {
+  const g = GLOW[slug] ?? { a: '#a78bfa', b: '#818cf8', shadow: 'rgba(99,102,241,0.5)' }
+  return { '--glow-a': g.a, '--glow-b': g.b, '--glow-shadow': g.shadow } as CSSProperties
+}
 
 export function Projects() {
   const { t } = useTranslation()
@@ -147,7 +161,7 @@ function FeaturedProject({ project }: { project: Project }) {
   const footnote = project.footnoteKey ? t(project.footnoteKey) : project.footnote
 
   return (
-    <article data-glow className="card-surface card-hover glow-card overflow-hidden">
+    <article data-glow style={glowStyle(project.slug)} className="card-surface card-hover glow-card overflow-hidden">
       <div className="grid lg:grid-cols-2">
         <div className="order-2 flex flex-col p-7 lg:order-1 lg:p-9">
           <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -198,7 +212,7 @@ function ProjectCard({ project }: { project: Project }) {
   const footnote = project.footnoteKey ? t(project.footnoteKey) : project.footnote
 
   return (
-    <article data-glow data-tilt className="card-surface glow-card tilt-card flex h-full flex-col p-7">
+    <article data-glow data-tilt style={glowStyle(project.slug)} className="card-surface glow-card tilt-card flex h-full flex-col p-7">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <div className="mb-2 flex items-center gap-2">
