@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Reveal } from '../motion/Reveal'
@@ -7,9 +9,46 @@ import { cn } from '../../lib/utils'
 
 export function Experience() {
   const { t } = useTranslation()
+  const reduce = useReducedMotion()
+  const sectionRef = useRef<HTMLElement>(null)
+  const lineRef = useRef<HTMLDivElement>(null)
+
+  // draw the timeline spine in sync with how far the section has been scrolled
+  useEffect(() => {
+    const line = lineRef.current
+    if (!line) return
+    if (reduce) {
+      line.style.transform = 'scaleY(1)'
+      return
+    }
+    const section = sectionRef.current
+    if (!section) return
+    let raf = 0
+    const update = () => {
+      raf = 0
+      const rect = section.getBoundingClientRect()
+      const vh = window.innerHeight || 1
+      const start = vh * 0.8
+      const end = vh * 0.4
+      const total = rect.height + (start - end)
+      const p = Math.max(0, Math.min(1, (start - rect.top) / total))
+      line.style.transform = `scaleY(${p})`
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [reduce])
 
   return (
-    <section id="experience" className="relative py-24 sm:py-28">
+    <section ref={sectionRef} id="experience" className="relative py-24 sm:py-28">
       <div className="container">
         <SectionHeading
           eyebrow={t('experience.eyebrow')}
@@ -19,8 +58,10 @@ export function Experience() {
 
         <div className="relative mx-auto mt-16 max-w-3xl">
           <div
+            ref={lineRef}
             aria-hidden="true"
-            className="absolute left-4 top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-accent/60 via-line-strong to-transparent sm:left-5"
+            style={{ transformOrigin: 'top', transform: 'scaleY(0)' }}
+            className="absolute left-4 top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-accent via-accent-violet/70 to-transparent sm:left-5"
           />
 
           <div className="space-y-6">
