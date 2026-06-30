@@ -60,7 +60,7 @@ export function Skills() {
         </div>
 
         <Reveal className="mt-6">
-          <div className="card-surface p-6">
+          <div data-glow className="card-surface card-hover glow-card p-6">
             <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-emerald-300">
               <Sprout className="h-4 w-4" />
               {t('skills.roadmap')}

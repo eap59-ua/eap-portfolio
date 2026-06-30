@@ -180,7 +180,7 @@ export function Education() {
             })}
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-line bg-white/[0.02] px-5 py-3.5">
+          <div data-glow className="card-surface card-hover glow-card mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3.5">
             <span className="inline-flex items-center gap-2 text-sm text-slate-200">
               <Languages className="h-4 w-4 text-accent" />
               {t('edu.cert')}

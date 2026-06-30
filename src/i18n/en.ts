@@ -97,8 +97,8 @@ export const en = {
   'projects.p3.title': `Food Donation Network`,
   'projects.p3': `Backend that connects donors (restaurants, supermarkets) with receivers (NGOs, food banks) to reduce waste. Hexagonal architecture with separated layers: Domain, Application, Infrastructure, Presentation.`,
   'projects.p3.tag': `Hexagonal architecture`,
-  'projects.p4': `2D cooperative platformer for 2-5 players, inspired by Level Devil and Pico Park. Built in C++ with Raylib, ECS (EnTT) and ES/EN internationalization.`,
-  'projects.p4.tag': `Teamwork · Git flow`,
+  'projects.p4': `Distributed Uber-style ride-hailing simulator on Apache Kafka. A central orchestrator matches autonomous taxis to customers on a 20×20 grid, with TLS auth, JWT-signed messaging, fault tolerance and audit logging.`,
+  'projects.p4.tag': `Event-driven · TLS+JWT`,
   'projects.p5': `Real-time collaborative study platform. Video rooms (LiveKit), server-authoritative synchronized Pomodoro in Redis, and notes exchange with reviews.`,
 
   'contact.title': `Let's talk`,

@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { Leaf, Droplets, HeartHandshake, Gamepad2, Video } from 'lucide-react'
+import { Leaf, Droplets, HeartHandshake, Car, Video } from 'lucide-react'
 
 export type ProjectStatus = 'active' | 'done'
 export type TagTone = 'default' | 'python' | 'react' | 'node' | 'pg' | 'docker' | 'ts' | 'ml' | 'cpp'
@@ -114,21 +114,21 @@ export const PROJECTS: Project[] = [
     repo: 'https://github.com/eap59-ua/studysync',
   },
   {
-    slug: 'chaos-crew',
-    title: 'Chaos Crew',
-    context: 'DCA · 2025-26',
-    icon: Gamepad2,
-    iconColor: 'text-accent-violet',
+    slug: 'easycab',
+    title: 'EasyCab',
+    context: 'Sistemas Distribuidos · 2025',
+    icon: Car,
+    iconColor: 'text-amber-300',
     status: 'done',
     descKey: 'projects.p4',
     tags: [
-      { label: 'C++', tone: 'cpp' },
-      { label: 'Raylib' },
-      { label: 'CMake' },
-      { label: 'EnTT (ECS)' },
-      { label: 'CI/CD' },
+      { label: 'Python', tone: 'python' },
+      { label: 'Apache Kafka' },
+      { label: 'PostgreSQL', tone: 'pg' },
+      { label: 'JWT' },
+      { label: 'TLS / SSL' },
     ],
     footnoteKey: 'projects.p4.tag',
-    repo: 'https://github.com/eap59-ua/chaos-crew-dca',
+    repo: 'https://github.com/eap59-ua/easycabSD-P2',
   },
 ]

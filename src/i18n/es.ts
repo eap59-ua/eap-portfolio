@@ -97,8 +97,8 @@ export const es = {
   'projects.p3.title': `Red de Donación de Alimentos`,
   'projects.p3': `Backend que conecta donantes (restaurantes, supermercados) con receptores (ONGs, bancos de alimentos) para reducir desperdicio. Arquitectura hexagonal con capas separadas: Domain, Application, Infrastructure, Presentation.`,
   'projects.p3.tag': `Arquitectura hexagonal`,
-  'projects.p4': `Juego cooperativo de plataformas 2D para 2-5 jugadores, inspirado en Level Devil y Pico Park. Desarrollado en C++ con Raylib, ECS (EnTT) y soporte multi-idioma ES/EN.`,
-  'projects.p4.tag': `Trabajo en equipo · Git flow`,
+  'projects.p4': `Simulador distribuido de transporte tipo Uber sobre Apache Kafka. Una central orquesta taxis autónomos y clientes en un mapa 20×20, con autenticación TLS, mensajería firmada con JWT, tolerancia a fallos y auditoría.`,
+  'projects.p4.tag': `Orientado a eventos · TLS+JWT`,
   'projects.p5': `Plataforma de estudio colaborativo en tiempo real. Salas con vídeo (LiveKit), Pomodoro sincronizado server-authoritative en Redis e intercambio de apuntes con reseñas.`,
 
   'contact.title': `Hablemos`,

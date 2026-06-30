@@ -27,7 +27,7 @@ export function Contact() {
         </div>
 
         <Reveal delay={0.1}>
-          <div className="card-surface mt-6 flex flex-col items-center justify-between gap-5 p-6 sm:flex-row">
+          <div data-glow className="card-surface card-hover glow-card mt-6 flex flex-col items-center justify-between gap-5 p-6 sm:flex-row">
             <div className="flex items-center gap-4">
               <span className="relative flex h-2.5 w-2.5 flex-shrink-0">
                 <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-emerald-400" />
