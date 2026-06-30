@@ -6,12 +6,20 @@ import { SectionHeading } from '../ui/SectionHeading'
 import { DEGREE, FP_ITEMS } from '../../data/education'
 import { cn } from '../../lib/utils'
 
+// inverted-pyramid layout: each tier narrower than the one above, centered.
+// width + subtle background emphasis encode the academic level.
+const FP_LAYOUT = [
+  { width: 'md:w-[86%]', overlay: 'from-white/[0.05] to-transparent' }, // DAW — CFGS
+  { width: 'md:w-[86%]', overlay: 'from-white/[0.05] to-transparent' }, // DAM — CFGS
+  { width: 'md:w-[68%]', overlay: 'from-white/[0.02] to-transparent' }, // SMR — CFGM
+]
+
 export function Education() {
   const { t } = useTranslation()
   const reduce = useReducedMotion()
   const rootRef = useRef<HTMLDivElement>(null)
   const degreeRef = useRef<HTMLDivElement>(null)
-  const lineRef = useRef<HTMLDivElement>(null)
+  const b2Ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (reduce) return
@@ -27,49 +35,41 @@ export function Education() {
       if (killed) return
       const gsap = mod.gsap ?? mod.default
       const cards = root.querySelectorAll('.edu-fp')
+      const hidden = { opacity: 0, y: 64, scale: 0.86, rotateX: 14, transformPerspective: 900, transformOrigin: 'center bottom' }
 
-      // pre-hide now (the section is still below the fold) so there's no
-      // visible→hidden flash when it scrolls into view
-      if (degreeRef.current) gsap.set(degreeRef.current, { opacity: 0, y: 44, scale: 0.97 })
-      if (lineRef.current) gsap.set(lineRef.current, { scaleX: 0, transformOrigin: 'left center' })
-      gsap.set(cards, {
-        opacity: 0,
-        y: 72,
-        scale: 0.82,
-        rotateX: 16,
-        transformPerspective: 900,
-        transformOrigin: 'center bottom',
-      })
+      // pre-hide off-screen so there's no flash when the section scrolls in
+      if (degreeRef.current) gsap.set(degreeRef.current, { opacity: 0, y: 40, scale: 0.97 })
+      gsap.set(cards, hidden)
+      if (b2Ref.current) gsap.set(b2Ref.current, { opacity: 0, y: 28 })
 
-      // IntersectionObserver reveal — rock-solid under Lenis smooth scroll
       io = new IntersectionObserver(
         (entries) => {
           if (!entries[0].isIntersecting) return
           io?.disconnect()
-          const t = gsap.timeline({ defaults: { ease: 'power3.out' } })
+          const t2 = gsap.timeline({ defaults: { ease: 'power3.out' } })
           if (degreeRef.current) {
-            t.to(degreeRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.75, clearProps: 'transform' })
+            t2.to(degreeRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.7, clearProps: 'transform' })
           }
-          if (lineRef.current) {
-            t.to(lineRef.current, { scaleX: 1, duration: 0.55, ease: 'power2.inOut' }, '-=0.2')
-          }
-          t.to(
+          t2.to(
             cards,
             {
               opacity: 1,
               y: 0,
               scale: 1,
               rotateX: 0,
-              duration: 0.8,
+              duration: 0.75,
               stagger: 0.16,
-              ease: 'back.out(1.4)',
+              ease: 'back.out(1.5)',
               clearProps: 'transform',
             },
-            '-=0.25',
+            '-=0.3',
           )
-          tl = t
+          if (b2Ref.current) {
+            t2.to(b2Ref.current, { opacity: 1, y: 0, duration: 0.5, clearProps: 'transform' }, '-=0.2')
+          }
+          tl = t2
         },
-        { threshold: 0.15 },
+        { threshold: 0.12 },
       )
       io.observe(root)
     })()
@@ -91,8 +91,17 @@ export function Education() {
         />
 
         <div ref={rootRef} className="mx-auto mt-16 max-w-5xl [perspective:1200px]">
-          <div ref={degreeRef} data-glow className="card-surface card-hover glow-card p-7 sm:p-8">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+          {/* Tier 0 — Degree (widest, accent emphasis) */}
+          <div
+            ref={degreeRef}
+            data-glow
+            className="card-surface card-hover glow-card relative overflow-hidden border-accent/20 p-7 shadow-[0_0_50px_-20px_rgba(129,140,248,0.5)] sm:p-8"
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-br from-accent/[0.12] via-transparent to-accent-violet/[0.06]"
+            />
+            <div className="relative flex flex-col gap-5 sm:flex-row sm:items-start">
               <span className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white p-2.5 shadow-sm">
                 <img
                   src="/universidad-de-alicante-1-logo-png-transparent.png"
@@ -131,56 +140,67 @@ export function Education() {
             </div>
           </div>
 
-          <div className="my-8 h-px w-full overflow-hidden" aria-hidden="true">
-            <div
-              ref={lineRef}
-              className="h-full w-full origin-left bg-gradient-to-r from-accent via-accent-violet to-transparent"
-            />
-          </div>
-
-          <div className="edu-fp-grid grid grid-cols-1 gap-5 md:grid-cols-3">
-            {FP_ITEMS.map((item) => {
+          {/* Tiers 1-2 — FP, narrowing toward the base */}
+          <div className="mt-5 flex flex-col items-center gap-5">
+            {FP_ITEMS.map((item, index) => {
               const Icon = item.icon
+              const layout = FP_LAYOUT[index]
               return (
                 <div
                   key={item.titleKey}
                   data-glow
-                  className="edu-fp card-surface card-hover glow-card flex h-full flex-col p-6"
+                  className={cn(
+                    'edu-fp card-surface card-hover glow-card relative w-full overflow-hidden p-5 sm:p-6',
+                    layout.width,
+                  )}
                 >
-                  <div className="mb-3 flex items-center justify-between gap-2">
+                  <div
+                    aria-hidden="true"
+                    className={cn('pointer-events-none absolute inset-0 bg-gradient-to-br', layout.overlay)}
+                  />
+                  <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
                     <span
                       className={cn(
-                        'flex h-9 w-9 items-center justify-center rounded-xl bg-white/[0.04]',
+                        'flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.05]',
                         item.accent,
                       )}
                     >
                       <Icon className="h-5 w-5" />
                     </span>
-                    {item.grade && (
-                      <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-xs font-medium text-emerald-300">
-                        {t('edu.grade')} {item.grade}
-                      </span>
-                    )}
-                  </div>
-                  <span className="font-mono text-[11px] text-slate-400">{item.period}</span>
-                  <h4 className="mt-1 text-sm font-bold leading-snug text-white">{t(item.titleKey)}</h4>
-                  <p className="mt-1 text-xs text-slate-400">{item.org}</p>
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {item.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-md border border-line bg-white/[0.03] px-2 py-0.5 text-[11px] text-slate-300"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span className="font-mono text-[11px] text-slate-400">{item.period}</span>
+                        {item.grade && (
+                          <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[11px] font-medium text-emerald-300">
+                            {t('edu.grade')} {item.grade}
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="mt-1 text-base font-bold leading-snug text-white">{t(item.titleKey)}</h4>
+                      <p className="mt-0.5 text-xs text-slate-400">{item.org}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 sm:max-w-[46%] sm:justify-end">
+                      {item.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-md border border-line bg-white/[0.03] px-2 py-0.5 text-[11px] text-slate-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )
             })}
           </div>
 
-          <div data-glow className="card-surface card-hover glow-card mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3.5">
+          {/* Certification — full width, like the degree */}
+          <div
+            ref={b2Ref}
+            data-glow
+            className="card-surface card-hover glow-card mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3.5"
+          >
             <span className="inline-flex items-center gap-2 text-sm text-slate-200">
               <Languages className="h-4 w-4 text-accent" />
               {t('edu.cert')}
