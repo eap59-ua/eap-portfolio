@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, Award } from 'lucide-react'
@@ -14,8 +16,52 @@ import { cn } from '../../lib/utils'
 
 export function Projects() {
   const { t } = useTranslation()
+  const reduce = useReducedMotion()
+  const rootRef = useRef<HTMLDivElement>(null)
   const hero = PROJECTS.find((p) => p.hero) ?? PROJECTS[0]
   const rest = PROJECTS.filter((p) => p !== hero)
+  // asymmetric "bento": alternating wide/narrow rows (7+5, then 5+7) on large screens
+  const spans = ['lg:col-span-7', 'lg:col-span-5', 'lg:col-span-5', 'lg:col-span-7']
+
+  useEffect(() => {
+    if (reduce) return
+    const root = rootRef.current
+    if (!root) return
+
+    let killed = false
+    let io: IntersectionObserver | null = null
+
+    void (async () => {
+      const mod = await import('gsap')
+      if (killed) return
+      const gsap = mod.gsap ?? mod.default
+      const items = root.querySelectorAll('.proj-reveal')
+      gsap.set(items, { opacity: 0, y: 56, scale: 0.94, transformPerspective: 900 })
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue
+            io?.unobserve(entry.target)
+            gsap.to(entry.target, {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.7,
+              ease: 'power3.out',
+              clearProps: 'transform',
+            })
+          }
+        },
+        { threshold: 0.15 },
+      )
+      items.forEach((item) => io?.observe(item))
+    })()
+
+    return () => {
+      killed = true
+      if (io) io.disconnect()
+    }
+  }, [reduce])
 
   return (
     <section id="projects" className="relative py-24 sm:py-28">
@@ -26,16 +72,18 @@ export function Projects() {
           subtitle={t('projects.subtitle')}
         />
 
-        <Reveal className="mt-16">
-          <FeaturedProject project={hero} />
-        </Reveal>
+        <div ref={rootRef}>
+          <div className="proj-reveal mt-16">
+            <FeaturedProject project={hero} />
+          </div>
 
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
-          {rest.map((project, index) => (
-            <Reveal key={project.slug} delay={(index % 2) * 0.08}>
-              <ProjectCard project={project} />
-            </Reveal>
-          ))}
+          <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-12">
+            {rest.map((project, index) => (
+              <div key={project.slug} className={cn('proj-reveal', spans[index])}>
+                <ProjectCard project={project} />
+              </div>
+            ))}
+          </div>
         </div>
 
         <Reveal className="mt-12 text-center">
