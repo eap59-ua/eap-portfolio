@@ -1,15 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type MouseEvent } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Menu, X } from 'lucide-react'
 import { NAV } from '../../data/navigation'
 import { LanguageToggle } from './LanguageToggle'
+import { scrollToHash } from './SmoothScroll'
 import { cn } from '../../lib/utils'
 
 export function Navbar() {
   const { t } = useTranslation()
+  const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [active, setActive] = useState('home')
+
+  // On home, scroll to the section (and re-scroll even if the hash is unchanged).
+  // On a case-study route, let the <Link> navigate home — HashScroll then scrolls.
+  const onNav = (e: MouseEvent, id: string) => {
+    setOpen(false)
+    if (pathname === '/') {
+      e.preventDefault()
+      scrollToHash(`#${id}`)
+    }
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -60,19 +73,24 @@ export function Navbar() {
       )}
     >
       <nav className="container flex h-16 items-center justify-between">
-        <a href="#home" className="gradient-text font-mono text-lg font-bold">
+        <Link
+          to="/#home"
+          onClick={(e) => onNav(e, 'home')}
+          className="gradient-text font-mono text-lg font-bold"
+        >
           &lt;EAP/&gt;
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-7 md:flex">
           {NAV.map((item) => (
-            <a
+            <Link
               key={item.id}
-              href={`#${item.id}`}
+              to={`/#${item.id}`}
+              onClick={(e) => onNav(e, item.id)}
               className={cn('nav-link text-sm', active === item.id ? 'nav-link-active text-white' : 'text-slate-300')}
             >
               {t(item.key)}
-            </a>
+            </Link>
           ))}
           <LanguageToggle />
         </div>
@@ -95,14 +113,14 @@ export function Navbar() {
         <div className="glass border-t border-line md:hidden">
           <div className="container flex flex-col py-3">
             {NAV.map((item) => (
-              <a
+              <Link
                 key={item.id}
-                href={`#${item.id}`}
-                onClick={() => setOpen(false)}
+                to={`/#${item.id}`}
+                onClick={(e) => onNav(e, item.id)}
                 className="rounded-lg px-2 py-2.5 text-slate-300 transition-colors hover:bg-white/[0.04] hover:text-white"
               >
                 {t(item.key)}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

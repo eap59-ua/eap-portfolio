@@ -1,9 +1,9 @@
-import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { lazy, Suspense, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
-import { SmoothScroll } from './components/layout/SmoothScroll'
+import { SmoothScroll, scrollToHash } from './components/layout/SmoothScroll'
 import { ScrollProgress } from './components/layout/ScrollProgress'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
@@ -24,6 +24,16 @@ const GlowBorders = lazy(() =>
   import('./components/motion/GlowBorders').then((m) => ({ default: m.GlowBorders })),
 )
 
+// After navigating to the home route with a hash (nav links, logo, "back to
+// projects"), scroll to that section — react-router doesn't do it on its own.
+function HashScroll() {
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    if (pathname === '/' && hash) scrollToHash(hash)
+  }, [pathname, hash])
+  return null
+}
+
 function RouteFallback() {
   return (
     <div className="flex min-h-screen items-center justify-center">
@@ -35,6 +45,7 @@ function RouteFallback() {
 function App() {
   return (
     <BrowserRouter>
+      <HashScroll />
       <SmoothScroll />
       <ScrollProgress />
       <Suspense fallback={null}>
