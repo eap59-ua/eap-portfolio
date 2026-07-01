@@ -9,7 +9,11 @@ import { ScrambleText } from '../motion/ScrambleText'
 import { Magnetic } from '../motion/Magnetic'
 import { SITE } from '../../lib/site'
 
-const CV_URL = '/Erardo-Aldana-Pessoa-CV-EN.pdf'
+// CV follows the active language: ES toggle → Spanish PDF, EN toggle → English PDF
+const CV_BY_LANG: Record<'es' | 'en', string> = {
+  es: '/Erardo-Aldana-Pessoa-CV-ES.pdf',
+  en: '/Erardo-Aldana-Pessoa-CV-EN.pdf',
+}
 
 const STATS = [
   { value: '10/10', key: 'stats.tfg' },
@@ -26,8 +30,9 @@ const item = {
 }
 
 export function Hero() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const reduce = useReducedMotion()
+  const lang = i18n.language?.startsWith('es') ? 'es' : 'en'
 
   return (
     <section id="home" className="relative flex min-h-screen items-center overflow-hidden pb-20 pt-28">
@@ -77,7 +82,12 @@ export function Hero() {
             </Button>
           </Magnetic>
           <Magnetic>
-            <Button href={CV_URL} download="Erardo-Aldana-Pessoa-CV.pdf" variant="outline" size="lg">
+            <Button
+              href={CV_BY_LANG[lang]}
+              download={`Erardo-Aldana-Pessoa-CV-${lang.toUpperCase()}.pdf`}
+              variant="outline"
+              size="lg"
+            >
               <Download className="h-4 w-4" />
               {t('hero.cv')}
             </Button>
