@@ -18,7 +18,7 @@ export default {
         },
         accent: {
           DEFAULT: '#818cf8',
-          strong: '#6366f1',
+          strong: '#4f46e5',
           violet: '#a78bfa',
           pink: '#f0abfc',
         },
@@ -38,6 +38,10 @@ export default {
         float: {
           '0%,100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-12px)' },
+        },
+        'float-soft': {
+          '0%,100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-5px)' },
         },
         marquee: {
           '0%': { transform: 'translateX(0)' },
@@ -62,6 +66,7 @@ export default {
       animation: {
         'fade-up': 'fade-up 0.7s ease-out both',
         float: 'float 7s ease-in-out infinite',
+        'float-soft': 'float-soft 4s ease-in-out infinite',
         marquee: 'marquee 34s linear infinite',
         'pulse-ring': 'pulse-ring 2s infinite',
         'gradient-pan': 'gradient-pan 8s ease infinite',

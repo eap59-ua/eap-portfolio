@@ -74,7 +74,7 @@ export function About() {
           </Reveal>
 
           <Reveal delay={0.1} className="lg:col-span-3">
-            <div ref={bioRef} data-glow className="card-surface glow-card p-7 sm:p-8">
+            <div ref={bioRef} data-glow data-tilt className="card-surface glow-card tilt-card p-7 sm:p-8">
               <div className="mb-6 flex items-center gap-3">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-emerald-400" />
@@ -101,16 +101,16 @@ export function About() {
               </p>
 
               <div className="mt-8 flex flex-wrap gap-2.5">
-                <SocialPill href={SITE.linkedin} label="LinkedIn">
+                <SocialPill index={0} href={SITE.linkedin} label="LinkedIn">
                   <LinkedInIcon className="h-4 w-4" />
                 </SocialPill>
-                <SocialPill href={SITE.github} label="GitHub">
+                <SocialPill index={1} href={SITE.github} label="GitHub">
                   <GitHubIcon className="h-4 w-4" />
                 </SocialPill>
-                <SocialPill href={`mailto:${SITE.email}`} label="Email" external={false}>
+                <SocialPill index={2} href={`mailto:${SITE.email}`} label="Email" external={false}>
                   <Mail className="h-4 w-4" />
                 </SocialPill>
-                <SocialPill href={SITE.repo} label={t('about.source')}>
+                <SocialPill index={3} href={SITE.repo} label={t('about.source')}>
                   <Code2 className="h-4 w-4" />
                 </SocialPill>
               </div>
@@ -127,17 +127,20 @@ function SocialPill({
   label,
   children,
   external = true,
+  index = 0,
 }: {
   href: string
   label: string
   children: ReactNode
   external?: boolean
+  index?: number
 }) {
   return (
     <a
       href={href}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      className="inline-flex items-center gap-2 rounded-lg border border-line bg-white/[0.03] px-3.5 py-2 text-sm text-slate-200 transition-colors hover:border-accent hover:text-white"
+      style={{ animationDelay: `${index * 0.5}s` }}
+      className="inline-flex animate-float-soft items-center gap-2 rounded-lg border border-line bg-white/[0.03] px-3.5 py-2 text-sm text-slate-200 transition-colors hover:border-accent hover:text-white motion-reduce:animate-none"
     >
       {children}
       {label}
