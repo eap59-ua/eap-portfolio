@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Rocket, Download } from 'lucide-react'
@@ -33,6 +34,12 @@ export function Hero() {
   const { t, i18n } = useTranslation()
   const reduce = useReducedMotion()
   const lang = i18n.language?.startsWith('es') ? 'es' : 'en'
+  // On phones the hero is pre-rendered as static HTML (see index.html) so it
+  // paints before JS; render it here without the entrance animation/scramble so
+  // React's takeover is seamless. Desktop keeps the full animated entrance.
+  const [isMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches,
+  )
 
   return (
     <section id="home" className="relative flex min-h-screen items-center overflow-hidden pb-20 pt-28">
@@ -48,11 +55,11 @@ export function Hero() {
       <motion.div
         className="container flex max-w-4xl flex-col items-center text-center"
         variants={container}
-        initial={reduce ? false : 'hidden'}
+        initial={reduce || isMobile ? false : 'hidden'}
         animate={reduce ? false : 'show'}
       >
         <motion.p variants={item} className="mb-6 font-mono text-sm tracking-[0.12em] text-accent">
-          <ScrambleText text={t('hero.tag')} duration={1000} />
+          {isMobile ? t('hero.tag') : <ScrambleText text={t('hero.tag')} duration={1000} />}
           <span className="ml-0.5 inline-block animate-blink text-accent-violet">_</span>
         </motion.p>
 

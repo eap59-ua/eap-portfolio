@@ -31,6 +31,9 @@ for (const p of PROJECT_SEO) {
   const d = esc(desc)
 
   let html = template
+  // The home template carries a mobile-only static hero inside #root — strip it
+  // from project pages so they don't flash the home hero before React renders.
+  html = html.replace(/<div id="root">[\s\S]*?<\/div>(\s*<noscript>)/, '<div id="root"></div>$1')
   html = swap(html, /<title>[\s\S]*?<\/title>/, `<title>${t}</title>`, 'title')
   html = swap(html, /<meta\s+name="description"[\s\S]*?\/>/, `<meta name="description" content="${d}" />`, 'description')
   html = swap(html, /<meta\s+property="og:type"[\s\S]*?\/>/, `<meta property="og:type" content="article" />`, 'og:type')
