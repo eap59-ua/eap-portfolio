@@ -1,6 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/projects/ecoalerta", "destination": "/projects/ecoalerta/index.html" },
+    { "source": "/projects/hydrofulness", "destination": "/projects/hydrofulness/index.html" },
+    { "source": "/projects/food-donation", "destination": "/projects/food-donation/index.html" },
+    { "source": "/projects/studysync", "destination": "/projects/studysync/index.html" },
+    { "source": "/projects/easycab", "destination": "/projects/easycab/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
