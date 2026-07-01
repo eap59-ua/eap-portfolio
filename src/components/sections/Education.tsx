@@ -110,6 +110,8 @@ export function Education() {
                   alt="Universidad de Alicante"
                   className="h-full w-full object-contain"
                   loading="lazy"
+                  width={256}
+                  height={256}
                 />
               </span>
               <div className="flex-1">

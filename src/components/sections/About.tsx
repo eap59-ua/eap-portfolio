@@ -65,6 +65,8 @@ export function About() {
                 src="/profile.jpg"
                 alt={SITE.name}
                 loading="lazy"
+                width={800}
+                height={1000}
                 className="h-full w-full object-cover"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-ink-900/60 via-transparent to-accent-strong/10" />

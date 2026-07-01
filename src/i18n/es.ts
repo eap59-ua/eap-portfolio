@@ -12,10 +12,8 @@ export const es = {
   'hero.subheadline': `Backend-focused · Ingeniero Informático (2026) · abierto a reubicación en la UE (NL/CH)`,
   'hero.pitch': `Construyo backends robustos con <strong class="text-accent">Python/FastAPI</strong>, interfaces modernas con <strong class="text-accent-violet">React/TS</strong> y sistemas distribuidos. Me importa la arquitectura limpia, los tests y el código que otros pueden leer.`,
   'hero.cta1': `Ver proyectos`,
-  'hero.cta2': `Contacto`,
   'hero.cv': `Descargar CV`,
 
-  'stats.open': `Full-Time`,
   'stats.exp': `Años de experiencia`,
   'stats.projects': `Proyectos reales`,
   'stats.clients': `Clientes reales · ENAIRE, AMAEM`,

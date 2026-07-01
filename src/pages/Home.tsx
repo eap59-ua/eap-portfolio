@@ -13,8 +13,8 @@ export function Home() {
       <About />
       <Education />
       <Experience />
-      <Skills />
       <Projects />
+      <Skills />
       <Contact />
     </>
   )

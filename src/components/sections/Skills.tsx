@@ -125,7 +125,7 @@ export function Skills() {
           <p className="mb-5 text-center font-mono text-xs uppercase tracking-[0.18em] text-slate-400">
             // stack en producción
           </p>
-          <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
+          <div aria-hidden="true" className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
             <div className="flex w-max gap-4 animate-marquee group-hover:[animation-play-state:paused]">
               {[...TECH_MARQUEE, ...TECH_MARQUEE].map((tech, index) => (
                 <span

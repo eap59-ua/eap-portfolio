@@ -54,6 +54,10 @@ export default {
         },
         'spin-slow': { to: { transform: 'rotate(360deg)' } },
         blink: { '0%,100%': { opacity: '1' }, '50%': { opacity: '0' } },
+        'cta-pulse': {
+          '0%,100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(129,140,248,0)' },
+          '50%': { transform: 'scale(1.045)', boxShadow: '0 0 14px -2px rgba(129,140,248,0.55)' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.7s ease-out both',
@@ -63,6 +67,7 @@ export default {
         'gradient-pan': 'gradient-pan 8s ease infinite',
         'spin-slow': 'spin-slow 24s linear infinite',
         blink: 'blink 1.1s step-end infinite',
+        'cta-pulse': 'cta-pulse 1.5s ease-in-out infinite',
       },
       backgroundImage: {
         'grid-dark':

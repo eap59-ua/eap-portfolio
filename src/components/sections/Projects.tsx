@@ -9,6 +9,7 @@ import { RichText } from '../ui/RichText'
 import { TechTag } from '../ui/TechTag'
 import { Button } from '../ui/Button'
 import { GitHubIcon } from '../ui/icons'
+import { Magnetic } from '../motion/Magnetic'
 import { MediaFrame } from '../projects/MediaFrame'
 import { PROJECTS, type Project } from '../../data/projects'
 import { SITE } from '../../lib/site'
@@ -142,14 +143,16 @@ function ProjectLinks({ project }: { project: Project }) {
         <GitHubIcon className="h-4 w-4" />
         {t('projects.code')}
       </a>
-      <Link
-        to={`/projects/${project.slug}`}
-        aria-label={`${t('projects.casestudy')} — ${title}`}
-        className="inline-flex items-center gap-1 text-sm font-semibold text-accent transition-colors hover:text-accent-violet"
-      >
-        {t('projects.casestudy')}
-        <ArrowUpRight className="h-4 w-4" />
-      </Link>
+      <Magnetic>
+        <Link
+          to={`/projects/${project.slug}`}
+          aria-label={`${t('projects.casestudy')} — ${title}`}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-sm font-semibold text-accent transition-colors hover:border-accent hover:bg-accent/20 hover:text-white group-hover:animate-cta-pulse motion-reduce:group-hover:animate-none"
+        >
+          {t('projects.casestudy')}
+          <ArrowUpRight className="h-4 w-4" />
+        </Link>
+      </Magnetic>
     </div>
   )
 }
@@ -161,7 +164,7 @@ function FeaturedProject({ project }: { project: Project }) {
   const footnote = project.footnoteKey ? t(project.footnoteKey) : project.footnote
 
   return (
-    <article data-glow style={glowStyle(project.slug)} className="card-surface card-hover glow-card overflow-hidden">
+    <article data-glow style={glowStyle(project.slug)} className="card-surface card-hover glow-card glow-tint group overflow-hidden">
       <div className="grid lg:grid-cols-2">
         <div className="order-2 flex flex-col p-7 lg:order-1 lg:p-9">
           <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -212,7 +215,7 @@ function ProjectCard({ project }: { project: Project }) {
   const footnote = project.footnoteKey ? t(project.footnoteKey) : project.footnote
 
   return (
-    <article data-glow data-tilt style={glowStyle(project.slug)} className="card-surface glow-card tilt-card flex h-full flex-col p-7">
+    <article data-glow data-tilt style={glowStyle(project.slug)} className="card-surface glow-card tilt-card glow-tint group flex h-full flex-col p-7">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <div className="mb-2 flex items-center gap-2">

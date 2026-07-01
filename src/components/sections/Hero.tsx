@@ -47,7 +47,7 @@ export function Hero() {
         animate={reduce ? false : 'show'}
       >
         <motion.p variants={item} className="mb-6 font-mono text-sm tracking-[0.12em] text-accent">
-          <ScrambleText text={t('hero.tag')} duration={2000} />
+          <ScrambleText text={t('hero.tag')} duration={1000} />
           <span className="ml-0.5 inline-block animate-blink text-accent-violet">_</span>
         </motion.p>
 
