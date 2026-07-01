@@ -61,14 +61,17 @@ export function About() {
               data-tilt
               className="card-surface tilt-card relative mx-auto aspect-[4/5] max-w-sm overflow-hidden"
             >
-              <img
-                src="/profile.jpg"
-                alt={SITE.name}
-                loading="lazy"
-                width={800}
-                height={1000}
-                className="h-full w-full object-cover"
-              />
+              <picture>
+                <source srcSet="/profile.webp" type="image/webp" />
+                <img
+                  src="/profile.jpg"
+                  alt={SITE.name}
+                  loading="lazy"
+                  width={800}
+                  height={1000}
+                  className="h-full w-full object-cover"
+                />
+              </picture>
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-ink-900/60 via-transparent to-accent-strong/10" />
             </div>
           </Reveal>

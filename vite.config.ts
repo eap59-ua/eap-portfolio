@@ -9,7 +9,10 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('react-icons')) return 'icons'
+            // react-icons is only used by the lazy Skills section — do NOT force it
+            // into its own chunk (that gets hoisted into the initial modulepreload).
+            // Left unassigned, it folds into the async Skills chunk and loads with it.
+            if (id.includes('react-icons')) return
             if (id.includes('framer-motion')) return 'motion'
             if (id.includes('react-router') || id.includes('react-dom')) return 'react'
             // gsap is imported dynamically (Education scroll FX) — keep it in its own

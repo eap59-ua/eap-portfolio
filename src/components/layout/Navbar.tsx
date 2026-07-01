@@ -18,18 +18,38 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // scroll-spy: highlight the nav link of the section currently in view
+  // scroll-spy: highlight the nav link of the section currently in view.
+  // Some sections (Skills) mount lazily, so attach as they appear and use a
+  // MutationObserver to pick up any that arrive after the first pass.
   useEffect(() => {
-    const sections = NAV.map((n) => document.getElementById(n.id)).filter(Boolean) as HTMLElement[]
-    if (!sections.length) return
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id)
       },
       { rootMargin: '-45% 0px -50% 0px', threshold: 0 },
     )
-    sections.forEach((section) => io.observe(section))
-    return () => io.disconnect()
+    const observed = new Set<Element>()
+    const attach = () => {
+      for (const n of NAV) {
+        const el = document.getElementById(n.id)
+        if (el && !observed.has(el)) {
+          io.observe(el)
+          observed.add(el)
+        }
+      }
+      return observed.size === NAV.length
+    }
+
+    if (attach()) return () => io.disconnect()
+
+    const mo = new MutationObserver(() => {
+      if (attach()) mo.disconnect()
+    })
+    mo.observe(document.body, { childList: true, subtree: true })
+    return () => {
+      mo.disconnect()
+      io.disconnect()
+    }
   }, [])
 
   return (
