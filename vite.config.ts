@@ -13,6 +13,9 @@ export default defineConfig({
             // into its own chunk (that gets hoisted into the initial modulepreload).
             // Left unassigned, it folds into the async Skills chunk and loads with it.
             if (id.includes('react-icons')) return
+            // lenis is dynamically imported (smooth scroll isn't needed for first paint)
+            // — keep it out of the eager vendor chunk so it loads as its own async chunk.
+            if (id.includes('node_modules/lenis')) return
             if (id.includes('framer-motion')) return 'motion'
             if (id.includes('react-router') || id.includes('react-dom')) return 'react'
             // gsap is imported dynamically (Education scroll FX) — keep it in its own

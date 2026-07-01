@@ -5,14 +5,23 @@ import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
 import { SmoothScroll } from './components/layout/SmoothScroll'
 import { ScrollProgress } from './components/layout/ScrollProgress'
-import { AuroraCursor } from './components/motion/AuroraCursor'
-import { CustomCursor } from './components/motion/CustomCursor'
-import { GlowBorders } from './components/motion/GlowBorders'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 
 const CaseStudy = lazy(() =>
   import('./pages/CaseStudy').then((m) => ({ default: m.CaseStudy })),
+)
+
+// Desktop-only pointer FX — they self-disable on touch, so keep their JS off the
+// initial/mobile critical path and let them load after first paint.
+const AuroraCursor = lazy(() =>
+  import('./components/motion/AuroraCursor').then((m) => ({ default: m.AuroraCursor })),
+)
+const CustomCursor = lazy(() =>
+  import('./components/motion/CustomCursor').then((m) => ({ default: m.CustomCursor })),
+)
+const GlowBorders = lazy(() =>
+  import('./components/motion/GlowBorders').then((m) => ({ default: m.GlowBorders })),
 )
 
 function RouteFallback() {
@@ -28,9 +37,11 @@ function App() {
     <BrowserRouter>
       <SmoothScroll />
       <ScrollProgress />
-      <AuroraCursor />
-      <CustomCursor />
-      <GlowBorders />
+      <Suspense fallback={null}>
+        <AuroraCursor />
+        <CustomCursor />
+        <GlowBorders />
+      </Suspense>
       <Navbar />
       <main>
         <Suspense fallback={<RouteFallback />}>

@@ -106,12 +106,12 @@ export function Education() {
             <div className="relative flex flex-col gap-5 sm:flex-row sm:items-start">
               <span className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white p-2.5 shadow-sm">
                 <img
-                  src="/universidad-de-alicante-1-logo-png-transparent.png"
+                  src="/universidad-de-alicante-96.webp"
                   alt="Universidad de Alicante"
                   className="h-full w-full object-contain"
                   loading="lazy"
-                  width={256}
-                  height={256}
+                  width={96}
+                  height={96}
                 />
               </span>
               <div className="flex-1">

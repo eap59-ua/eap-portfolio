@@ -31,6 +31,11 @@ export function ParticleField({ className }: { className?: string }) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    // on phones: fewer particles and skip the O(n²) line-linking (biggest per-frame cost)
+    const isMobile =
+      window.matchMedia('(max-width: 768px)').matches ||
+      window.matchMedia('(pointer: coarse)').matches
+
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     let width = 0
     let height = 0
@@ -62,7 +67,9 @@ export function ParticleField({ className }: { className?: string }) {
     }
 
     const seed = () => {
-      const count = Math.min(95, Math.max(42, Math.floor(width / 14)))
+      const count = isMobile
+        ? Math.min(44, Math.max(24, Math.floor(width / 22)))
+        : Math.min(95, Math.max(42, Math.floor(width / 14)))
       particles.length = 0
       for (let i = 0; i < count; i++) {
         // particles live in a normalized 3D cube: x, y, z in [-1, 1]
@@ -119,17 +126,19 @@ export function ParticleField({ className }: { className?: string }) {
       for (let i = 0; i < particles.length; i++) {
         const ax = sx[i]
         const ay = sy[i]
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = ax - sx[j]
-          const dy = ay - sy[j]
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < LINK) {
-            const depth = 0.5 + ((dn(pr[i]) + dn(pr[j])) / 2) * 0.5
-            ctx.strokeStyle = `rgba(129,140,248,${0.16 * depth * (1 - dist / LINK)})`
-            ctx.beginPath()
-            ctx.moveTo(ax, ay)
-            ctx.lineTo(sx[j], sy[j])
-            ctx.stroke()
+        if (!isMobile) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = ax - sx[j]
+            const dy = ay - sy[j]
+            const dist = Math.sqrt(dx * dx + dy * dy)
+            if (dist < LINK) {
+              const depth = 0.5 + ((dn(pr[i]) + dn(pr[j])) / 2) * 0.5
+              ctx.strokeStyle = `rgba(129,140,248,${0.16 * depth * (1 - dist / LINK)})`
+              ctx.beginPath()
+              ctx.moveTo(ax, ay)
+              ctx.lineTo(sx[j], sy[j])
+              ctx.stroke()
+            }
           }
         }
 
@@ -243,9 +252,27 @@ export function ParticleField({ className }: { className?: string }) {
         else stop()
       }
     })
-    io.observe(canvas)
+
+    // don't let the animation loop compete with first paint / LCP — kick it off on idle
+    const ric = window as unknown as {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
+      cancelIdleCallback?: (id: number) => void
+    }
+    let disposed = false
+    let kick = 0
+    const kickoff = () => {
+      if (!disposed) io.observe(canvas)
+    }
+    if (ric.requestIdleCallback) {
+      kick = ric.requestIdleCallback(kickoff, { timeout: 800 })
+    } else {
+      kick = window.setTimeout(kickoff, 300)
+    }
 
     return () => {
+      disposed = true
+      if (ric.cancelIdleCallback) ric.cancelIdleCallback(kick)
+      else clearTimeout(kick)
       stop()
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerleave', onLeave)

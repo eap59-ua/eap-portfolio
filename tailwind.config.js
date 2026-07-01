@@ -47,10 +47,10 @@ export default {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+        // composited (transform + opacity) sonar pulse — cheaper than animating box-shadow
         'pulse-ring': {
-          '0%': { boxShadow: '0 0 0 0 rgba(52,211,153,0.55)' },
-          '70%': { boxShadow: '0 0 0 9px rgba(52,211,153,0)' },
-          '100%': { boxShadow: '0 0 0 0 rgba(52,211,153,0)' },
+          '0%': { transform: 'scale(1)', opacity: '0.55' },
+          '75%,100%': { transform: 'scale(2.2)', opacity: '0' },
         },
         'gradient-pan': {
           '0%,100%': { backgroundPosition: '0% 50%' },
