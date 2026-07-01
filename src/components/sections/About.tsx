@@ -1,4 +1,6 @@
+import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Mail, Code2, Sparkles } from 'lucide-react'
 import { SectionHeading } from '../ui/SectionHeading'
@@ -9,6 +11,44 @@ import { SITE } from '../../lib/site'
 
 export function About() {
   const { t } = useTranslation()
+  const reduce = useReducedMotion()
+  const bioRef = useRef<HTMLDivElement>(null)
+
+  // cascade the bio lines in as the section scrolls into view
+  useEffect(() => {
+    if (reduce) return
+    const root = bioRef.current
+    if (!root) return
+    let killed = false
+    let io: IntersectionObserver | null = null
+    void (async () => {
+      const mod = await import('gsap')
+      if (killed) return
+      const gsap = mod.gsap ?? mod.default
+      const lines = root.querySelectorAll('.about-line')
+      gsap.set(lines, { opacity: 0, y: 16 })
+      io = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0].isIntersecting) return
+          io?.disconnect()
+          gsap.to(lines, {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.12,
+            ease: 'power2.out',
+            clearProps: 'transform',
+          })
+        },
+        { threshold: 0.2 },
+      )
+      io.observe(root)
+    })()
+    return () => {
+      killed = true
+      if (io) io.disconnect()
+    }
+  }, [reduce])
 
   return (
     <section id="about" className="relative py-24 sm:py-28">
@@ -17,7 +57,10 @@ export function About() {
 
         <div className="mt-16 grid items-start gap-10 lg:grid-cols-5">
           <Reveal className="lg:col-span-2">
-            <div className="card-surface relative mx-auto aspect-[4/5] max-w-sm overflow-hidden">
+            <div
+              data-tilt
+              className="card-surface tilt-card relative mx-auto aspect-[4/5] max-w-sm overflow-hidden"
+            >
               <img
                 src="/profile.jpg"
                 alt={SITE.name}
@@ -29,7 +72,7 @@ export function About() {
           </Reveal>
 
           <Reveal delay={0.1} className="lg:col-span-3">
-            <div data-glow className="card-surface glow-card p-7 sm:p-8">
+            <div ref={bioRef} data-glow className="card-surface glow-card p-7 sm:p-8">
               <div className="mb-6 flex items-center gap-3">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-emerald-400" />
@@ -40,17 +83,17 @@ export function About() {
                 </span>
               </div>
 
-              <h3 className="mb-5 text-2xl font-bold text-white sm:text-3xl">
+              <h3 className="about-line mb-5 text-2xl font-bold text-white sm:text-3xl">
                 {t('about.greeting')} <span className="inline-block">👋</span>
               </h3>
 
               <div className="space-y-4 leading-relaxed text-slate-300">
-                <RichText html={t('about.p1')} />
-                <RichText html={t('about.p2')} />
-                <RichText html={t('about.p3')} />
+                <RichText html={t('about.p1')} className="about-line" />
+                <RichText html={t('about.p2')} className="about-line" />
+                <RichText html={t('about.p3')} className="about-line" />
               </div>
 
-              <p className="mt-5 flex items-start gap-2 border-l-2 border-accent/40 pl-3 text-sm italic text-slate-400">
+              <p className="about-line mt-5 flex items-start gap-2 border-l-2 border-accent/40 pl-3 text-sm italic text-slate-400">
                 <Sparkles className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent" />
                 {t('about.grit')}
               </p>

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { ArrowUp } from 'lucide-react'
+import { Magnetic } from '../motion/Magnetic'
 import { GitHubIcon, LinkedInIcon } from '../ui/icons'
 import { SITE } from '../../lib/site'
 
@@ -24,31 +25,37 @@ export function Footer() {
         </p>
 
         <div className="flex items-center gap-3">
-          <a
-            href={SITE.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-line text-slate-300 transition-colors hover:border-accent hover:text-white"
-          >
-            <GitHubIcon className="h-4 w-4" />
-          </a>
-          <a
-            href={SITE.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-line text-slate-300 transition-colors hover:border-accent hover:text-white"
-          >
-            <LinkedInIcon className="h-4 w-4" />
-          </a>
-          <a
-            href="#home"
-            aria-label={t('footer.back')}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-line text-slate-300 transition-colors hover:border-accent hover:text-white"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </a>
+          <Magnetic strength={0.4}>
+            <a
+              href={SITE.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-line text-slate-300 transition-colors hover:border-accent hover:text-white"
+            >
+              <GitHubIcon className="h-4 w-4" />
+            </a>
+          </Magnetic>
+          <Magnetic strength={0.4}>
+            <a
+              href={SITE.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-line text-slate-300 transition-colors hover:border-accent hover:text-white"
+            >
+              <LinkedInIcon className="h-4 w-4" />
+            </a>
+          </Magnetic>
+          <Magnetic strength={0.4}>
+            <a
+              href="#home"
+              aria-label={t('footer.back')}
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-line text-slate-300 transition-colors hover:border-accent hover:text-white"
+            >
+              <ArrowUp className="h-4 w-4" />
+            </a>
+          </Magnetic>
         </div>
       </div>
     </footer>

@@ -111,6 +111,7 @@ export const es = {
   'contact.avail': `Abierto a oportunidades Full-Time`,
   'contact.time': `Respuesta en 24-48h · Inglés B2`,
   'contact.cta': `Enviar email`,
+  'contact.copied': `¡Copiado!`,
 
   'footer.built': `Hecho con React, TypeScript, Tailwind y Framer Motion`,
   'footer.back': `Volver arriba`,

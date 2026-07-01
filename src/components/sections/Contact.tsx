@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Mail, MapPin, Send, PlaneTakeoff } from 'lucide-react'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Reveal } from '../motion/Reveal'
+import { Magnetic } from '../motion/Magnetic'
 import { Button } from '../ui/Button'
 import { GitHubIcon, LinkedInIcon } from '../ui/icons'
 import { SITE } from '../../lib/site'
@@ -20,7 +21,7 @@ export function Contact() {
         />
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <ContactCard href={`mailto:${SITE.email}`} icon={<Mail className="h-5 w-5" />} label="Email" value={SITE.email} external={false} />
+          <ContactCard icon={<Mail className="h-5 w-5" />} label="Email" value={SITE.email} copy={SITE.email} />
           <ContactCard href={SITE.github} icon={<GitHubIcon className="h-5 w-5" />} label="GitHub" value="github.com/eap59-ua" />
           <ContactCard href={SITE.linkedin} icon={<LinkedInIcon className="h-5 w-5" />} label="LinkedIn" value="in/erardo-aldana" />
           <ContactCard icon={<MapPin className="h-5 w-5" />} label={t('contact.location')} value={t('contact.location_value')} />
@@ -45,10 +46,12 @@ export function Contact() {
                 </div>
               </div>
             </div>
-            <Button href={`mailto:${SITE.email}`} variant="primary" size="lg" className="w-full sm:w-auto">
-              <Send className="h-4 w-4" />
-              {t('contact.cta')}
-            </Button>
+            <Magnetic>
+              <Button href={`mailto:${SITE.email}`} variant="primary" size="lg">
+                <Send className="h-4 w-4" />
+                {t('contact.cta')}
+              </Button>
+            </Magnetic>
           </div>
         </Reveal>
       </div>
@@ -62,25 +65,51 @@ function ContactCard({
   label,
   value,
   external = true,
+  copy,
 }: {
   href?: string
   icon: ReactNode
   label: string
   value: string
   external?: boolean
+  copy?: string
 }) {
+  const { t } = useTranslation()
+  const [copied, setCopied] = useState(false)
+  const className = 'card-surface card-hover glow-card flex w-full flex-col items-start p-5 text-left'
   const inner = (
     <>
       <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
         {icon}
       </span>
       <div className="font-semibold text-white">{label}</div>
-      <div className="mt-0.5 break-all font-mono text-xs text-slate-400">{value}</div>
+      <div className="mt-0.5 break-all font-mono text-xs text-slate-400">
+        {copied ? t('contact.copied') : value}
+      </div>
     </>
   )
 
-  const className =
-    'card-surface card-hover glow-card flex flex-col items-start p-5'
+  if (copy) {
+    return (
+      <button
+        type="button"
+        data-glow
+        aria-label={`${label}: ${value}`}
+        onClick={() => {
+          navigator.clipboard?.writeText(copy).then(
+            () => {
+              setCopied(true)
+              window.setTimeout(() => setCopied(false), 1500)
+            },
+            () => {},
+          )
+        }}
+        className={className}
+      >
+        {inner}
+      </button>
+    )
+  }
 
   if (!href) {
     return (

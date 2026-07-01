@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Sprout } from 'lucide-react'
 import { SectionHeading } from '../ui/SectionHeading'
@@ -9,6 +11,45 @@ import { cn } from '../../lib/utils'
 
 export function Skills() {
   const { t } = useTranslation()
+  const reduce = useReducedMotion()
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  // stagger the tech chips into view as the grid scrolls in
+  useEffect(() => {
+    if (reduce) return
+    const root = gridRef.current
+    if (!root) return
+    let killed = false
+    let io: IntersectionObserver | null = null
+    void (async () => {
+      const mod = await import('gsap')
+      if (killed) return
+      const gsap = mod.gsap ?? mod.default
+      const chips = root.querySelectorAll('.skill-chip')
+      gsap.set(chips, { opacity: 0, y: 10, scale: 0.9 })
+      io = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0].isIntersecting) return
+          io?.disconnect()
+          gsap.to(chips, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.4,
+            stagger: 0.015,
+            ease: 'power2.out',
+            clearProps: 'transform',
+          })
+        },
+        { threshold: 0.1 },
+      )
+      io.observe(root)
+    })()
+    return () => {
+      killed = true
+      if (io) io.disconnect()
+    }
+  }, [reduce])
 
   return (
     <section id="skills" className="relative py-24 sm:py-28">
@@ -18,7 +59,7 @@ export function Skills() {
           <RichText html={t('skills.legend')} className="mx-auto max-w-xl text-sm text-slate-400" />
         </Reveal>
 
-        <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div ref={gridRef} className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {SKILL_GROUPS.map((group, index) => {
             const Icon = group.icon
             return (
@@ -41,7 +82,7 @@ export function Skills() {
                       <span
                         key={chip.label}
                         className={cn(
-                          'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium',
+                          'skill-chip inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium',
                           chip.star
                             ? 'border-accent/40 bg-accent/10 text-white'
                             : 'border-line bg-white/[0.03] text-slate-300',
