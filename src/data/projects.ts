@@ -79,7 +79,7 @@ export const PROJECTS: Project[] = [
     slug: 'food-donation',
     title: 'Food Donation Network',
     titleKey: 'projects.p3.title',
-    context: 'GCS · 2026',
+    context: 'Ingeniería del Software · 2026',
     icon: HeartHandshake,
     iconColor: 'text-accent-pink',
     status: 'done',

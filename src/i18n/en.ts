@@ -9,10 +9,13 @@ export const en = {
 
   'hero.tag': `FULL_STACK_DEVELOPER.execute()`,
   'hero.role': `Software Engineer · Backend · Python · Cloud`,
-  'hero.subheadline': `Backend-focused · Computer Engineer (2026) · open to EU relocation (NL/CH)`,
+  'hero.subheadline': `Backend-focused · Computer Engineer (2026) · EU relocation (NL/CH) · EU citizen, no visa required`,
   'hero.pitch': `I build solid backends with <strong class="text-accent">Python/FastAPI</strong>, modern interfaces with <strong class="text-accent-violet">React/TS</strong> and distributed systems. I care about clean architecture, tests, and code that others can read.`,
   'hero.cta1': `See projects`,
   'hero.cv': `Download CV`,
+
+  'nf.msg': `This page doesn't exist.`,
+  'nf.back': `Back to home`,
 
   'stats.exp': `Years of experience`,
   'stats.projects': `Real projects`,

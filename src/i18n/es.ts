@@ -9,10 +9,13 @@ export const es = {
 
   'hero.tag': `DESARROLLADOR_FULL_STACK.execute()`,
   'hero.role': `Software Engineer · Backend · Python · Cloud`,
-  'hero.subheadline': `Backend-focused · Ingeniero Informático (2026) · abierto a reubicación en la UE (NL/CH)`,
+  'hero.subheadline': `Backend-focused · Ingeniero Informático (2026) · reubicación en la UE (NL/CH) · ciudadano UE, sin visado`,
   'hero.pitch': `Construyo backends robustos con <strong class="text-accent">Python/FastAPI</strong>, interfaces modernas con <strong class="text-accent-violet">React/TS</strong> y sistemas distribuidos. Me importa la arquitectura limpia, los tests y el código que otros pueden leer.`,
   'hero.cta1': `Ver proyectos`,
   'hero.cv': `Descargar CV`,
+
+  'nf.msg': `Esta página no existe.`,
+  'nf.back': `Volver al inicio`,
 
   'stats.exp': `Años de experiencia`,
   'stats.projects': `Proyectos reales`,
