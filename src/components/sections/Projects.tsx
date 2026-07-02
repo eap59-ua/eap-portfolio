@@ -146,6 +146,7 @@ function ProjectLinks({ project }: { project: Project }) {
       <Magnetic>
         <Link
           to={`/projects/${project.slug}`}
+          viewTransition
           aria-label={`${t('projects.casestudy')} — ${title}`}
           className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-sm font-semibold text-accent transition-colors hover:border-accent hover:bg-accent/20 hover:text-white group-hover:animate-cta-pulse motion-reduce:group-hover:animate-none"
         >
@@ -179,7 +180,12 @@ function FeaturedProject({ project }: { project: Project }) {
             )}
           </div>
 
-          <h3 className="text-2xl font-bold text-white sm:text-3xl">{title}</h3>
+          <h3
+            className="text-2xl font-bold text-white sm:text-3xl"
+            style={{ viewTransitionName: `vt-${project.slug}` } as CSSProperties}
+          >
+            {title}
+          </h3>
           <RichText html={t(project.descKey)} className="mt-3 text-sm leading-relaxed text-slate-300" />
 
           <div className="mt-5 flex flex-wrap gap-2">
@@ -222,7 +228,12 @@ function ProjectCard({ project }: { project: Project }) {
             <Icon className={cn('h-5 w-5', project.iconColor)} />
             <span className="font-mono text-xs text-slate-400">{project.context}</span>
           </div>
-          <h3 className="text-xl font-bold text-white">{title}</h3>
+          <h3
+            className="text-xl font-bold text-white"
+            style={{ viewTransitionName: `vt-${project.slug}` } as CSSProperties}
+          >
+            {title}
+          </h3>
         </div>
         <StatusBadge status={project.status} />
       </div>

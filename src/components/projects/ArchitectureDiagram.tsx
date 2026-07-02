@@ -8,7 +8,7 @@ export interface DiagramSpec {
 
 export function ArchitectureDiagram({ pipeline, aside }: DiagramSpec) {
   return (
-    <div className="card-surface p-6">
+    <div data-glow className="card-surface glow-card p-6">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-3">
         {pipeline.map((node, index) => (
           <Fragment key={node}>

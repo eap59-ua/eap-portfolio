@@ -97,8 +97,15 @@ export function MediaFrame({
       />
       <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-accent-strong/10 to-accent-violet/[0.06]" />
       <div className="relative flex flex-col items-center gap-2.5 text-center">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-line-strong bg-ink-900 text-accent">
-          <Film className="h-5 w-5" />
+        <span className="relative flex h-12 w-12 items-center justify-center">
+          {/* soft sonar ring so "coming soon" reads as alive, not broken */}
+          <span
+            aria-hidden="true"
+            className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full border border-accent/50 motion-reduce:animate-none"
+          />
+          <span className="relative flex h-12 w-12 items-center justify-center rounded-full border border-line-strong bg-ink-900 text-accent">
+            <Film className="h-5 w-5" />
+          </span>
         </span>
         <span className="font-mono text-xs text-slate-400">{label}</span>
       </div>

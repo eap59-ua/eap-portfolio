@@ -221,3 +221,17 @@ html.lenis body {
     scroll-behavior: auto !important;
   }
 }
+
+/* View Transitions (home card -> case study): quick crossfade + title morph.
+   Progressive enhancement - browsers without the API just navigate normally. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 240ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

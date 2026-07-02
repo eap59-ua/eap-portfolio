@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Check, Award } from 'lucide-react'
@@ -10,6 +10,7 @@ import { MediaFrame } from '../components/projects/MediaFrame'
 import { TechTag } from '../components/ui/TechTag'
 import { Button } from '../components/ui/Button'
 import { GitHubIcon } from '../components/ui/icons'
+import { Reveal } from '../components/motion/Reveal'
 import { NotFound } from './NotFound'
 import { cn } from '../lib/utils'
 
@@ -76,7 +77,12 @@ export function CaseStudy() {
             )}
           </div>
 
-          <h1 className="mt-4 text-4xl font-black tracking-tightest text-white sm:text-5xl">{title}</h1>
+          <h1
+            className="mt-4 text-4xl font-black tracking-tightest text-white sm:text-5xl"
+            style={{ viewTransitionName: `vt-${project.slug}` } as CSSProperties}
+          >
+            {title}
+          </h1>
           <p className="mt-4 text-lg leading-relaxed text-slate-300">{c.oneLiner}</p>
 
           <div className="mt-6">
@@ -122,7 +128,7 @@ export function CaseStudy() {
         <Section label={t('cs.decisions')}>
           <div className="space-y-4">
             {c.decisions.map((d, i) => (
-              <div key={i} className="card-surface p-5">
+              <div key={i} data-glow className="card-surface card-hover glow-card p-5">
                 <div className="font-semibold text-white">{d.decision}</div>
                 <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{d.why}</p>
               </div>
@@ -163,6 +169,7 @@ export function CaseStudy() {
         <div className="mt-14 flex items-center justify-between gap-4 border-t border-line pt-6">
           <Link
             to="/#projects"
+            viewTransition
             className="inline-flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-white"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -170,6 +177,7 @@ export function CaseStudy() {
           </Link>
           <Link
             to={`/projects/${next.slug}`}
+            viewTransition
             className="inline-flex items-center gap-1.5 text-right text-sm font-semibold text-accent transition-colors hover:text-accent-violet"
           >
             <span className="text-slate-400">{t('cs.next')}:</span> {nextTitle}
@@ -184,11 +192,13 @@ export function CaseStudy() {
 function Section({ label, children }: { label: string; children: ReactNode }) {
   return (
     <section className="mt-12">
-      <h2 className="mb-5 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-accent">
-        <span className="h-px w-6 bg-accent/50" aria-hidden="true" />
-        {label}
-      </h2>
-      {children}
+      <Reveal>
+        <h2 className="mb-5 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-accent">
+          <span className="h-px w-6 bg-accent/50" aria-hidden="true" />
+          {label}
+        </h2>
+        {children}
+      </Reveal>
     </section>
   )
 }
