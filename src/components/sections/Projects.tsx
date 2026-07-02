@@ -138,7 +138,7 @@ function ProjectLinks({ project }: { project: Project }) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`${t('projects.code')} — ${title} (GitHub)`}
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 transition-colors hover:text-white"
+        className="code-ring inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 transition-colors hover:text-white"
       >
         <GitHubIcon className="h-4 w-4" />
         {t('projects.code')}
