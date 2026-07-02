@@ -1,5 +1,9 @@
 # eap-portfolio
 
+[![CI](https://github.com/eap59-ua/eap-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/eap59-ua/eap-portfolio/actions/workflows/ci.yml)
+
+**Live: [eap-portfolio.vercel.app](https://eap-portfolio.vercel.app)**
+
 > Personal portfolio of **Erardo Aldana Pessoa** — Software Engineer (Backend · Python · Cloud), Computer Engineer (Distinction) from the University of Alicante.
 
 A dark, premium single-page portfolio with in-depth project case studies, built as a modern React app.
