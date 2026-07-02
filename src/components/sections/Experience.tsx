@@ -12,13 +12,19 @@ export function Experience() {
   const reduce = useReducedMotion()
   const sectionRef = useRef<HTMLElement>(null)
   const lineRef = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
 
-  // draw the timeline spine in sync with how far the section has been scrolled
+  // Draw the timeline spine in sync with scroll, and "switch on" each node
+  // (icon + card, via .xp-on) once the drawn edge reaches it. Scrolling back
+  // up removes the class again, so the activation is fully reversible.
   useEffect(() => {
     const line = lineRef.current
-    if (!line) return
+    const wrap = wrapRef.current
+    if (!line || !wrap) return
+    const items = Array.from(wrap.querySelectorAll<HTMLElement>('.xp-item'))
     if (reduce) {
       line.style.transform = 'scaleY(1)'
+      items.forEach((item) => item.classList.add('xp-on'))
       return
     }
     const section = sectionRef.current
@@ -33,6 +39,14 @@ export function Experience() {
       const total = rect.height + (start - end)
       const p = Math.max(0, Math.min(1, (start - rect.top) / total))
       line.style.transform = `scaleY(${p})`
+
+      // offsetTop-based marks are immune to entrance/scale transforms
+      const drawn = p * line.offsetHeight
+      for (const item of items) {
+        const dot = item.querySelector<HTMLElement>('.xp-dot')
+        const mark = item.offsetTop + (dot ? dot.offsetTop + dot.offsetHeight / 2 : 0) - line.offsetTop
+        item.classList.toggle('xp-on', drawn >= mark)
+      }
     }
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update)
@@ -56,7 +70,7 @@ export function Experience() {
           subtitle={t('experience.subtitle')}
         />
 
-        <div className="relative mx-auto mt-16 max-w-3xl">
+        <div ref={wrapRef} className="relative mx-auto mt-16 max-w-3xl">
           <div
             ref={lineRef}
             aria-hidden="true"
@@ -68,12 +82,12 @@ export function Experience() {
             {EXPERIENCE.map((exp, index) => {
               const Icon = exp.icon
               return (
-                <Reveal key={exp.company} delay={index * 0.08} className="relative pl-12 sm:pl-16">
-                  <span className="absolute left-0 top-1 flex h-9 w-9 items-center justify-center rounded-full border border-line-strong bg-ink-850 sm:h-11 sm:w-11">
+                <Reveal key={exp.company} delay={index * 0.08} className="xp-item relative pl-12 sm:pl-16">
+                  <span className="xp-dot absolute left-0 top-1 flex h-9 w-9 items-center justify-center rounded-full border border-line-strong bg-ink-850 sm:h-11 sm:w-11">
                     <Icon className={cn('h-4 w-4 sm:h-5 sm:w-5', exp.accent)} />
                   </span>
 
-                  <div data-glow className="card-surface card-hover glow-card p-6">
+                  <div data-glow className="xp-card card-surface card-hover glow-card p-6">
                     <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
                       <div>
                         <h3 className="text-lg font-bold text-white">{exp.company}</h3>
