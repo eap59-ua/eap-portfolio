@@ -152,6 +152,7 @@ const TECH: Record<string, TechMeta> = {
   'iOS (Swift)': { Icon: SiSwift, color: '#F58A4B' },
   Flutter: { Icon: SiFlutter, color: '#54C5F8' },
   'Industrial Automation': { Icon: Factory, color: '#9aa6bd' },
+  'KUKA Robots': { Icon: Factory, color: '#FF5800' },
   'Low-Code': { Icon: Blocks, color: '#9aa6bd' },
 
   // Roadmap / learning

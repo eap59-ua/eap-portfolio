@@ -116,6 +116,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { label: 'Computer Vision' },
       { label: 'OpenAI / LLM APIs' },
       { label: 'LabVIEW' },
+      { label: 'KUKA Robots' },
       { label: 'Android' },
       { label: 'iOS (Swift)' },
       { label: 'Flutter' },
