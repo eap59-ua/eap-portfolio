@@ -73,12 +73,12 @@ export function Hero() {
         <motion.p variants={item} className="mt-6 text-lg font-medium text-slate-200 sm:text-xl">
           {t('hero.role')}
         </motion.p>
-        <motion.p variants={item} className="mt-2.5 font-mono text-sm text-slate-400">
+        <motion.p variants={item} className="mt-2.5 font-mono text-sm text-slate-300">
           {t('hero.subheadline')}
         </motion.p>
 
         <motion.div variants={item} className="mt-6 max-w-2xl">
-          <RichText html={t('hero.pitch')} className="text-pretty text-base leading-relaxed text-slate-400 sm:text-lg" />
+          <RichText html={t('hero.pitch')} className="text-pretty text-base leading-relaxed text-slate-300 sm:text-lg" />
         </motion.div>
 
         <motion.div variants={item} className="mt-10 flex flex-col gap-3 sm:flex-row">
