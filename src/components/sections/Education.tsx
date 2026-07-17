@@ -124,7 +124,7 @@ export function Education() {
                 <p className="mt-1 text-sm text-slate-400">{DEGREE.org}</p>
                 <div className="mt-3">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-200">
-                    <Award className="h-3.5 w-3.5" />
+                    <Award aria-hidden="true" className="h-3.5 w-3.5" />
                     {t(DEGREE.badgeKey)}
                   </span>
                 </div>
@@ -135,7 +135,7 @@ export function Education() {
                       key={activity}
                       className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white/[0.03] px-3 py-1 text-xs text-slate-300"
                     >
-                      <Sparkles className="h-3 w-3 text-accent" />
+                      <Sparkles aria-hidden="true" className="h-3 w-3 text-accent" />
                       {activity}
                     </span>
                   ))}
@@ -176,7 +176,7 @@ export function Education() {
                         item.accent,
                       )}
                     >
-                      <Icon className="h-5 w-5" />
+                      <Icon aria-hidden="true" className="h-5 w-5" />
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -225,7 +225,7 @@ export function Education() {
             />
             <div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
               <span className="inline-flex items-center gap-2 text-sm text-slate-200">
-                <Languages className="h-4 w-4 text-amber-300" />
+                <Languages aria-hidden="true" className="h-4 w-4 text-amber-300" />
                 {t('edu.cert')}
               </span>
               <span className="hidden h-4 w-px bg-line-strong sm:block" aria-hidden="true" />
