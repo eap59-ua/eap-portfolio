@@ -121,7 +121,7 @@ export function Education() {
                     {DEGREE.period}
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-slate-400">{DEGREE.org}</p>
+                <p className="mt-1 text-sm text-slate-300">{DEGREE.org}</p>
                 <div className="mt-3">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-200">
                     <Award aria-hidden="true" className="h-3.5 w-3.5" />
@@ -180,21 +180,21 @@ export function Education() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                        <span className="font-mono text-[11px] text-slate-400">{item.period}</span>
+                        <span className="font-mono text-xs text-slate-400">{item.period}</span>
                         {item.grade && (
-                          <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[11px] font-medium text-emerald-300">
+                          <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-xs font-medium text-emerald-300">
                             {t('edu.grade')} {item.grade}
                           </span>
                         )}
                       </div>
                       <h4 className="mt-1 text-base font-bold leading-snug text-white">{t(item.titleKey)}</h4>
-                      <p className="mt-0.5 text-xs text-slate-400">{item.org}</p>
+                      <p className="mt-0.5 text-xs text-slate-300">{item.org}</p>
                     </div>
                     <div className="flex flex-wrap gap-1.5 sm:max-w-[46%] sm:justify-end">
                       {item.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-md border border-line bg-white/[0.03] px-2 py-0.5 text-[11px] text-slate-300"
+                          className="rounded-md border border-line bg-white/[0.03] px-2 py-0.5 text-xs text-slate-300"
                         >
                           {tag}
                         </span>
