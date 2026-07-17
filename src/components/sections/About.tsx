@@ -13,6 +13,7 @@ export function About() {
   const { t } = useTranslation()
   const reduce = useReducedMotion()
   const bioRef = useRef<HTMLDivElement>(null)
+  const handRef = useRef<HTMLSpanElement>(null)
 
   // cascade the bio lines in as the section scrolls into view
   useEffect(() => {
@@ -39,6 +40,22 @@ export function About() {
             ease: 'power2.out',
             clearProps: 'transform',
           })
+          // the hand waves hello once the greeting is actually in view
+          if (handRef.current) {
+            gsap.fromTo(
+              handRef.current,
+              { rotate: 0 },
+              {
+                rotate: 18,
+                duration: 0.2,
+                repeat: 5,
+                yoyo: true,
+                ease: 'sine.inOut',
+                transformOrigin: '75% 80%',
+                delay: 0.45,
+              },
+            )
+          }
         },
         { threshold: 0.2 },
       )
@@ -89,7 +106,7 @@ export function About() {
               </div>
 
               <h3 className="about-line mb-5 text-2xl font-bold text-white sm:text-3xl">
-                {t('about.greeting')} <span className="inline-block">👋</span>
+                {t('about.greeting')} <span ref={handRef} className="inline-block">👋</span>
               </h3>
 
               <div className="space-y-4 leading-relaxed text-slate-300">
