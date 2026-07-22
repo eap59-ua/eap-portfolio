@@ -84,6 +84,8 @@ export const PROJECTS: Project[] = [
     iconColor: 'text-accent-pink',
     status: 'done',
     descKey: 'projects.p3',
+    video: '/media/food-donation-demo.mp4',
+    poster: '/media/food-donation-poster.webp',
     tags: [
       { label: 'FastAPI', tone: 'python' },
       { label: 'PostgreSQL async', tone: 'pg' },
