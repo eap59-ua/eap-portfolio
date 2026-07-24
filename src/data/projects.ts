@@ -64,6 +64,8 @@ export const PROJECTS: Project[] = [
     iconColor: 'text-sky-400',
     status: 'done',
     descKey: 'projects.p2',
+    video: '/media/hydrofulness-demo.mp4',
+    poster: '/media/hydrofulness-poster.webp',
     tags: [
       { label: 'FastAPI', tone: 'python' },
       { label: 'React + Vite', tone: 'react' },
@@ -123,6 +125,8 @@ export const PROJECTS: Project[] = [
     iconColor: 'text-amber-300',
     status: 'done',
     descKey: 'projects.p4',
+    video: '/media/easycab-demo.mp4',
+    poster: '/media/easycab-poster.webp',
     tags: [
       { label: 'Python', tone: 'python' },
       { label: 'Apache Kafka' },
