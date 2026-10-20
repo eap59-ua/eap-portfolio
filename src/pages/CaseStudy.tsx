@@ -30,8 +30,10 @@ export function CaseStudy() {
   const c = study[lang]
   const title = project.titleKey ? t(project.titleKey) : project.title
   const Icon = project.icon
-  const index = PROJECTS.findIndex((p) => p.slug === slug)
-  const next = PROJECTS[(index + 1) % PROJECTS.length]
+  // "next project" cycles only through projects that have a case-study page
+  const withStudy = PROJECTS.filter((p) => p.caseStudy !== false)
+  const index = withStudy.findIndex((p) => p.slug === slug)
+  const next = withStudy[(index + 1) % withStudy.length]
   const nextTitle = next.titleKey ? t(next.titleKey) : next.title
 
   return (
@@ -58,7 +60,7 @@ export function CaseStudy() {
         <header className="mt-8">
           <div className="flex flex-wrap items-center gap-2">
             <Icon className={cn('h-5 w-5', project.iconColor)} />
-            <span className="font-mono text-sm text-slate-400">{project.context}</span>
+            <span className="font-mono text-sm text-slate-400">{t(project.contextKey)}</span>
             <span
               className={cn(
                 'rounded-full border px-2.5 py-1 text-xs font-medium',
@@ -69,10 +71,10 @@ export function CaseStudy() {
             >
               {t(project.status === 'active' ? 'projects.active' : 'projects.done')}
             </span>
-            {project.highlight && (
+            {project.highlightKey && (
               <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs font-medium text-amber-200">
                 <Award className="h-3.5 w-3.5" />
-                {project.highlight}
+                {t(project.highlightKey)}
               </span>
             )}
           </div>

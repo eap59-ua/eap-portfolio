@@ -22,6 +22,7 @@ const GLOW: Record<string, { a: string; b: string; shadow: string }> = {
   'food-donation': { a: '#f0abfc', b: '#e879f9', shadow: 'rgba(232,121,249,0.45)' },
   studysync: { a: '#a78bfa', b: '#818cf8', shadow: 'rgba(129,140,248,0.5)' },
   easycab: { a: '#fbbf24', b: '#f59e0b', shadow: 'rgba(245,158,11,0.5)' },
+  'chaos-crew': { a: '#fda4af', b: '#fb7185', shadow: 'rgba(251,113,133,0.45)' },
 }
 
 function glowStyle(slug: string): CSSProperties {
@@ -35,8 +36,9 @@ export function Projects() {
   const rootRef = useRef<HTMLDivElement>(null)
   const hero = PROJECTS.find((p) => p.hero) ?? PROJECTS[0]
   const rest = PROJECTS.filter((p) => p !== hero)
-  // asymmetric "bento": alternating wide/narrow rows (7+5, then 5+7) on large screens
-  const spans = ['lg:col-span-7', 'lg:col-span-5', 'lg:col-span-5', 'lg:col-span-7']
+  // asymmetric "bento": alternating wide/narrow rows (7+5, then 5+7) on large screens;
+  // the last card takes a full-width row
+  const spans = ['lg:col-span-7', 'lg:col-span-5', 'lg:col-span-5', 'lg:col-span-7', 'lg:col-span-12']
 
   useEffect(() => {
     if (reduce) return
@@ -143,17 +145,19 @@ function ProjectLinks({ project }: { project: Project }) {
         <GitHubIcon className="h-4 w-4" />
         {t('projects.code')}
       </a>
-      <Magnetic>
-        <Link
-          to={`/projects/${project.slug}`}
-          viewTransition
-          aria-label={`${t('projects.casestudy')} — ${title}`}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-sm font-semibold text-accent transition-colors hover:border-accent hover:bg-accent/20 hover:text-white group-hover:animate-cta-pulse motion-reduce:group-hover:animate-none"
-        >
-          {t('projects.casestudy')}
-          <ArrowUpRight className="h-4 w-4" />
-        </Link>
-      </Magnetic>
+      {project.caseStudy !== false && (
+        <Magnetic>
+          <Link
+            to={`/projects/${project.slug}`}
+            viewTransition
+            aria-label={`${t('projects.casestudy')} — ${title}`}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-sm font-semibold text-accent transition-colors hover:border-accent hover:bg-accent/20 hover:text-white group-hover:animate-cta-pulse motion-reduce:group-hover:animate-none"
+          >
+            {t('projects.casestudy')}
+            <ArrowUpRight className="h-4 w-4" />
+          </Link>
+        </Magnetic>
+      )}
     </div>
   )
 }
@@ -170,12 +174,12 @@ function FeaturedProject({ project }: { project: Project }) {
         <div className="order-2 flex flex-col p-7 lg:order-1 lg:p-9">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <Icon className={cn('h-5 w-5', project.iconColor)} />
-            <span className="font-mono text-xs text-slate-400">{project.context}</span>
+            <span className="font-mono text-xs text-slate-400">{t(project.contextKey)}</span>
             <StatusBadge status={project.status} />
-            {project.highlight && (
+            {project.highlightKey && (
               <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs font-medium text-amber-200">
                 <Award className="h-3.5 w-3.5" />
-                {project.highlight}
+                {t(project.highlightKey)}
               </span>
             )}
           </div>
@@ -226,7 +230,7 @@ function ProjectCard({ project }: { project: Project }) {
         <div>
           <div className="mb-2 flex items-center gap-2">
             <Icon className={cn('h-5 w-5', project.iconColor)} />
-            <span className="font-mono text-xs text-slate-400">{project.context}</span>
+            <span className="font-mono text-xs text-slate-400">{t(project.contextKey)}</span>
           </div>
           <h3
             className="text-xl font-bold text-white"

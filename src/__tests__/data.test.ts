@@ -7,13 +7,15 @@ import { CASE_STUDIES } from '../data/caseStudies'
 // files — these checks keep them from drifting apart.
 describe('project data integrity', () => {
   const slugs = PROJECTS.map((p) => p.slug)
+  // projects flagged `caseStudy: false` only link to their repo
+  const studySlugs = PROJECTS.filter((p) => p.caseStudy !== false).map((p) => p.slug)
 
   it('project slugs are unique', () => {
     expect(new Set(slugs).size).toBe(slugs.length)
   })
 
-  it('every project has a case study and every case study has a project', () => {
-    expect(Object.keys(CASE_STUDIES).sort()).toEqual([...slugs].sort())
+  it('every project with a case-study page has a case study, and vice versa', () => {
+    expect(Object.keys(CASE_STUDIES).sort()).toEqual([...studySlugs].sort())
   })
 
   it('every case study is complete in both languages', () => {
@@ -29,7 +31,7 @@ describe('project data integrity', () => {
 
   it('the sitemap lists every case-study route', () => {
     const sitemap = readFileSync('public/sitemap.xml', 'utf8')
-    for (const slug of slugs) {
+    for (const slug of studySlugs) {
       expect(sitemap, `sitemap.xml missing /projects/${slug}`).toContain(`/projects/${slug}`)
     }
   })

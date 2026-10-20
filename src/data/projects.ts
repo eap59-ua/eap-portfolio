@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { Leaf, Droplets, HeartHandshake, Car, Video } from 'lucide-react'
+import { Leaf, Droplets, HeartHandshake, Car, Video, Gamepad2 } from 'lucide-react'
 
 export type ProjectStatus = 'active' | 'done'
 export type TagTone = 'default' | 'python' | 'react' | 'node' | 'pg' | 'docker' | 'ts' | 'ml' | 'cpp'
@@ -13,7 +13,7 @@ export interface Project {
   slug: string
   title: string
   titleKey?: string
-  context: string
+  contextKey: string
   icon: LucideIcon
   iconColor: string
   status: ProjectStatus
@@ -25,7 +25,9 @@ export interface Project {
   demo?: string
   featured?: boolean
   hero?: boolean
-  highlight?: string
+  highlightKey?: string
+  // false = no case-study page (card links only to the repo)
+  caseStudy?: false
   video?: string
   poster?: string
   captions?: string
@@ -35,13 +37,13 @@ export const PROJECTS: Project[] = [
   {
     slug: 'ecoalerta',
     title: 'EcoAlerta',
-    context: 'TFG · 2026',
+    contextKey: 'projects.ctx.ecoalerta',
     icon: Leaf,
     iconColor: 'text-emerald-400',
     status: 'done',
     descKey: 'projects.p1',
     hero: true,
-    highlight: 'Matrícula de Honor · 10/10',
+    highlightKey: 'projects.highlight.ecoalerta',
     video: '/media/ecoalerta-demo.mp4',
     captions: '/media/ecoalerta-demo.es.vtt',
     tags: [
@@ -57,9 +59,30 @@ export const PROJECTS: Project[] = [
     featured: true,
   },
   {
+    slug: 'food-donation',
+    title: 'Food Donation Network',
+    titleKey: 'projects.p3.title',
+    contextKey: 'projects.ctx.food-donation',
+    icon: HeartHandshake,
+    iconColor: 'text-accent-pink',
+    status: 'done',
+    descKey: 'projects.p3',
+    video: '/media/food-donation-demo.mp4',
+    poster: '/media/food-donation-poster.webp',
+    tags: [
+      { label: 'FastAPI', tone: 'python' },
+      { label: 'PostgreSQL async', tone: 'pg' },
+      { label: 'SQLAlchemy 2.0' },
+      { label: 'JWT' },
+      { label: 'Docker', tone: 'docker' },
+    ],
+    footnoteKey: 'projects.p3.tag',
+    repo: 'https://github.com/eap59-ua/food-donation-backend',
+  },
+  {
     slug: 'hydrofulness',
     title: 'Hydrofulness',
-    context: 'Hackathon AMAEM · 2026',
+    contextKey: 'projects.ctx.hydrofulness',
     icon: Droplets,
     iconColor: 'text-sky-400',
     status: 'done',
@@ -78,30 +101,9 @@ export const PROJECTS: Project[] = [
     featured: true,
   },
   {
-    slug: 'food-donation',
-    title: 'Food Donation Network',
-    titleKey: 'projects.p3.title',
-    context: 'Ingeniería del Software · 2026',
-    icon: HeartHandshake,
-    iconColor: 'text-accent-pink',
-    status: 'done',
-    descKey: 'projects.p3',
-    video: '/media/food-donation-demo.mp4',
-    poster: '/media/food-donation-poster.webp',
-    tags: [
-      { label: 'FastAPI', tone: 'python' },
-      { label: 'PostgreSQL async', tone: 'pg' },
-      { label: 'SQLAlchemy 2.0' },
-      { label: 'JWT' },
-      { label: 'Docker', tone: 'docker' },
-    ],
-    footnoteKey: 'projects.p3.tag',
-    repo: 'https://github.com/eap59-ua/food-donation-backend',
-  },
-  {
     slug: 'studysync',
     title: 'StudySync',
-    context: 'Proyecto personal · 2026',
+    contextKey: 'projects.ctx.studysync',
     icon: Video,
     iconColor: 'text-accent',
     status: 'active',
@@ -120,7 +122,7 @@ export const PROJECTS: Project[] = [
   {
     slug: 'easycab',
     title: 'EasyCab',
-    context: 'Sistemas Distribuidos · 2025',
+    contextKey: 'projects.ctx.easycab',
     icon: Car,
     iconColor: 'text-amber-300',
     status: 'done',
@@ -136,5 +138,24 @@ export const PROJECTS: Project[] = [
     ],
     footnoteKey: 'projects.p4.tag',
     repo: 'https://github.com/eap59-ua/easycabSD-P2',
+  },
+  {
+    slug: 'chaos-crew',
+    title: 'Chaos Crew',
+    contextKey: 'projects.ctx.chaos-crew',
+    icon: Gamepad2,
+    iconColor: 'text-rose-300',
+    status: 'done',
+    descKey: 'projects.p6',
+    tags: [
+      { label: 'C++', tone: 'cpp' },
+      { label: 'EnTT' },
+      { label: 'Raylib' },
+      { label: 'CMake' },
+      { label: 'GitHub Actions' },
+    ],
+    footnote: 'ECS · CI',
+    repo: 'https://github.com/eap59-ua/chaos-crew-dca',
+    caseStudy: false,
   },
 ]
