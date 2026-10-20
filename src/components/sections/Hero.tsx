@@ -18,9 +18,9 @@ const CV_BY_LANG: Record<'es' | 'en', string> = {
 
 const STATS = [
   { value: '10/10', key: 'stats.tfg' },
-  { value: '1.5+', key: 'stats.exp' },
-  { value: '2', key: 'stats.clients' },
-  { value: '5', key: 'stats.projects' },
+  { value: '14', key: 'stats.exp' },
+  { value: 'B2', key: 'stats.english' },
+  { value: '6', key: 'stats.projects' },
 ]
 
 const EASE = [0.22, 1, 0.36, 1] as const

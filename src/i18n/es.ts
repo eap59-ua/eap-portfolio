@@ -7,19 +7,19 @@ export const es = {
   'nav.projects': `Proyectos`,
   'nav.contact': `Contacto`,
 
-  'hero.tag': `DESARROLLADOR_FULL_STACK.execute()`,
-  'hero.role': `Software Engineer · Backend · Python · Cloud`,
-  'hero.subheadline': `Backend-focused · Ingeniero Informático (2026) · reubicación en la UE (NL/CH) · ciudadano UE, sin visado`,
-  'hero.pitch': `Construyo backends robustos con <strong class="text-accent">Python/FastAPI</strong>, interfaces modernas con <strong class="text-accent-violet">React/TS</strong> y sistemas distribuidos. Me importa la arquitectura limpia, los tests y el código que otros pueden leer.`,
+  'hero.tag': `DESARROLLADOR_BACKEND.execute()`,
+  'hero.role': `Desarrollador Backend (Python) · Full-Stack`,
+  'hero.subheadline': `Ingeniero Informático (UA, 2026) · Gandía y Alicante · disponible para reubicarme en cualquier punto de España`,
+  'hero.pitch': `Desarrollo backends con <strong class="text-accent">Python, FastAPI y PostgreSQL</strong>, y me muevo con soltura en frontend con <strong class="text-accent-violet">React y TypeScript</strong>. Me importan la arquitectura limpia, los tests y el código que otros pueden leer.`,
   'hero.cta1': `Ver proyectos`,
   'hero.cv': `Descargar CV`,
 
   'nf.msg': `Esta página no existe.`,
   'nf.back': `Volver al inicio`,
 
-  'stats.exp': `Años de experiencia`,
-  'stats.projects': `Proyectos reales`,
-  'stats.clients': `Clientes reales · ENAIRE, AMAEM`,
+  'stats.exp': `Meses de prácticas en empresa`,
+  'stats.projects': `Proyectos con código público`,
+  'stats.english': `Inglés · Cambridge First`,
   'stats.tfg': `TFG · Matrícula de Honor`,
 
   'about.title': `Sobre mí`,

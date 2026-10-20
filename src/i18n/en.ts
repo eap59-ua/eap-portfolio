@@ -7,20 +7,20 @@ export const en = {
   'nav.projects': `Projects`,
   'nav.contact': `Contact`,
 
-  'hero.tag': `FULL_STACK_DEVELOPER.execute()`,
-  'hero.role': `Software Engineer · Backend · Python · Cloud`,
-  'hero.subheadline': `Backend-focused · Computer Engineer (2026) · EU relocation (NL/CH) · EU citizen, no visa required`,
-  'hero.pitch': `I build solid backends with <strong class="text-accent">Python/FastAPI</strong>, modern interfaces with <strong class="text-accent-violet">React/TS</strong> and distributed systems. I care about clean architecture, tests, and code that others can read.`,
+  'hero.tag': `BACKEND_ENGINEER.execute()`,
+  'hero.role': `Backend Software Engineer (Python) · Full-Stack`,
+  'hero.subheadline': `Computer Engineer (UA, 2026) · Based in Spain · open to relocation within the EU (NL / CH / DE) · EU citizen, no visa required`,
+  'hero.pitch': `I build backends with <strong class="text-accent">Python, FastAPI and PostgreSQL</strong>, and I'm comfortable on the frontend with <strong class="text-accent-violet">React and TypeScript</strong>. I care about clean architecture, tests and code that others can read.`,
   'hero.cta1': `See projects`,
   'hero.cv': `Download CV`,
 
   'nf.msg': `This page doesn't exist.`,
   'nf.back': `Back to home`,
 
-  'stats.exp': `Years of experience`,
-  'stats.projects': `Real projects`,
-  'stats.clients': `Real clients · ENAIRE, AMAEM`,
-  'stats.tfg': `Final Project · Distinction`,
+  'stats.exp': `Months of internships`,
+  'stats.projects': `Projects with public code`,
+  'stats.english': `English · Cambridge First`,
+  'stats.tfg': `Final-year project · Distinction`,
 
   'about.title': `About me`,
   'about.eyebrow': `Who I am`,
