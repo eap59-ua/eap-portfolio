@@ -7,7 +7,7 @@ export const en = {
   'nav.projects': `Projects`,
   'nav.contact': `Contact`,
 
-  'hero.tag': `BACKEND_ENGINEER.execute()`,
+  'hero.tag': `FULL_STACK_DEVELOPER.execute()`,
   'hero.role': `Backend Software Engineer (Python) · Full-Stack`,
   'hero.subheadline': `Computer Engineer (UA, 2026) · Based in Spain · open to relocation within the EU (NL / CH / DE) · EU citizen, no visa required`,
   'hero.pitch': `I build backends with <strong class="text-accent">Python, FastAPI and PostgreSQL</strong>, and I'm comfortable on the frontend with <strong class="text-accent-violet">React and TypeScript</strong>. I care about clean architecture, tests and code that others can read.`,

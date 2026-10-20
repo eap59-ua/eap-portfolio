@@ -52,7 +52,7 @@ const home = `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http:
   <text x="80" y="124" font-family="Consolas, monospace" font-size="30" font-weight="700" fill="#818cf8">&lt;EAP/&gt;</text>
   <text x="78" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="82" font-weight="800" fill="url(#name)">Erardo Aldana Pessoa</text>
   <text x="80" y="368" font-family="Segoe UI, Arial, sans-serif" font-size="37" font-weight="600" fill="#c3cee0">Desarrollador Backend (Python) · Full-Stack</text>
-  <text x="80" y="428" font-family="Consolas, monospace" font-size="26" fill="#818cf8">DESARROLLADOR_BACKEND.execute()</text>
+  <text x="80" y="428" font-family="Consolas, monospace" font-size="26" fill="#818cf8">DESARROLLADOR_FULL_STACK.execute()</text>
   <text x="80" y="548" font-family="Segoe UI, Arial, sans-serif" font-size="26" fill="#7c8aa3">Ingeniero Informático · UA 2026 · TFG con Matrícula de Honor</text>
   <text x="80" y="588" font-family="Consolas, monospace" font-size="23" fill="#4b5670">eap-portfolio.vercel.app</text>
 </svg>`
