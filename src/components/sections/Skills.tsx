@@ -59,11 +59,11 @@ export function Skills() {
           <RichText html={t('skills.legend')} className="mx-auto max-w-xl text-sm text-slate-400" />
         </Reveal>
 
-        <div ref={gridRef} className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div ref={gridRef} className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {SKILL_GROUPS.map((group, index) => {
             const Icon = group.icon
             return (
-              <Reveal key={group.titleKey} delay={(index % 4) * 0.06}>
+              <Reveal key={group.titleKey} delay={(index % 3) * 0.06}>
                 <div data-glow className="card-surface card-hover glow-card h-full p-6">
                   <div className="mb-5 flex items-center gap-3">
                     <span
@@ -89,7 +89,7 @@ export function Skills() {
                         )}
                       >
                         <TechLogo label={chip.label} className="h-3.5 w-3.5" />
-                        {chip.label}
+                        {chip.labelKey ? t(chip.labelKey) : chip.label}
                         {chip.star && <span className="text-[10px] text-accent">★</span>}
                       </span>
                     ))}
@@ -123,7 +123,7 @@ export function Skills() {
 
         <Reveal className="mt-12">
           <p className="mb-5 text-center font-mono text-xs uppercase tracking-[0.18em] text-slate-400">
-            // stack en producción
+            {t('skills.marquee')}
           </p>
           <div aria-hidden="true" className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
             <div className="flex w-max gap-4 animate-marquee group-hover:[animation-play-state:paused]">
