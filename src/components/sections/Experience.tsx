@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Reveal } from '../motion/Reveal'
 import { RichText } from '../ui/RichText'
-import { EXPERIENCE } from '../../data/experience'
+import { EXPERIENCE, OTHER_EXPERIENCE } from '../../data/experience'
 import { cn } from '../../lib/utils'
 
 export function Experience() {
@@ -101,7 +101,7 @@ export function Experience() {
                     <RichText html={t(exp.descKey)} className="text-sm leading-relaxed text-slate-300" />
 
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {exp.tags.map((tag) => (
+                      {t(exp.tagsKey).split(' · ').map((tag) => (
                         <span
                           key={tag}
                           className="inline-flex items-center rounded-full border border-line bg-white/[0.03] px-2.5 py-1 text-xs font-medium text-slate-300"
@@ -116,6 +116,27 @@ export function Experience() {
             })}
           </div>
         </div>
+
+        <Reveal className="mx-auto mt-12 max-w-3xl">
+          <h3 className="mb-4 font-mono text-xs uppercase tracking-[0.18em] text-slate-400">
+            {t('experience.other')}
+          </h3>
+          <ul className="divide-y divide-line rounded-2xl border border-line bg-white/[0.02]">
+            {OTHER_EXPERIENCE.map((item) => (
+              <li key={item.roleKey} className="px-5 py-4 sm:px-6">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <p className="text-sm font-semibold text-slate-200">
+                    {t(item.roleKey)} <span className="font-normal text-slate-400">· {t(item.orgKey)}</span>
+                  </p>
+                  {item.periodKey && (
+                    <span className="whitespace-nowrap font-mono text-xs text-slate-400">{t(item.periodKey)}</span>
+                  )}
+                </div>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{t(item.descKey)}</p>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
       </div>
     </section>
   )

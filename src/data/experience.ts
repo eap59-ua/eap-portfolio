@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { Briefcase, Factory, Network } from 'lucide-react'
+import { Briefcase, Factory } from 'lucide-react'
 
 export interface ExperienceItem {
   company: string
@@ -8,7 +8,8 @@ export interface ExperienceItem {
   roleKey: string
   periodKey: string
   descKey: string
-  tags: string[]
+  // translated, ' · '-separated list (e.g. "Appian · Low-code · Consultoría")
+  tagsKey: string
 }
 
 export const EXPERIENCE: ExperienceItem[] = [
@@ -19,7 +20,7 @@ export const EXPERIENCE: ExperienceItem[] = [
     roleKey: 'exp.ntt.role',
     periodKey: 'exp.ntt.period',
     descKey: 'exp.ntt.desc',
-    tags: ['Appian', 'Low-code', 'Consultoría IT', 'Sector público'],
+    tagsKey: 'exp.ntt.tags',
   },
   {
     company: 'Autis Ingenieros',
@@ -28,15 +29,29 @@ export const EXPERIENCE: ExperienceItem[] = [
     roleKey: 'exp.autis.role',
     periodKey: 'exp.autis.period',
     descKey: 'exp.autis.desc',
-    tags: ['LabVIEW', 'Visión artificial', 'Automatización industrial', 'Automoción', 'QA en línea'],
+    tagsKey: 'exp.autis.tags',
+  },
+]
+
+// Non-tech jobs, shown compactly under the timeline (same as the CV's
+// "Otra experiencia" block) so the internships stay the main story.
+export interface OtherExperienceItem {
+  roleKey: string
+  orgKey: string
+  periodKey?: string
+  descKey: string
+}
+
+export const OTHER_EXPERIENCE: OtherExperienceItem[] = [
+  {
+    roleKey: 'exp.leroy.role',
+    orgKey: 'exp.leroy.org',
+    periodKey: 'exp.leroy.period',
+    descKey: 'exp.leroy.desc',
   },
   {
-    company: 'App Informática',
-    icon: Network,
-    accent: 'text-accent-pink',
-    roleKey: 'exp.app.role',
-    periodKey: 'exp.app.period',
-    descKey: 'exp.app.desc',
-    tags: ['Redes', 'Hardware', 'Soporte técnico'],
+    roleKey: 'exp.prev.role',
+    orgKey: 'exp.prev.org',
+    descKey: 'exp.prev.desc',
   },
 ]
