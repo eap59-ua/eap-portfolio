@@ -170,11 +170,6 @@ const TECH: Record<string, TechMeta> = {
   LangChain: { Icon: Cable, color: '#34d399' },
 }
 
-// aliases: the CV's wording (Skills section) maps to an existing logo
-TECH['C++'] = TECH['C / C++']
-TECH['Apache Kafka'] = TECH.Kafka
-TECH['AWS Cloud Practitioner'] = TECH.AWS
-
 const FALLBACK: TechMeta = { Icon: Code2, color: '#94a3b8' }
 
 export function getTech(label: string): TechMeta {

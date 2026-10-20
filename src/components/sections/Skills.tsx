@@ -59,11 +59,11 @@ export function Skills() {
           <RichText html={t('skills.legend')} className="mx-auto max-w-xl text-sm text-slate-400" />
         </Reveal>
 
-        <div ref={gridRef} className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div ref={gridRef} className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {SKILL_GROUPS.map((group, index) => {
             const Icon = group.icon
             return (
-              <Reveal key={group.titleKey} delay={(index % 3) * 0.06}>
+              <Reveal key={group.titleKey} delay={(index % 4) * 0.06}>
                 <div data-glow className="card-surface card-hover glow-card h-full p-6">
                   <div className="mb-5 flex items-center gap-3">
                     <span
@@ -89,7 +89,7 @@ export function Skills() {
                         )}
                       >
                         <TechLogo label={chip.label} className="h-3.5 w-3.5" />
-                        {chip.labelKey ? t(chip.labelKey) : chip.label}
+                        {chip.label}
                         {chip.star && <span className="text-[10px] text-accent">★</span>}
                       </span>
                     ))}
@@ -108,13 +108,13 @@ export function Skills() {
             </div>
             <p className="mb-4 mt-1 text-sm text-slate-400">{t('skills.roadmap_sub')}</p>
             <div className="flex flex-wrap gap-2">
-              {ROADMAP.map((label) => (
+              {ROADMAP.map((item) => (
                 <span
-                  key={label}
+                  key={item.label}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-line-strong bg-white/[0.02] px-2.5 py-1.5 text-xs font-medium text-slate-300"
                 >
-                  <TechLogo label={label} className="h-3.5 w-3.5" />
-                  {label}
+                  <TechLogo label={item.label} className="h-3.5 w-3.5" />
+                  {item.labelKey ? t(item.labelKey) : item.label}
                 </span>
               ))}
             </div>
