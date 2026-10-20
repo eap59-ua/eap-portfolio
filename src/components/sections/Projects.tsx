@@ -36,9 +36,8 @@ export function Projects() {
   const rootRef = useRef<HTMLDivElement>(null)
   const hero = PROJECTS.find((p) => p.hero) ?? PROJECTS[0]
   const rest = PROJECTS.filter((p) => p !== hero)
-  // asymmetric "bento": alternating wide/narrow rows (7+5, then 5+7) on large screens;
-  // the last card takes a full-width row
-  const spans = ['lg:col-span-7', 'lg:col-span-5', 'lg:col-span-5', 'lg:col-span-7', 'lg:col-span-12']
+  // asymmetric "bento" on large screens: a wide+narrow row (7+5), then three equal cards (4+4+4)
+  const spans = ['lg:col-span-7', 'lg:col-span-5', 'lg:col-span-4', 'lg:col-span-4', 'lg:col-span-4']
 
   useEffect(() => {
     if (reduce) return
