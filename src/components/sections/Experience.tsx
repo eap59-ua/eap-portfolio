@@ -87,57 +87,90 @@ export function Experience() {
                     <Icon className={cn('h-4 w-4 sm:h-5 sm:w-5', exp.accent)} />
                   </span>
 
-                  <div data-glow className="xp-card card-surface card-hover glow-card p-6">
-                    <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
-                      <div>
-                        <h3 className="text-lg font-bold text-white">{exp.company}</h3>
-                        <div className={cn('text-sm font-medium', exp.accent)}>{t(exp.roleKey)}</div>
-                      </div>
-                      <span className="whitespace-nowrap font-mono text-xs text-slate-400">
-                        {t(exp.periodKey)}
-                      </span>
-                    </div>
-
-                    <RichText html={t(exp.descKey)} className="text-sm leading-relaxed text-slate-300" />
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {t(exp.tagsKey).split(' · ').map((tag) => (
-                        <span
-                          key={tag}
-                          className="inline-flex items-center rounded-full border border-line bg-white/[0.03] px-2.5 py-1 text-xs font-medium text-slate-300"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                  <ExperienceCard
+                    className="xp-card"
+                    title={exp.company}
+                    role={t(exp.roleKey)}
+                    accent={exp.accent}
+                    period={t(exp.periodKey)}
+                    html={t(exp.descKey)}
+                    tags={t(exp.tagsKey).split(' · ')}
+                  />
                 </Reveal>
               )
             })}
           </div>
         </div>
 
-        <Reveal className="mx-auto mt-12 max-w-3xl">
-          <h3 className="mb-4 font-mono text-xs uppercase tracking-[0.18em] text-slate-400">
-            {t('experience.other')}
-          </h3>
-          <ul className="divide-y divide-line rounded-2xl border border-line bg-white/[0.02]">
-            {OTHER_EXPERIENCE.map((item) => (
-              <li key={item.roleKey} className="px-5 py-4 sm:px-6">
-                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                  <p className="text-sm font-semibold text-slate-200">
-                    {t(item.roleKey)} <span className="font-normal text-slate-400">· {t(item.orgKey)}</span>
-                  </p>
-                  {item.periodKey && (
-                    <span className="whitespace-nowrap font-mono text-xs text-slate-400">{t(item.periodKey)}</span>
-                  )}
-                </div>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{t(item.descKey)}</p>
-              </li>
+        <div className="mx-auto mt-14 max-w-3xl">
+          <Reveal>
+            <h3 className="mb-5 font-mono text-xs uppercase tracking-[0.18em] text-slate-400">
+              {t('experience.other')}
+            </h3>
+          </Reveal>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {OTHER_EXPERIENCE.map((item, index) => (
+              <Reveal key={item.roleKey} delay={index * 0.08}>
+                <ExperienceCard
+                  className="h-full"
+                  title={t(item.orgKey)}
+                  role={t(item.roleKey)}
+                  accent={item.accent}
+                  period={item.periodKey ? t(item.periodKey) : undefined}
+                  html={t(item.descKey)}
+                />
+              </Reveal>
             ))}
-          </ul>
-        </Reveal>
+          </div>
+        </div>
       </div>
     </section>
+  )
+}
+
+// One card for both the internship timeline and "Otra experiencia", so every
+// experience entry gets the same surface and proximity-lit border (data-glow).
+function ExperienceCard({
+  title,
+  role,
+  accent,
+  period,
+  html,
+  tags,
+  className,
+}: {
+  title: string
+  role: string
+  accent: string
+  period?: string
+  html: string
+  tags?: string[]
+  className?: string
+}) {
+  return (
+    <div data-glow className={cn('card-surface card-hover glow-card p-6', className)}>
+      <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h3 className="text-lg font-bold text-white">{title}</h3>
+          <div className={cn('text-sm font-medium', accent)}>{role}</div>
+        </div>
+        {period && <span className="whitespace-nowrap font-mono text-xs text-slate-400">{period}</span>}
+      </div>
+
+      <RichText html={html} className="text-sm leading-relaxed text-slate-300" />
+
+      {tags && tags.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center rounded-full border border-line bg-white/[0.03] px-2.5 py-1 text-xs font-medium text-slate-300"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }

@@ -40,6 +40,7 @@ export interface OtherExperienceItem {
   orgKey: string
   periodKey?: string
   descKey: string
+  accent: string
 }
 
 export const OTHER_EXPERIENCE: OtherExperienceItem[] = [
@@ -48,10 +49,12 @@ export const OTHER_EXPERIENCE: OtherExperienceItem[] = [
     orgKey: 'exp.leroy.org',
     periodKey: 'exp.leroy.period',
     descKey: 'exp.leroy.desc',
+    accent: 'text-accent-pink',
   },
   {
     roleKey: 'exp.prev.role',
     orgKey: 'exp.prev.org',
     descKey: 'exp.prev.desc',
+    accent: 'text-sky-300',
   },
 ]
