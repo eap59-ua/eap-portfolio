@@ -44,7 +44,7 @@ export const es = {
   'edu.smr.title': `CFGM Sistemas Microinformáticos y Redes (SMR)`,
   'edu.grade': `Nota`,
   'edu.cert': `B2 First (FCE) · Cambridge`,
-  'edu.fct': `Prácticas FCT: Autis Ingenieros (visión artificial) · App Informática`,
+  'edu.fct': `Prácticas FCT: Autis Ingenieros (visión artificial)`,
 
   'experience.title': `Experiencia profesional`,
   'experience.eyebrow': `Trayectoria`,

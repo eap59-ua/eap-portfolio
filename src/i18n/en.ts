@@ -44,7 +44,7 @@ export const en = {
   'edu.smr.title': `Mid-level Degree — Microcomputer Systems & Networks (SMR)`,
   'edu.grade': `Grade`,
   'edu.cert': `B2 First (FCE) · Cambridge`,
-  'edu.fct': `Internships: Autis Ingenieros (computer vision) · App Informática`,
+  'edu.fct': `Internships: Autis Ingenieros (machine vision)`,
 
   'experience.title': `Professional experience`,
   'experience.eyebrow': `Track record`,

@@ -16,7 +16,7 @@ export const DEGREE: DegreeInfo = {
   period: 'sept. 2022 — jun. 2026',
   badgeKey: 'edu.degree.badge',
   descKey: 'edu.degree.desc',
-  activities: ['NASA Space Apps 2025', 'Hackathon AMAEM 2026'],
+  activities: ['NASA Space Apps 2025', 'Hackathon Aguas de Alicante 2026'],
 }
 
 export interface FpItem {
