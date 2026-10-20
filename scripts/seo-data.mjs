@@ -7,10 +7,10 @@ export const PROJECT_SEO = [
   {
     slug: 'ecoalerta',
     name: 'EcoAlerta',
-    kicker: 'FINAL DEGREE PROJECT · 10/10 · 2026',
-    ogTitle: 'EcoAlerta — Environmental incident PWA · Final Degree Project (10/10)',
+    kicker: 'TFG · MATRÍCULA DE HONOR (10/10) · 2026',
+    ogTitle: 'EcoAlerta — PWA de incidencias medioambientales · TFG (10/10)',
     description:
-      'PWA to report environmental incidents — GIS spatial search, three roles, admin panel and full end-to-end testing.',
+      'PWA para reportar incidencias medioambientales: búsqueda con PostGIS, tres roles con JWT y tests end-to-end.',
     tags: ['React', 'Node.js', 'PostGIS', 'Docker'],
     accentA: '#34d399',
     accentB: '#10b981',
@@ -18,21 +18,21 @@ export const PROJECT_SEO = [
   {
     slug: 'hydrofulness',
     name: 'Hydrofulness',
-    kicker: 'AMAEM HACKATHON · 2026',
-    ogTitle: 'Hydrofulness — Water intelligence (AMAEM Hackathon 2026)',
+    kicker: 'HACKATHON AGUAS DE ALICANTE · 2026',
+    ogTitle: 'Hydrofulness — Inteligencia hídrica (Hackathon Aguas de Alicante 2026)',
     description:
-      'Water intelligence: anomaly detection with Isolation Forest, real-data ETL and neighborhood water-stress prediction.',
+      'Anomalías de consumo con Isolation Forest, ETL de datos reales y predicción de estrés hídrico por barrio.',
     tags: ['FastAPI', 'React', 'scikit-learn', 'Docker'],
     accentA: '#38bdf8',
     accentB: '#0ea5e9',
   },
   {
     slug: 'food-donation',
-    name: 'Food Donation Network',
-    kicker: 'SOFTWARE ENGINEERING · 2026',
-    ogTitle: 'Food Donation Network — Hexagonal FastAPI backend',
+    name: 'Red de Donación de Alimentos',
+    kicker: 'INGENIERÍA WEB · UA · 2026',
+    ogTitle: 'Red de Donación de Alimentos — Backend FastAPI con arquitectura hexagonal',
     description:
-      'Backend linking donors with NGOs and food banks — hexagonal architecture, async PostgreSQL and JWT auth.',
+      'API REST que conecta donantes con ONGs y bancos de alimentos: arquitectura hexagonal, PostgreSQL y JWT.',
     tags: ['FastAPI', 'PostgreSQL', 'SQLAlchemy', 'JWT'],
     accentA: '#f0abfc',
     accentB: '#e879f9',
@@ -40,10 +40,10 @@ export const PROJECT_SEO = [
   {
     slug: 'studysync',
     name: 'StudySync',
-    kicker: 'PERSONAL PROJECT · 2026',
-    ogTitle: 'StudySync — Realtime collaborative study platform',
+    kicker: 'PROYECTO PERSONAL · EN CURSO',
+    ogTitle: 'StudySync — Plataforma de estudio colaborativo en tiempo real',
     description:
-      'Realtime study rooms with video (LiveKit), server-authoritative Pomodoro on Redis and peer-reviewed notes.',
+      'Salas de estudio con vídeo (LiveKit), Pomodoro sincronizado en servidor con Redis y WebSocket, y apuntes.',
     tags: ['FastAPI', 'React', 'Redis', 'LiveKit', 'WebSocket'],
     accentA: '#a78bfa',
     accentB: '#818cf8',
@@ -51,10 +51,10 @@ export const PROJECT_SEO = [
   {
     slug: 'easycab',
     name: 'EasyCab',
-    kicker: 'DISTRIBUTED SYSTEMS · 2025',
-    ogTitle: 'EasyCab — Distributed ride-hailing on Apache Kafka',
+    kicker: 'SISTEMAS DISTRIBUIDOS · UA',
+    ogTitle: 'EasyCab — Transporte distribuido sobre Apache Kafka',
     description:
-      'Distributed ride-hailing on Apache Kafka — hub-and-spoke fleet control, PostgreSQL row-locking, TLS + JWT.',
+      'Central, taxis y clientes sobre Apache Kafka: concurrencia en PostgreSQL con bloqueo de filas, TLS y JWT.',
     tags: ['Python', 'Apache Kafka', 'PostgreSQL', 'TLS · JWT'],
     accentA: '#fbbf24',
     accentB: '#f59e0b',

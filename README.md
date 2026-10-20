@@ -4,7 +4,7 @@
 
 **Live: [eap-portfolio.vercel.app](https://eap-portfolio.vercel.app)**
 
-> Personal portfolio of **Erardo Aldana Pessoa** — Software Engineer (Backend · Python · Cloud), Computer Engineer (Distinction) from the University of Alicante.
+> Personal portfolio of **Erardo Aldana Pessoa** — Backend Developer (Python) · Full-Stack, Computer Engineer (Distinction) from the University of Alicante.
 
 A dark, premium single-page portfolio with in-depth project case studies, built as a modern React app.
 

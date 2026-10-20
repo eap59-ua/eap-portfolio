@@ -51,9 +51,9 @@ const home = `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http:
   <rect x="0" y="0" width="1200" height="6" fill="url(#name)"/>
   <text x="80" y="124" font-family="Consolas, monospace" font-size="30" font-weight="700" fill="#818cf8">&lt;EAP/&gt;</text>
   <text x="78" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="82" font-weight="800" fill="url(#name)">Erardo Aldana Pessoa</text>
-  <text x="80" y="368" font-family="Segoe UI, Arial, sans-serif" font-size="37" font-weight="600" fill="#c3cee0">Software Engineer · Backend · Python · Cloud</text>
-  <text x="80" y="428" font-family="Consolas, monospace" font-size="26" fill="#818cf8">DESARROLLADOR_FULL_STACK.execute()</text>
-  <text x="80" y="548" font-family="Segoe UI, Arial, sans-serif" font-size="26" fill="#7c8aa3">Computer Engineer · Distinction (TFG 10/10) · Open to the EU</text>
+  <text x="80" y="368" font-family="Segoe UI, Arial, sans-serif" font-size="37" font-weight="600" fill="#c3cee0">Desarrollador Backend (Python) · Full-Stack</text>
+  <text x="80" y="428" font-family="Consolas, monospace" font-size="26" fill="#818cf8">DESARROLLADOR_BACKEND.execute()</text>
+  <text x="80" y="548" font-family="Segoe UI, Arial, sans-serif" font-size="26" fill="#7c8aa3">Ingeniero Informático · UA 2026 · TFG con Matrícula de Honor</text>
   <text x="80" y="588" font-family="Consolas, monospace" font-size="23" fill="#4b5670">eap-portfolio.vercel.app</text>
 </svg>`
 render(home, 'public/og.png')
@@ -68,6 +68,8 @@ function projectCard(p) {
     )
     .join('\n  ')
   const tagSvg = p.tags.join('    ·    ')
+  // long names (e.g. "Red de Donación de Alimentos") shrink to stay inside the card
+  const nameSize = p.name.length > 18 ? 64 : 86
   return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
@@ -84,7 +86,7 @@ function projectCard(p) {
   <rect x="0" y="0" width="1200" height="6" fill="url(#bar)"/>
   <text x="80" y="120" font-family="Consolas, monospace" font-size="28" font-weight="700" fill="#818cf8">&lt;EAP/&gt;</text>
   <text x="82" y="210" font-family="Consolas, monospace" font-size="25" font-weight="600" letter-spacing="3" fill="${p.accentA}">${esc(p.kicker)}</text>
-  <text x="78" y="312" font-family="Segoe UI, Arial, sans-serif" font-size="86" font-weight="800" fill="#f4f6fb">${esc(p.name)}</text>
+  <text x="78" y="312" font-family="Segoe UI, Arial, sans-serif" font-size="${nameSize}" font-weight="800" fill="#f4f6fb">${esc(p.name)}</text>
   ${descSvg}
   <text x="80" y="524" font-family="Consolas, monospace" font-size="25" fill="#8493ab">${esc(tagSvg)}</text>
   <rect x="80" y="556" width="1040" height="1.5" fill="#1b2237"/>
