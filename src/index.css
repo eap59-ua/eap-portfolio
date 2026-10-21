@@ -201,6 +201,40 @@
     opacity: 1;
     background: var(--lc, var(--l1));
   }
+  /* Correspondencia (see Interchange.tsx): resting state = before the change */
+  .interchange .ix-disc {
+    background: color-mix(in srgb, var(--ix-to) 13%, var(--paper));
+    clip-path: circle(0% at 50% 50%);
+    /* a pool of light, not a box: fades out towards the neighbouring sections */
+    -webkit-mask-image: linear-gradient(transparent, #000 32%, #000 68%, transparent);
+    mask-image: linear-gradient(transparent, #000 32%, #000 68%, transparent);
+  }
+  .interchange .ix-out {
+    background: var(--ix-from);
+  }
+  .interchange .ix-in {
+    background: var(--ix-to);
+    transform: rotate(45deg) scaleX(0);
+  }
+  .interchange .ix-to {
+    opacity: 0;
+  }
+  /* reduced motion: just the arrival state, no scroll link */
+  .interchange.is-static .ix-disc {
+    clip-path: none;
+  }
+  .interchange.is-static .ix-out {
+    transform: scaleX(0.6);
+  }
+  .interchange.is-static .ix-in {
+    transform: rotate(45deg) scaleX(1);
+  }
+  .interchange.is-static .ix-from {
+    opacity: 0;
+  }
+  .interchange.is-static .ix-to {
+    opacity: 1;
+  }
   /* Contacto: every line arrives at the terminus, drawn once when it comes into view */
   @media (prefers-reduced-motion: no-preference) {
     .terminus-map path {

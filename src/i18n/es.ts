@@ -199,4 +199,10 @@ export const es = {
   'contact.cv_en': `Descargar CV en inglés`,
   'footer.end': `Fin de línea`,
   'footer.top': `volver al plano`,
+  'ix.kicker': `Correspondencia`,
+  'ix.plan': `Línea 1 · Plano`,
+  'ix.projects': `Líneas 2–7 · Proyectos`,
+  'ix.journey': `Línea 1 · Trayectoria`,
+  'ix.stack': `Mapa de la red`,
+  'ix.end': `Fin de trayecto · Tu equipo`,
 } as const
