@@ -84,8 +84,8 @@ export function TopBar() {
 
   return (
     <>
-      <a href="#proyectos" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-paper">
-        {t('bar.skip')}
+      <a href={home ? '#proyectos' : '#main'} className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-paper">
+        {t(home ? 'bar.skip' : 'bar.skip_main')}
       </a>
       <header className="fixed inset-x-0 top-0 z-50 border-b border-rule bg-paper/90 backdrop-blur-[6px] supports-[backdrop-filter]:bg-paper/80">
         <div className="flex h-[var(--bar-h)] items-center justify-between gap-6 px-5 sm:px-6 lg:px-16">
@@ -186,8 +186,11 @@ export function TopBar() {
 /** desktop rail: the chapters as stations, a train marks where you are */
 export function MiniPlan() {
   const { t } = useTranslation()
+  const { pathname } = useLocation()
   const { current } = useCurrentSection()
   const idx = SECTIONS.findIndex((s) => s.id === current)
+  // only the home page is the network; a case study has its own index
+  if (pathname !== '/') return null
   return (
     <nav className="fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center lg:flex" aria-label={t('bar.rail')}>
       {SECTIONS.map((s, i) => (

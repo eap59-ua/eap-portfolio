@@ -14,8 +14,8 @@ export const es = {
   'hero.cta1': `Ver proyectos`,
   'hero.cv': `Descargar CV`,
 
-  'nf.msg': `Esta página no existe.`,
-  'nf.back': `Volver al inicio`,
+  'nf.msg': `Esta estación no existe, o ha cerrado. El plano sigue abierto.`,
+  'nf.back': `Volver al plano`,
 
   'stats.exp': `Meses de prácticas en empresa`,
   'stats.projects': `Proyectos con código público`,
@@ -205,4 +205,7 @@ export const es = {
   'ix.journey': `Línea 1 · Trayectoria`,
   'ix.stack': `Mapa de la red`,
   'ix.end': `Fin de trayecto · Tu equipo`,
+  'cs.index': `En este andén`,
+  'nf.title': `Vía muerta`,
+  'bar.skip_main': `Saltar al contenido`,
 } as const

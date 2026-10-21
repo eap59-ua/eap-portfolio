@@ -14,8 +14,8 @@ export const en = {
   'hero.cta1': `See projects`,
   'hero.cv': `Download CV`,
 
-  'nf.msg': `This page doesn't exist.`,
-  'nf.back': `Back to home`,
+  'nf.msg': `This station doesn't exist, or it has closed. The map is still open.`,
+  'nf.back': `Back to the map`,
 
   'stats.exp': `Months of internships`,
   'stats.projects': `Projects with public code`,
@@ -205,4 +205,7 @@ export const en = {
   'ix.journey': `Line 1 · Journey`,
   'ix.stack': `Network map`,
   'ix.end': `End of the line · Your team`,
+  'cs.index': `On this platform`,
+  'nf.title': `Dead end`,
+  'bar.skip_main': `Skip to content`,
 } as const

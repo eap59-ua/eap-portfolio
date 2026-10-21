@@ -7,15 +7,8 @@ import { EVIDENCE, PROJECT_LINE } from '../../data/lines'
 import { RichText } from '../ui/RichText'
 import { StationTrack } from './StationTrack'
 import { CaseButton, CodeButton, LineBadge } from './buttons'
-import { useReducedMotion } from '../../lib/motion'
-
-// web-sized media (re-encoded ≤1.5 MB, posters for all; EcoAlerta is a phone app → portrait)
-const MEDIA: Record<string, { src: string; poster: string; portrait?: boolean; captions?: string }> = {
-  ecoalerta: { src: '/media/ecoalerta-phone.mp4', poster: '/media/ecoalerta-phone-poster.jpg', portrait: true, captions: '/media/ecoalerta-demo.es.vtt' },
-  'food-donation': { src: '/media/food-donation-web.mp4', poster: '/media/food-donation-poster.webp' },
-  hydrofulness: { src: '/media/hydrofulness-web.mp4', poster: '/media/hydrofulness-poster.webp' },
-  easycab: { src: '/media/easycab-web.mp4', poster: '/media/easycab-poster.webp' },
-}
+import { DemoVideo } from './DemoVideo'
+import { MEDIA } from '../../data/media'
 
 function useT() {
   const { t, i18n } = useTranslation()
@@ -23,45 +16,6 @@ function useT() {
   return { t, lang }
 }
 
-/** plays muted while on screen; never with reduced motion (poster + controls instead) */
-function DemoVideo({ slug, title }: { slug: string; title: string }) {
-  const m = MEDIA[slug]
-  const ref = useRef<HTMLVideoElement>(null)
-  const reduce = useReducedMotion()
-  useEffect(() => {
-    const v = ref.current
-    if (!v || reduce) return
-    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? v.play().catch(() => {}) : v.pause()), { threshold: 0.35 })
-    io.observe(v)
-    return () => io.disconnect()
-  }, [reduce])
-  if (!m) return null
-  const video = (
-    <video
-      ref={ref}
-      className={m.portrait ? 'h-full w-full rounded-[22px] object-cover' : 'aspect-video w-full rounded-xl object-cover'}
-      src={m.src}
-      poster={m.poster}
-      muted
-      loop
-      playsInline
-      preload="none"
-      controls={reduce}
-      aria-label={title}
-      width={m.portrait ? 360 : 1280}
-      height={m.portrait ? 754 : 720}
-    >
-      {m.captions && <track kind="descriptions" srcLang="es" src={m.captions} default />}
-    </video>
-  )
-  return m.portrait ? (
-    <div className="mx-auto aspect-[230/480] w-[min(190px,50vw)] rounded-[30px] bg-ink p-[9px] shadow-[0_18px_40px_-24px_rgba(22,24,29,.6)] md:w-[210px]">{video}</div>
-  ) : (
-    <div className="rounded-2xl bg-ink p-2 md:w-[340px]">{video}</div>
-  )
-}
-
-/** compact: inside the mobile accordion, whose row already shows badge, title and context */
 function Platform({ p, compact }: { p: Project; compact?: boolean }) {
   const { t, lang } = useT()
   const L = PROJECT_LINE[p.slug]
