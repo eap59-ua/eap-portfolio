@@ -131,7 +131,7 @@ export const es = {
   'contact.cta': `Enviar email`,
   'contact.copied': `¡Copiado!`,
 
-  'footer.built': `Hecho con React, TypeScript, Tailwind y Framer Motion`,
+  'footer.built': `Hecho con React, TypeScript y Tailwind · código abierto en GitHub`,
   'footer.back': `Volver arriba`,
   'bar.now': `Estación actual`,
   'bar.pause': `Pausar animación`,
@@ -191,4 +191,12 @@ export const es = {
   'stack.works': `En obras · aprendiendo ahora`,
   'stack.works_sub': `próximas estaciones`,
   'stack.zone': `Zona`,
+  'contact.terminus': `Tu equipo`,
+  'contact.terminus_sub': `Fin de trayecto · todas las líneas llegan aquí`,
+  'contact.copy': `Copiar email`,
+  'contact.copy_hint': `clic para copiar`,
+  'contact.cv_es': `Descargar CV en español`,
+  'contact.cv_en': `Descargar CV en inglés`,
+  'footer.end': `Fin de línea`,
+  'footer.top': `volver al plano`,
 } as const

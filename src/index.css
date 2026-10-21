@@ -201,6 +201,45 @@
     opacity: 1;
     background: var(--lc, var(--l1));
   }
+  /* Contacto: every line arrives at the terminus, drawn once when it comes into view */
+  @media (prefers-reduced-motion: no-preference) {
+    .terminus-map path {
+      stroke-dashoffset: 1;
+      stroke-dasharray: 1;
+    }
+    .terminus-map path[stroke-dasharray^='0.03'] {
+      stroke-dasharray: 0.03 0.015;
+      stroke-dashoffset: 0;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.6s;
+    }
+    .terminus-map.is-drawn path {
+      animation: terminus-draw 0.85s cubic-bezier(0.23, 1, 0.32, 1) both;
+    }
+    .terminus-map.is-drawn path[stroke-dasharray^='0.03'] {
+      animation: none;
+      opacity: 1;
+    }
+    .terminus-map .terminus-halo {
+      transform-origin: 616px 80px;
+      transform-box: view-box;
+    }
+    .terminus-map.is-drawn .terminus-halo {
+      animation: terminus-halo 2.4s ease-out 0.9s infinite;
+    }
+  }
+  @keyframes terminus-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes terminus-halo {
+    0% { transform: scale(0.7); opacity: 0.35; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+  [data-motion='paused'] .terminus-halo {
+    animation-play-state: paused !important;
+  }
   /* Sobre mí: the hand waves once; the social pills float until the first hover */
   @media (prefers-reduced-motion: no-preference) {
     .hand-wave {

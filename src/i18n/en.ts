@@ -131,7 +131,7 @@ export const en = {
   'contact.cta': `Send email`,
   'contact.copied': `Copied!`,
 
-  'footer.built': `Built with React, TypeScript, Tailwind and Framer Motion`,
+  'footer.built': `Built with React, TypeScript and Tailwind · open source on GitHub`,
   'footer.back': `Back to top`,
   'bar.now': `Current station`,
   'bar.pause': `Pause animation`,
@@ -191,4 +191,12 @@ export const en = {
   'stack.works': `Under construction · learning now`,
   'stack.works_sub': `next stations`,
   'stack.zone': `Zone`,
+  'contact.terminus': `Your team`,
+  'contact.terminus_sub': `End of the line · every line ends here`,
+  'contact.copy': `Copy email`,
+  'contact.copy_hint': `click to copy`,
+  'contact.cv_es': `Download CV in Spanish`,
+  'contact.cv_en': `Download CV in English`,
+  'footer.end': `End of the line`,
+  'footer.top': `back to the map`,
 } as const
