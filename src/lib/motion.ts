@@ -3,7 +3,8 @@ import { useEffect, useState, useSyncExternalStore } from 'react'
 // Motion preferences without pulling framer-motion into the initial bundle.
 
 function useMedia(query: string) {
-  const [matches, setMatches] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches)
+  // false on the first render everywhere, so the prerendered HTML and hydration agree
+  const [matches, setMatches] = useState(false)
   useEffect(() => {
     const mq = window.matchMedia(query)
     const on = () => setMatches(mq.matches)

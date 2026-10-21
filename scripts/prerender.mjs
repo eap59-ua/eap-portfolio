@@ -4,8 +4,10 @@
 // The body is the untouched SPA shell, so real users still hydrate the app;
 // crawlers (LinkedIn, WhatsApp, Slack…) that never run JS get correct previews.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { pathToFileURL } from 'node:url'
 import { PROJECT_SEO, SITE_URL } from './seo-data.mjs'
 
+// project pages start from the empty shell; only the home gets prerendered HTML
 const template = readFileSync('dist/index.html', 'utf8')
 
 const esc = (s) =>
@@ -50,3 +52,11 @@ for (const p of PROJECT_SEO) {
   writeFileSync(`dist/projects/${p.slug}/index.html`, html)
   console.log(`prerendered /projects/${p.slug}`)
 }
+
+// Home: render the app at build time so the first paint doesn't wait for the
+// JS bundle (fonts + HTML paint first; main.tsx hydrates the same markup).
+const { render } = await import(pathToFileURL('dist-ssr/entry-server.js').href)
+const appHtml = await render('/')
+if (!template.includes('<div id="root"></div>')) throw new Error('prerender: empty #root not found in dist/index.html')
+writeFileSync('dist/index.html', template.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`))
+console.log(`prerendered / (${Math.round(appHtml.length / 1024)} KB of HTML)`)

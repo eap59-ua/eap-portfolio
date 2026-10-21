@@ -101,15 +101,17 @@ function PinnedJourney() {
   }, [])
 
   useEffect(() => {
-    if (!travel) return
+    const w = wrap.current
+    const tr = track.current
+    if (!travel || !w || !tr) return
     let raf = 0
     let last = -1
     const update = () => {
       raf = 0
-      const top = wrap.current!.getBoundingClientRect().top // read
+      const top = w.getBoundingClientRect().top // read
       const p = (BAR - top) / travel
       const pos = dwell(p)
-      track.current!.style.transform = `translate3d(${-pos * GAP}px,0,0)` // write
+      tr.style.transform = `translate3d(${-pos * GAP}px,0,0)` // write
       const i = Math.round(pos)
       if (i !== last) {
         last = i
@@ -129,8 +131,10 @@ function PinnedJourney() {
 
   const goTo = useCallback(
     (i: number) => {
+      const w = wrap.current
+      if (!w) return // already unmounted (e.g. a focus event during a page change)
       const k = Math.min(Math.max(i, 0), N - 1)
-      const top = wrap.current!.getBoundingClientRect().top + window.scrollY - BAR
+      const top = w.getBoundingClientRect().top + window.scrollY - BAR
       scrollToY(top + (k / (N - 1)) * travel)
     },
     [travel],

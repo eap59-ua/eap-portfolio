@@ -1,4 +1,5 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import { SmoothScroll, scrollToHash } from './components/layout/SmoothScroll'
@@ -23,6 +24,14 @@ function HashScroll() {
   return null
 }
 
+// Client-only extras mount after hydration: the prerendered HTML never contains
+// them (lazy chunks can't render on the server) nor depends on the theme.
+function ClientOnly({ night, children }: { night?: boolean; children: ReactNode }) {
+  const [on, setOn] = useState(false)
+  useEffect(() => setOn(!night || document.documentElement.dataset.theme === 'night'), [night])
+  return on ? <Suspense fallback={null}>{children}</Suspense> : null
+}
+
 function RouteFallback() {
   return (
     <div className="flex min-h-screen items-center justify-center">
@@ -31,18 +40,21 @@ function RouteFallback() {
   )
 }
 
-function App() {
+/** the whole site, under whichever router renders it (browser, or the prerender's static one) */
+export function AppShell() {
   return (
-    <BrowserRouter>
+    <>
       <HashScroll />
       <SmoothScroll />
       <TopBar />
       <MiniPlan />
       <GlowField />
-      <Suspense fallback={null}>
+      <ClientOnly>
         <TrainCursor />
-        {typeof document !== 'undefined' && document.documentElement.dataset.theme === 'night' && <AuroraCursor />}
-      </Suspense>
+      </ClientOnly>
+      <ClientOnly night>
+        <AuroraCursor />
+      </ClientOnly>
       <main id="main">
         <Suspense fallback={<RouteFallback />}>
           <Routes>
@@ -53,6 +65,14 @@ function App() {
         </Suspense>
       </main>
       <Analytics />
+    </>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
     </BrowserRouter>
   )
 }

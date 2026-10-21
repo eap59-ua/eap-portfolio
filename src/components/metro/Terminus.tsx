@@ -109,7 +109,7 @@ export function Terminus() {
                 <Card icon={<Mail className="h-5 w-5" aria-hidden="true" />} label="Email" value={SITE.email} note={copied ? t('contact.copied') : t('contact.copy_hint')} />
               </button>
               <span className="sr-only" role="status">
-                {copied ? t('contact.copied') : ''}
+                {copied && t('contact.copied')}
               </span>
             </li>
             <li>

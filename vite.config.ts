@@ -2,9 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react()],
   build: {
+    // the SSR bundle only feeds scripts/prerender.mjs: no public/ copy (PDFs, videos)
+    copyPublicDir: !isSsrBuild,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -27,4 +29,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))
