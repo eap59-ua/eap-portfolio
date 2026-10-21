@@ -1,6 +1,7 @@
 import { HeroPlano } from '../components/metro/HeroPlano'
 import { ProjectsBoard } from '../components/metro/ProjectsBoard'
 import { Journey } from '../components/metro/Journey'
+import { AboutPass } from '../components/metro/AboutPass'
 
 export function Home() {
   return (
@@ -8,6 +9,7 @@ export function Home() {
       <HeroPlano />
       <ProjectsBoard />
       <Journey />
+      <AboutPass />
     </>
   )
 }
