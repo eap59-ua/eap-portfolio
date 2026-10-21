@@ -1,8 +1,21 @@
 import { useEffect } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from '../../lib/motion'
 
 type LenisLike = { scrollTo: (target: HTMLElement, opts?: { offset?: number }) => void }
 let lenisInstance: LenisLike | null = null
+
+// An anchor can point at something only one layout renders (e.g. a project's
+// accordion row, hidden on desktop): then land on its section instead.
+function anchorTarget(el: HTMLElement): HTMLElement {
+  if (el.getClientRects().length) return el
+  return (el.closest('section') as HTMLElement | null) ?? el
+}
+
+function scrollToEl(el: HTMLElement) {
+  const target = anchorTarget(el)
+  if (lenisInstance) lenisInstance.scrollTo(target, { offset: -72 })
+  else target.scrollIntoView({ block: 'start' }) // reduced motion: jump (scroll-padding-top covers the bar)
+}
 
 // Scroll to a section by hash once it's on the page. Used by nav/logo/"back"
 // links that route to the home page first — react-router doesn't scroll to a
@@ -13,11 +26,7 @@ export function scrollToHash(hash: string) {
   let tries = 0
   const tick = () => {
     const el = document.getElementById(id)
-    if (el) {
-      if (lenisInstance) lenisInstance.scrollTo(el, { offset: -72 })
-      else el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      return
-    }
+    if (el) return scrollToEl(el)
     if (tries++ < 60) requestAnimationFrame(tick)
   }
   // try right away (section already mounted), then retry on rAF if it isn't yet
@@ -26,6 +35,27 @@ export function scrollToHash(hash: string) {
 
 export function SmoothScroll() {
   const reduce = useReducedMotion()
+
+  // in-page anchors: Lenis when it's running, a plain jump otherwise
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return
+      const anchor = (event.target as HTMLElement | null)?.closest('a[href^="#"]') as HTMLAnchorElement | null
+      const hash = anchor?.getAttribute('href')
+      if (!hash || hash === '#') return
+      const el = document.getElementById(hash.slice(1))
+      if (!el) return
+      event.preventDefault()
+      history.replaceState(null, '', hash)
+      scrollToEl(el)
+      // keep what native anchors do for keyboard users: Tab continues from the target
+      const target = anchorTarget(el)
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1')
+      target.focus({ preventScroll: true })
+    }
+    document.addEventListener('click', onClick)
+    return () => document.removeEventListener('click', onClick)
+  }, [])
 
   useEffect(() => {
     if (reduce) return
@@ -46,25 +76,10 @@ export function SmoothScroll() {
       }
       frame = requestAnimationFrame(raf)
 
-      const onClick = (event: MouseEvent) => {
-        const target = event.target as HTMLElement | null
-        const anchor = target?.closest('a[href^="#"]') as HTMLAnchorElement | null
-        if (!anchor) return
-        const hash = anchor.getAttribute('href')
-        if (!hash || hash === '#') return
-        const el = document.querySelector(hash)
-        if (el) {
-          event.preventDefault()
-          lenis.scrollTo(el as HTMLElement, { offset: -72 })
-        }
-      }
-
-      document.addEventListener('click', onClick)
       destroy = () => {
         cancelAnimationFrame(frame)
         lenis.destroy()
         lenisInstance = null
-        document.removeEventListener('click', onClick)
       }
     })
 

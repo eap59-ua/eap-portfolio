@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from '../../lib/motion'
 
 const GLYPHS = '!<>-_\\/[]{}=+*^?#·:;01'
 
