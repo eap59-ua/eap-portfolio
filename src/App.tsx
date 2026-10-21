@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SmoothScroll, scrollToHash } from './components/layout/SmoothScroll'
 import { TopBar, MiniPlan } from './components/metro/TopBar'
 import { GlowField } from './components/motion/GlowField'
+import { SiteFooter } from './components/metro/SiteFooter'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 
@@ -64,6 +65,7 @@ export function AppShell() {
           </Routes>
         </Suspense>
       </main>
+      <SiteFooter />
       <Analytics />
     </>
   )

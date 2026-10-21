@@ -148,7 +148,7 @@ export const es = {
   'ix.projects': `Líneas 2–7 · Proyectos`,
   'ix.journey': `Línea 1 · Trayectoria`,
   'ix.stack': `Mapa de la red`,
-  'ix.end': `Fin de trayecto · Tu equipo`,
+  'ix.end': `Contacto`,
   'cs.index': `En este andén`,
   'nf.title': `Vía muerta`,
   'bar.skip_main': `Saltar al contenido`,

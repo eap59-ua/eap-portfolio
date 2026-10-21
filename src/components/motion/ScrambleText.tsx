@@ -43,5 +43,11 @@ export function ScrambleText({ text, className, duration = 1100 }: ScrambleTextP
     return () => cancelAnimationFrame(rafRef.current)
   }, [text, reduce, duration])
 
-  return <span className={className}>{display}</span>
+  // screen readers get the real text once, never the random glyphs
+  return (
+    <span className={className}>
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true">{display}</span>
+    </span>
+  )
 }

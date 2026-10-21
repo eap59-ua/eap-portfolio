@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useReducedMotion } from '../../lib/motion'
+import { useFinePointer, useReducedMotion } from '../../lib/motion'
 
 type LenisLike = { scrollTo: (target: HTMLElement | number, opts?: { offset?: number; immediate?: boolean }) => void }
 let lenisInstance: LenisLike | null = null
@@ -41,6 +41,8 @@ export function scrollToHash(hash: string) {
 
 export function SmoothScroll() {
   const reduce = useReducedMotion()
+  // touch scrolling is already smooth and native: Lenis only for wheel/trackpad
+  const fine = useFinePointer()
 
   // in-page anchors: Lenis when it's running, a plain jump otherwise
   useEffect(() => {
@@ -64,7 +66,7 @@ export function SmoothScroll() {
   }, [])
 
   useEffect(() => {
-    if (reduce) return
+    if (reduce || !fine) return
 
     let cancelled = false
     let frame = 0
@@ -94,7 +96,7 @@ export function SmoothScroll() {
       cancelAnimationFrame(frame)
       destroy?.()
     }
-  }, [reduce])
+  }, [reduce, fine])
 
   return null
 }

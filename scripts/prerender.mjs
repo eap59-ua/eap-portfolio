@@ -53,6 +53,13 @@ for (const p of PROJECT_SEO) {
   console.log(`prerendered /projects/${p.slug}`)
 }
 
+// Unknown routes: Vercel serves dist/404.html with a real 404 status (no SPA
+// catch-all in vercel.json). Empty shell, not indexed; the app renders "Vía muerta".
+let notFound = swap(template, /<title>[\s\S]*?<\/title>/, '<title>Vía muerta · Erardo Aldana Pessoa</title>', 'title')
+notFound = notFound.replace('</head>', '  <meta name="robots" content="noindex" />\n  </head>')
+writeFileSync('dist/404.html', notFound)
+console.log('prerendered /404.html')
+
 // Home: render the app at build time so the first paint doesn't wait for the
 // JS bundle (fonts + HTML paint first; main.tsx hydrates the same markup).
 const { render } = await import(pathToFileURL('dist-ssr/entry-server.js').href)

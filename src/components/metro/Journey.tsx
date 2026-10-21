@@ -139,6 +139,13 @@ function PinnedJourney() {
     },
     [travel],
   )
+  // a deep link (#estacion-tfg from the map or a shared URL) lands on that station once the stretch is measured
+  useEffect(() => {
+    if (!travel) return
+    const m = location.hash.match(/^#estacion-(.+)$/)
+    const i = m ? JOURNEY.findIndex((s) => s.id === m[1]) : -1
+    if (i >= 0) goTo(i)
+  }, [travel, goTo])
   const onKey = (e: KeyboardEvent) => {
     if ((e.target as HTMLElement).closest('input,textarea')) return
     if (e.key === 'ArrowRight') goTo(active + 1)
@@ -157,7 +164,7 @@ function PinnedJourney() {
       <div className="sticky flex flex-col overflow-x-clip" style={{ top: BAR, height: `calc(100svh - ${BAR}px)` }}>
         <div className="mx-auto flex w-full max-w-[1440px] items-start justify-between px-16 pt-8">
           <h2 className="flex items-center gap-4">
-            <span className="line-badge h-10 min-w-[40px] text-xl" style={{ ['--lc' as string]: 'var(--l1)' } as CSSProperties}>1</span>
+            <span className="line-badge h-10 min-w-[40px] text-xl" style={{ ['--lc' as string]: 'var(--l1)' } as CSSProperties} aria-hidden="true">1</span>
             <span className="sign-type text-[clamp(3rem,5vw,4.4rem)]">{t('st.journey')}</span>
           </h2>
           <p className="text-right">
@@ -169,17 +176,19 @@ function PinnedJourney() {
         </div>
 
         {/* cards: the current station in the middle, its neighbours dimmed at the sides */}
-        <div className="relative mx-auto mt-4 h-[clamp(240px,38svh,330px)] w-full max-w-[1440px]">
+        <div className="relative mx-auto mt-4 min-h-[240px] w-full max-w-[1440px] flex-1">
           {JOURNEY.map((s, i) => {
             const d = i - active
             const side = Math.abs(d) === 1
             const style: CSSProperties = {
-              transform: `translate(-50%, -50%) translateX(${d * 30}vw) scale(${d === 0 ? 1 : 0.8})`,
-              opacity: d === 0 ? 1 : side ? 0.45 : 0,
+              // neighbours sit 24px clear of the active card (W = card width, neighbours at 0.75 W)
+              transform: `translateX(-50%) translateX(calc(${d} * (0.875 * min(480px, 36vw) + 24px))) scale(${d === 0 ? 1 : 0.75})`,
+              transformOrigin: 'bottom center',
+              opacity: d === 0 ? 1 : side ? 0.62 : 0,
               pointerEvents: d === 0 ? 'auto' : 'none',
             }
             return (
-              <div key={s.id} className="absolute left-1/2 top-1/2 w-[min(520px,38vw)] transition-[transform,opacity] duration-[450ms] ease-out" style={style} aria-hidden={d !== 0}>
+              <div key={s.id} className="absolute bottom-6 left-1/2 w-[min(480px,36vw)] transition-[transform,opacity] duration-[450ms] ease-out" style={style} aria-hidden={d !== 0} inert={d !== 0}>
                 <StationCard s={s} active={d === 0} />
               </div>
             )
@@ -187,7 +196,7 @@ function PinnedJourney() {
         </div>
 
         {/* the line: slides under a train that stays in the middle */}
-        <div className="relative mt-auto h-[220px]">
+        <div className="relative h-[180px] flex-shrink-0">
           <span ref={train} className="absolute left-1/2 top-[22px] z-10 h-[24px] w-[52px] -translate-x-1/2 rounded-[7px] bg-ink shadow-[0_0_0_4px_var(--paper)]" aria-hidden="true" />
           <div ref={track} className="absolute left-1/2 top-0 h-full will-change-transform" style={{ width: (N - 1) * GAP }}>
             <span className="absolute left-0 top-[29px] h-[10px] rounded-full bg-l1" style={{ width: (N - 1) * GAP }} />
@@ -235,20 +244,24 @@ function PinnedJourney() {
               ))}
             </ol>
           </div>
-          <p className="absolute left-0 right-0 top-[160px] mx-auto flex max-w-[1440px] items-center gap-2.5 px-16 font-sign text-[16px] font-semibold text-ink-2">
-            <span className="line-badge h-[24px] min-w-[24px] text-[13px]" style={{ ['--lc' as string]: 'var(--cer)' } as CSSProperties}>C</span>
-            {t('journey.cer')}: {CERCANIAS.jobs[lang].join(' · ')} → <b className="text-ink">{CERCANIAS.now[lang]}</b>
-          </p>
+          {/* the dashed line says it; the details live in the Cercanías card below */}
+          <a href="#cercanias" className="absolute left-16 top-[146px] inline-flex items-center gap-2 font-sign text-[15px] font-semibold text-ink-2 hover:text-ink">
+            <span className="line-badge h-[22px] min-w-[22px] text-[12px]" style={{ ['--lc' as string]: 'var(--cer)' } as CSSProperties} aria-hidden="true">
+              C
+            </span>
+            {t('journey.cer')} · {CERCANIAS.now[lang]}
+          </a>
         </div>
 
         <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-16 pb-7">
           <p className="font-mono text-[13px] text-ink-3">{t('journey.hint')}</p>
           <div className="flex gap-3">
-            <button type="button" className="btn btn-ghost h-11 text-[15px] disabled:pointer-events-none disabled:opacity-35" onClick={() => goTo(active - 1)} disabled={active === 0}>
+            {/* aria-disabled, not disabled: the focus stays on the button at either end */}
+            <button type="button" className="btn btn-ghost h-11 text-[15px] aria-disabled:cursor-default aria-disabled:opacity-35" onClick={() => active > 0 && goTo(active - 1)} aria-disabled={active === 0}>
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               {t('journey.prev')}
             </button>
-            <button type="button" className="btn btn-primary h-11 text-[15px] disabled:pointer-events-none disabled:opacity-35" onClick={() => goTo(active + 1)} disabled={active === N - 1}>
+            <button type="button" className="btn btn-primary h-11 text-[15px] aria-disabled:cursor-default aria-disabled:opacity-35" onClick={() => active < N - 1 && goTo(active + 1)} aria-disabled={active === N - 1}>
               {t('journey.next')}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -289,7 +302,7 @@ function VerticalJourney() {
   return (
     <div className="mx-auto max-w-[760px] px-5 sm:px-6">
       <h2 className="flex items-center gap-3">
-        <span className="line-badge h-9 min-w-[36px] text-lg" style={{ ['--lc' as string]: 'var(--l1)' } as CSSProperties}>1</span>
+        <span className="line-badge h-9 min-w-[36px] text-lg" style={{ ['--lc' as string]: 'var(--l1)' } as CSSProperties} aria-hidden="true">1</span>
         <span className="sign-type text-[clamp(2.8rem,10vw,4rem)]">{t('st.journey')}</span>
       </h2>
       <p className="mt-2 font-mono text-[13px] text-ink-3">{t('journey.sub')}</p>
@@ -323,9 +336,9 @@ function CercaniasCard() {
   const { t, lang } = useLang()
   return (
     <div className="mx-auto mt-8 max-w-[760px] px-5 sm:px-6 lg:max-w-[1440px] lg:px-16">
-      <article data-glow className="card glow-card grid gap-5 border-dashed p-5 sm:p-6 lg:grid-cols-[auto_1fr_1fr] lg:items-start lg:gap-8" style={{ ['--lc' as string]: 'var(--cer)' } as CSSProperties}>
+      <article id="cercanias" data-glow className="card glow-card grid scroll-mt-[calc(var(--bar-h)+16px)] gap-5 border-dashed p-5 sm:p-6 lg:grid-cols-[auto_1fr_1fr] lg:items-start lg:gap-8" style={{ ['--lc' as string]: 'var(--cer)' } as CSSProperties}>
         <h3 className="flex items-center gap-2.5">
-          <span className="line-badge h-[28px] min-w-[28px] text-[14px]" style={{ ['--lc' as string]: 'var(--cer)' } as CSSProperties}>C</span>
+          <span className="line-badge h-[28px] min-w-[28px] text-[14px]" style={{ ['--lc' as string]: 'var(--cer)' } as CSSProperties} aria-hidden="true">C</span>
           <span className="font-sign text-[22px] font-bold leading-tight">
             {t('experience.other')}
             <span className="block text-[14px] font-semibold text-ink-3">{t('journey.cer_note')}</span>

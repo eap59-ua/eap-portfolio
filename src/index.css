@@ -51,13 +51,13 @@
     --ink-3: #5f646c;
     --rule: #d8d2c2;
     --l1: #4338ca; /* trayectoria (continuity with the original indigo brand) */
-    --eco: #1e8a4c; /* EcoAlerta · medioambiente */
+    --eco: #1a7d44; /* EcoAlerta · medioambiente (AA: 5.2:1 with white numerals) */
     --hydro: #0b7db5; /* Hydrofulness · agua */
     --donation: #d6336c; /* Red de Donación · cuidado */
     --studysync: #7c3aed; /* StudySync · en obras */
     --easycab: #f5b700; /* EasyCab · taxis (needs an ink casing on paper) */
     --chaos: #e2552d; /* Chaos Crew · coral */
-    --cer: #8c877b; /* Cercanías · trabajando mientras estudiaba */
+    --cer: #736e64; /* Cercanías · trabajando mientras estudiaba (AA: 5.1:1) */
     --on-line: #ffffff; /* numerals on a line badge */
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -80,7 +80,7 @@
     --studysync: #d38cff; /* pushed toward magenta so it never reads as L1 at night */
     --easycab: #ffc83d;
     --chaos: #ff7a52;
-    --cer: #6e7486;
+    --cer: #7f8597;
     --on-line: #0e1320;
   }
 
@@ -134,6 +134,7 @@
     font-weight: 700;
     letter-spacing: -0.01em;
     line-height: 0.9;
+    text-wrap: balance; /* no lonely "I" / "II" on the last line */
   }
   .sign-label {
     font-family: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
@@ -203,11 +204,8 @@
   }
   /* Correspondencia (see Interchange.tsx): resting state = before the change */
   .interchange .ix-disc {
-    background: color-mix(in srgb, var(--ix-to) 13%, var(--paper));
-    clip-path: circle(0% at 50% 50%);
-    /* a pool of light, not a box: fades out towards the neighbouring sections */
-    -webkit-mask-image: linear-gradient(transparent, #000 32%, #000 68%, transparent);
-    mask-image: linear-gradient(transparent, #000 32%, #000 68%, transparent);
+    background: color-mix(in srgb, var(--ix-to) 16%, var(--paper));
+    transform: scale(0);
   }
   .interchange .ix-out {
     background: var(--ix-from);
@@ -215,13 +213,16 @@
   .interchange .ix-in {
     background: var(--ix-to);
     transform: rotate(45deg) scaleX(0);
+    /* the new line runs on into the next chapter: it fades, it is never cut */
+    -webkit-mask-image: linear-gradient(90deg, #000 55%, transparent);
+    mask-image: linear-gradient(90deg, #000 55%, transparent);
   }
   .interchange .ix-to {
     opacity: 0;
   }
   /* reduced motion: just the arrival state, no scroll link */
   .interchange.is-static .ix-disc {
-    clip-path: none;
+    transform: none;
   }
   .interchange.is-static .ix-out {
     transform: scaleX(0.6);
@@ -483,6 +484,13 @@ html.lenis body {
 [data-motion='paused'] .loop-anim,
 [data-motion='paused'] .loop-anim * {
   animation-play-state: paused !important;
+}
+/* reduced motion: decorative loops don't run at all (blinking caret, status pulses, marquee) */
+@media (prefers-reduced-motion: reduce) {
+  .loop-anim,
+  .loop-anim * {
+    animation: none !important;
+  }
 }
 
 /* ── train cursor (companion; the system cursor stays visible) ─────────── */

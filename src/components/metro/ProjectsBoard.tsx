@@ -16,6 +16,7 @@ function useT() {
   return { t, lang }
 }
 
+/** compact: inside the mobile accordion, whose row already shows badge, title and context */
 function Platform({ p, compact }: { p: Project; compact?: boolean }) {
   const { t, lang } = useT()
   const L = PROJECT_LINE[p.slug]
@@ -23,13 +24,13 @@ function Platform({ p, compact }: { p: Project; compact?: boolean }) {
   const media = MEDIA[p.slug]
   return (
     // text left, media right (phone or 16:9); route + actions span the width below
-    <div className="grid h-full gap-x-8 gap-y-6 md:grid-cols-[minmax(0,1fr)_auto] md:grid-rows-[1fr_auto]">
+    <div className="grid content-start gap-x-8 gap-y-6 md:grid-cols-[minmax(0,1fr)_auto]">
       {media && (
-        <div className="md:col-start-2 md:row-start-1">
+        <div className={`order-2 md:order-none md:col-start-2 md:row-start-1 ${media?.portrait ? 'md:row-span-2' : ''}`}>
           <DemoVideo slug={p.slug} title={`${title} — demo`} />
         </div>
       )}
-      <div className="min-w-0 md:col-start-1 md:row-start-1">
+      <div className="order-1 min-w-0 md:order-none md:col-start-1 md:row-start-1">
         <div className={`flex flex-wrap items-center gap-2.5 ${compact && !p.highlightKey ? 'hidden' : ''}`}>
           {!compact && <LineBadge line={L.line} n={`L${L.n}`} dark={L.dark} />}
           {!compact && <span className="sign-label text-[15px] text-ink-3">{t(p.contextKey)}</span>}
@@ -56,10 +57,16 @@ function Platform({ p, compact }: { p: Project; compact?: boolean }) {
           ))}
         </ul>
       </div>
-      <div className="md:col-span-2 md:self-end">
+      <div className={`order-3 min-w-0 md:order-none md:row-start-2 ${media?.portrait ? 'md:col-start-1' : 'md:col-span-2'}`}>
         <p className="sign-label text-sm text-ink-3">{t('projects.route')}</p>
         <div className="mt-3 pr-2">
           <StationTrack stops={p.tags.map((x) => x.label)} line={L.line} dashed={L.dashed} />
+          {/* the drawn track is decorative; the same stops, for screen readers */}
+          <ul className="sr-only">
+            {p.tags.map((x) => (
+              <li key={x.label}>{x.label}</li>
+            ))}
+          </ul>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <CodeButton href={p.repo} line={L.line} label={`${t('projects.code')} — ${title} (GitHub)`}>
@@ -76,18 +83,25 @@ function Platform({ p, compact }: { p: Project; compact?: boolean }) {
   )
 }
 
-function RowHead({ p, on }: { p: Project; on: boolean }) {
+/** ids: on the desktop tabs, so the tab's name is just the title and the rest is its description */
+function RowHead({ p, on, ids }: { p: Project; on: boolean; ids?: boolean }) {
   const { t, lang } = useT()
   const L = PROJECT_LINE[p.slug]
   const title = p.titleKey ? t(p.titleKey) : p.title
-  const value = (EVIDENCE[p.slug]?.[0]?.[lang] ?? '') + ' · ' + p.tags.slice(0, 3).map((x) => x.label).join(' · ')
+  // one proof + the main tech, never the same word twice, at most 4 items
+  const first = EVIDENCE[p.slug]?.[0]?.[lang] ?? ''
+  const value = [first, ...p.tags.map((x) => x.label).filter((l) => !first.includes(l))].filter(Boolean).slice(0, 4).join(' · ')
   return (
     <>
       <LineBadge line={L.line} n={`L${L.n}`} dark={L.dark} className="flex-shrink-0" />
       <span className="min-w-0 flex-1 text-left">
-        <span className={`block font-sign text-[25px] font-bold leading-tight ${on ? 'text-ink' : 'text-ink-2'}`}>{title}</span>
-        <span className="mt-0.5 block text-[13.5px] text-ink-3">{t(p.contextKey)}</span>
-        <span className="mt-1 block truncate font-sign text-[15px] font-semibold text-ink-2">{value}</span>
+        <span id={ids ? `tt-${p.slug}` : undefined} className={`block font-sign text-[25px] font-bold leading-tight ${on ? 'text-ink' : 'text-ink-2'}`}>
+          {title}
+        </span>
+        <span id={ids ? `td-${p.slug}` : undefined}>
+          <span className="mt-0.5 block text-[13.5px] text-ink-3">{t(p.contextKey)}</span>
+          <span className="mt-1 line-clamp-2 font-sign text-[15px] font-semibold text-ink-2">{value}</span>
+        </span>
       </span>
       {p.status === 'active' && (
         <span className="flex-shrink-0 rounded-full border-2 px-2.5 py-0.5 font-sign text-sm font-bold" style={{ borderColor: `var(--${L.line})`, color: 'var(--ink)' }}>
@@ -137,6 +151,8 @@ export function ProjectsBoard() {
                   role="tab"
                   aria-selected={on}
                   aria-controls={`anden-${p.slug}`}
+                  aria-labelledby={`tt-${p.slug}`}
+                  aria-describedby={`td-${p.slug}`}
                   tabIndex={on ? 0 : -1}
                   onClick={() => setSel(i)}
                   onKeyDown={(e) => onKey(e, i)}
@@ -145,7 +161,7 @@ export function ProjectsBoard() {
                   className={`card glow-card flex items-center gap-4 px-[18px] py-3.5 text-left transition-colors duration-200 ${on ? 'is-active' : 'border-transparent bg-transparent hover:bg-paper-card'}`}
                   style={{ ['--lc' as string]: `var(--${L.line})` } as CSSProperties}
                 >
-                  <RowHead p={p} on={on} />
+                  <RowHead p={p} on={on} ids />
                 </button>
               )
             })}
@@ -153,7 +169,7 @@ export function ProjectsBoard() {
           <div
             id={`anden-${cur.slug}`}
             role="tabpanel"
-            aria-labelledby={`tab-${cur.slug}`}
+            aria-labelledby={`tt-${cur.slug}`}
             key={cur.slug}
             data-glow
             data-line={curL.line}

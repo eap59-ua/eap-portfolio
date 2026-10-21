@@ -75,7 +75,7 @@ export function Magnetic({ children, strength = 0.3, max = 10, className }: Magn
 
   return (
     <span ref={outer} className={`inline-block ${className ?? ''}`}>
-      <span ref={inner} className="inline-block">
+      <span ref={inner} className="inline-block w-full">
         {children}
       </span>
     </span>

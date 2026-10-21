@@ -38,20 +38,20 @@ export function HeroPlano() {
             </span>
           </p>
           <h1 className="sign-type mt-4 text-[clamp(3.4rem,13vw,5.9rem)] text-ink lg:mt-5 lg:text-[clamp(4rem,6.1vw,5.6rem)]">
-            <span className="block">Erardo</span>
+            <span className="block">Erardo</span>{' '}
             <span className="block whitespace-nowrap">Aldana Pessoa</span>
           </h1>
           <p className="mt-4 text-[19px] font-semibold leading-snug text-ink sm:text-2xl lg:mt-6">{nb(t('hero.role'))}</p>
           <RichText html={t('hero.pitch')} className="mt-3 max-w-[470px] text-pretty text-base leading-relaxed text-ink-2 sm:text-lg lg:mt-4" />
           <div className="mt-6 flex flex-wrap items-center gap-3 lg:mt-8">
-            <Magnetic>
-              <a href="#proyectos" className="btn btn-primary" data-cursor="link">
+            <Magnetic className="w-full sm:w-auto">
+              <a href="#proyectos" className="btn btn-primary w-full sm:w-auto" data-cursor="link">
                 {t('hero.cta1')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
             </Magnetic>
-            <Magnetic>
-              <a href={CV[lang]} download className="btn btn-ghost" data-cursor="link">
+            <Magnetic className="flex-1 sm:flex-none">
+              <a href={CV[lang]} download className="btn btn-ghost w-full sm:w-auto" data-cursor="link">
                 <Download className="h-4 w-4" aria-hidden="true" />
                 {t('hero.cv')}
               </a>
@@ -85,7 +85,7 @@ export function HeroPlano() {
             <ul className="ml-[3.75%] mt-1 flex flex-wrap gap-x-[18px] gap-y-2 font-sign text-[15px] font-semibold text-ink-2" aria-label={t('line.legend')}>
               {LEGEND.map(([n, c, label]) => (
                 <li key={n} className="inline-flex items-center gap-1.5">
-                  <span className="line-badge h-[22px] min-w-[22px] text-[13px]" style={{ ['--lc' as string]: `var(--${c})` }} data-dark={c === 'easycab' ? '' : undefined}>
+                  <span className="line-badge h-[22px] min-w-[22px] text-[13px]" style={{ ['--lc' as string]: `var(--${c})` }} data-dark={c === 'easycab' || c === 'chaos' ? '' : undefined}>
                     {n}
                   </span>
                   {label.startsWith('line.') ? t(label) : label}

@@ -53,7 +53,7 @@ export function AboutPass() {
         <div
           data-glow
           data-line="l1"
-          className="card glow-card mx-auto w-full max-w-[500px] overflow-hidden"
+          className="card glow-card mx-auto w-full max-w-[500px] overflow-hidden lg:sticky lg:top-[calc(var(--bar-h)+40px)]"
           style={{ ['--lc' as string]: 'var(--l1)' } as CSSProperties}
         >
           <div className="flex items-center justify-between bg-l1 px-5 py-3.5 text-paper sm:px-6">

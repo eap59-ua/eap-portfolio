@@ -27,7 +27,7 @@ export function Interchange({ from, to, fromLabel, toLabel, kicker }: Props) {
     const q = (s: string) => el.querySelector(s) as HTMLElement
     const opts: KeyframeAnimationOptions = { duration: D, fill: 'both', easing: 'linear' }
     const anims = [
-      q('.ix-disc').animate({ clipPath: ['circle(0% at 50% 50%)', 'circle(0% at 50% 50%)', 'circle(75% at 50% 50%)'], offset: [0, 0.35, 1] }, opts),
+      q('.ix-disc').animate({ transform: ['scale(0)', 'scale(0)', 'scale(1)', 'scale(1)'], offset: [0, 0.3, 0.75, 1] }, opts),
       q('.ix-out').animate({ transform: ['scaleX(1)', 'scaleX(1)', 'scaleX(0)', 'scaleX(0)'], offset: [0, 0.1, 0.5, 1] }, opts),
       q('.ix-in').animate({ transform: ['rotate(45deg) scaleX(0)', 'rotate(45deg) scaleX(0)', 'rotate(45deg) scaleX(1)', 'rotate(45deg) scaleX(1)'], offset: [0, 0.4, 0.85, 1] }, opts),
       q('.ix-from').animate({ opacity: [1, 1, 0, 0], transform: ['none', 'none', 'translateY(-8px)', 'translateY(-8px)'], offset: [0, 0.36, 0.47, 1] }, opts),
@@ -69,16 +69,18 @@ export function Interchange({ from, to, fromLabel, toLabel, kicker }: Props) {
 
   const vars = { ['--ix-from' as string]: `var(--${from})`, ['--ix-to' as string]: `var(--${to})` } as CSSProperties
   return (
-    <div ref={root} className={`interchange relative h-[max(180px,26svh)] overflow-hidden ${reduce ? 'is-static' : ''}`} style={vars} aria-hidden="true">
-      <div className="ix-disc absolute inset-0" />
+    <div ref={root} className={`interchange relative h-[180px] overflow-hidden lg:h-[260px] ${reduce ? 'is-static' : ''}`} style={vars} aria-hidden="true">
+      {/* the knot "lights up": a defined disc of the next chapter's colour */}
+      <span className="ix-disc absolute left-1/2 top-1/2 -ml-[110px] -mt-[110px] h-[220px] w-[220px] rounded-full lg:-ml-[130px] lg:-mt-[130px] lg:h-[260px] lg:w-[260px]" />
       <span className="ix-out absolute left-0 top-1/2 h-[10px] w-1/2 origin-right rounded-r-full" style={{ marginTop: -5 }} />
-      <span className="ix-in absolute left-1/2 top-1/2 h-[10px] w-[60%] origin-left rounded-full" style={{ marginTop: -5 }} />
+      <span className="ix-in absolute left-1/2 top-1/2 h-[10px] w-[200px] origin-left rounded-full lg:w-[280px]" style={{ marginTop: -5 }} />
       <span className="absolute left-1/2 top-1/2 h-[28px] w-[56px] -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-ink bg-paper-card" />
-      <div className="absolute left-5 top-1/2 mt-6 sm:left-6 lg:left-[max(4rem,calc(50vw-656px))]">
+      {/* the sign sits by the knot, above the line that leaves */}
+      <div className="absolute bottom-1/2 left-5 mb-6 sm:left-6 lg:left-1/2 lg:ml-14">
         <p className="sign-label text-[12px] text-ink-3">{kicker}</p>
-        <div className="relative mt-1 h-[34px]">
-          <p className="ix-from absolute whitespace-nowrap font-sign text-[24px] font-bold text-ink">{fromLabel}</p>
-          <p className="ix-to absolute whitespace-nowrap font-sign text-[24px] font-bold text-ink">→ {toLabel}</p>
+        <div className="relative mt-1 h-[38px]">
+          <p className="ix-from absolute whitespace-nowrap font-sign text-[clamp(1.4rem,2.4vw,1.9rem)] font-bold leading-none text-ink">{fromLabel}</p>
+          <p className="ix-to absolute whitespace-nowrap font-sign text-[clamp(1.4rem,2.4vw,1.9rem)] font-bold leading-none text-ink">→ {toLabel}</p>
         </div>
       </div>
     </div>

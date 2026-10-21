@@ -17,7 +17,7 @@ export const PROJECT_LINE: Record<string, ProjectLine> = {
   hydrofulness: { line: 'hydro', n: 4 },
   studysync: { line: 'studysync', n: 5, dashed: true },
   easycab: { line: 'easycab', n: 6, dark: true },
-  'chaos-crew': { line: 'chaos', n: 7 },
+  'chaos-crew': { line: 'chaos', n: 7, dark: true }, // white on coral is 3.8:1: dark numerals
 }
 
 export const lineVar = (line: LineId) => `var(--${line})`

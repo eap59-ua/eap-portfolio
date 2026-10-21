@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TechLogo } from '../../data/techIcons'
@@ -9,6 +10,9 @@ const neutral = { ['--lc' as string]: 'var(--ink-3)' } as CSSProperties
 
 export function StackMap() {
   const { t } = useTranslation()
+  // the marquee repeats the list above: decorative, so it isn't prerendered (~100 KB of HTML)
+  const [client, setClient] = useState(false)
+  useEffect(() => setClient(true), [])
   return (
     <section id="stack" className="relative py-20 lg:py-28">
       <div className="mx-auto max-w-[1440px] px-5 sm:px-6 lg:px-16">
@@ -71,6 +75,7 @@ export function StackMap() {
       </div>
 
       {/* decorative: everything in it is already listed above */}
+      {client ? (
       <div className="mx-auto mt-10 flex max-w-[1440px] items-center gap-6 px-5 sm:px-6 lg:px-16" aria-hidden="true">
         <p className="hidden flex-shrink-0 font-mono text-[13px] text-ink-3 md:block">{t('skills.marquee')}</p>
         <div className="group min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
@@ -84,6 +89,9 @@ export function StackMap() {
           </div>
         </div>
       </div>
+      ) : (
+        <div className="mt-10 h-11" aria-hidden="true" />
+      )}
     </section>
   )
 }

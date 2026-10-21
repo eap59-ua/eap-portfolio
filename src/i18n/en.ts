@@ -148,7 +148,7 @@ export const en = {
   'ix.projects': `Lines 2–7 · Projects`,
   'ix.journey': `Line 1 · Journey`,
   'ix.stack': `Network map`,
-  'ix.end': `End of the line · Your team`,
+  'ix.end': `Contact`,
   'cs.index': `On this platform`,
   'nf.title': `Dead end`,
   'bar.skip_main': `Skip to content`,

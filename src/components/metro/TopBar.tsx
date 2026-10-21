@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
-import { Pause, Play, X } from 'lucide-react'
+import { Pause, Play, X, ChevronDown } from 'lucide-react'
 import { SECTIONS, useCurrentSection } from '../../lib/sections'
 import { setMotionPaused, useMotionPaused } from '../../lib/motion'
 import { MOBILE_MAP } from '../../data/network'
@@ -60,7 +60,7 @@ function PauseButton() {
       title={t(paused ? 'bar.play' : 'bar.pause')}
       className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink-3 text-ink-2 transition-colors hover:border-ink hover:text-ink"
     >
-      {paused ? <Play className="h-3.5 w-3.5" aria-hidden="true" /> : <Pause className="h-3.5 w-3.5" aria-hidden="true" />}
+      {paused ? <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" /> : <Pause className="h-3.5 w-3.5 fill-current" aria-hidden="true" />}
     </button>
   )
 }
@@ -74,20 +74,28 @@ export function TopBar() {
   const now = SECTIONS.find((s) => s.id === current) ?? SECTIONS[0]
   const href = (id: string) => (home ? `#${id}` : `/#${id}`)
 
-  // the plan sheet closes on Escape and never traps the page behind it
+  // The plan sheet is a native modal <dialog>: the page behind is inert, Escape
+  // closes it and the focus returns to the "Plano" button. The page doesn't scroll behind it.
+  const dlg = useRef<HTMLDialogElement>(null)
   useEffect(() => {
-    if (!sheet) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setSheet(false)
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
+    const d = dlg.current
+    if (!d) return
+    if (sheet && !d.open) d.showModal()
+    if (!sheet && d.open) d.close()
+    document.documentElement.style.overflow = sheet ? 'hidden' : ''
   }, [sheet])
+  // close before an in-page link runs, so the link can then move focus to its section
+  const closeSheet = () => {
+    dlg.current?.close()
+    setSheet(false)
+  }
 
   return (
     <>
       <a href={home ? '#proyectos' : '#main'} className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-paper">
         {t(home ? 'bar.skip' : 'bar.skip_main')}
       </a>
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-rule bg-paper/90 backdrop-blur-[6px] supports-[backdrop-filter]:bg-paper/80">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-rule bg-[color-mix(in_srgb,var(--paper)_95%,transparent)] backdrop-blur-[14px]">
         <div className="flex h-[var(--bar-h)] items-center justify-between gap-6 px-5 sm:px-6 lg:px-16">
           <div className="flex items-center gap-4">
             <Link to="/" aria-label={t('bar.home')} className="rounded-full">
@@ -124,10 +132,19 @@ export function TopBar() {
             <button
               type="button"
               onClick={() => setSheet(true)}
-              className="rounded-md border-2 border-ink px-2.5 py-0.5 font-sign text-[15px] font-bold lg:hidden"
+              className="inline-flex h-9 items-center gap-1 rounded-md border-2 border-ink px-2.5 font-sign text-[15px] font-bold lg:hidden"
               aria-haspopup="dialog"
             >
-              {t('bar.plan')}
+              {/* on the home page it doubles as the station sign: where you are, tap for the map */}
+              {home && now.id !== 'inicio' ? (
+                <>
+                  <span className="sr-only">{t('bar.plan')}: </span>
+                  {t(now.key)}
+                </>
+              ) : (
+                t('bar.plan')
+              )}
+              <ChevronDown className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -147,11 +164,17 @@ export function TopBar() {
         )}
       </header>
 
-      {sheet && (
-        <div className="fixed inset-0 z-[70] bg-paper lg:hidden" role="dialog" aria-modal="true" aria-label={t('bar.plan')}>
+      <dialog
+        ref={dlg}
+        onClose={() => setSheet(false)}
+        aria-label={t('bar.plan')}
+        className="m-0 h-[100dvh] max-h-none w-full max-w-none bg-paper p-0 text-ink backdrop:bg-transparent lg:hidden"
+      >
+        {sheet && (
+        <div>
           <div className="flex h-[var(--bar-h)] items-center justify-between px-5">
             <Logo />
-            <button type="button" onClick={() => setSheet(false)} className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink" aria-label={t('bar.close')} autoFocus>
+            <button type="button" onClick={closeSheet} className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink" aria-label={t('bar.close')} autoFocus>
               <X className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
@@ -161,7 +184,7 @@ export function TopBar() {
                 <li key={s.id}>
                   <a
                     href={href(s.id)}
-                    onClick={() => setSheet(false)}
+                    onClick={closeSheet}
                     className={`flex h-12 items-center rounded-lg border-2 px-4 font-sign text-lg font-bold ${current === s.id ? 'border-l1 text-ink' : 'border-rule text-ink-2'}`}
                   >
                     {t(s.key)}
@@ -169,7 +192,7 @@ export function TopBar() {
                 </li>
               ))}
             </ul>
-            <div className="mt-6" onClick={(e) => (e.target as HTMLElement).closest('a') && setSheet(false)}>
+            <div className="mt-6" onClick={(e) => (e.target as HTMLElement).closest('a') && closeSheet()}>
               <NetworkMap spec={MOBILE_MAP} />
             </div>
             <div className="mt-6 flex items-center gap-3">
@@ -178,7 +201,8 @@ export function TopBar() {
             </div>
           </div>
         </div>
-      )}
+        )}
+      </dialog>
     </>
   )
 }

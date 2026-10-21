@@ -140,7 +140,6 @@ export function NetworkMap({ spec, className }: { spec: NetworkMapSpec; classNam
         {spec.lines.map((ln) => (
           <path
             key={ln.id}
-            id={`${ln.id}-${w}`}
             d={ln.d}
             pathLength={ln.kind ? undefined : 1}
             className={`net-line ${ln.kind ? `is-${ln.kind}` : 'is-solid'}`}

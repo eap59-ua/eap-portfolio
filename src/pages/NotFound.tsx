@@ -7,6 +7,8 @@ export function NotFound() {
   const { t } = useTranslation()
   return (
     <section className="relative flex min-h-[100svh] flex-col justify-center overflow-x-clip px-5 pt-[var(--bar-h)] sm:px-6 lg:px-16">
+      <title>{`${t('nf.title')} · Erardo Aldana Pessoa`}</title>
+      <meta name="robots" content="noindex" />
       <div className="mx-auto w-full max-w-[1180px]">
         <svg viewBox="0 0 640 90" className="w-full max-w-[640px]" aria-hidden="true">
           <path d="M0 45 H540" stroke="var(--l1)" strokeWidth="10" strokeLinecap="round" />
