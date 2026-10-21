@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useReducedMotion } from '../../lib/motion'
 
-type LenisLike = { scrollTo: (target: HTMLElement, opts?: { offset?: number }) => void }
+type LenisLike = { scrollTo: (target: HTMLElement | number, opts?: { offset?: number; immediate?: boolean }) => void }
 let lenisInstance: LenisLike | null = null
 
 // An anchor can point at something only one layout renders (e.g. a project's
@@ -15,6 +15,12 @@ function scrollToEl(el: HTMLElement) {
   const target = anchorTarget(el)
   if (lenisInstance) lenisInstance.scrollTo(target, { offset: -72 })
   else target.scrollIntoView({ block: 'start' }) // reduced motion: jump (scroll-padding-top covers the bar)
+}
+
+/** absolute page offset (scroll-linked scenes: the journey's prev/next stations) */
+export function scrollToY(y: number) {
+  if (lenisInstance) lenisInstance.scrollTo(y)
+  else window.scrollTo({ top: y })
 }
 
 // Scroll to a section by hash once it's on the page. Used by nav/logo/"back"
