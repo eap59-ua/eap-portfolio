@@ -176,7 +176,8 @@ export function getTech(label: string): TechMeta {
   return TECH[label] ?? FALLBACK
 }
 
-export function TechLogo({ label, className }: { label: string; className?: string }) {
+/** mono: inherit the text colour (the paper map), instead of the dark-theme brand tint */
+export function TechLogo({ label, className, mono }: { label: string; className?: string; mono?: boolean }) {
   const { Icon, color } = getTech(label)
-  return <Icon className={className} style={{ color }} aria-hidden />
+  return <Icon className={className} style={mono ? undefined : { color }} aria-hidden />
 }

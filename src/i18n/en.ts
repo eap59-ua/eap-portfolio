@@ -185,4 +185,10 @@ export const en = {
   'about.langs': `Spanish · Valencian · English B2`,
   'about.valid': `valid in Gandía · Alicante · relocation`,
   'about.photo': `Photo of Erardo Aldana Pessoa`,
+  'stack.title': `Network map`,
+  'stack.sub': `Eight zones with everything I've used between vocational training and my degree. Stations with a thick border (★) are interchanges: what I handle best.`,
+  'stack.star': `interchange, among what I handle best`,
+  'stack.works': `Under construction · learning now`,
+  'stack.works_sub': `next stations`,
+  'stack.zone': `Zone`,
 } as const

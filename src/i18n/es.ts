@@ -185,4 +185,10 @@ export const es = {
   'about.langs': `Español · Valenciano · Inglés B2`,
   'about.valid': `válido en Gandía · Alicante · reubicación`,
   'about.photo': `Foto de Erardo Aldana Pessoa`,
+  'stack.title': `Mapa de la red`,
+  'stack.sub': `Ocho zonas con todo lo que he usado entre la FP y el grado. Las estaciones con borde grueso (★) son correspondencias: lo que mejor manejo.`,
+  'stack.star': `correspondencia, de lo que mejor manejo`,
+  'stack.works': `En obras · aprendiendo ahora`,
+  'stack.works_sub': `próximas estaciones`,
+  'stack.zone': `Zona`,
 } as const
