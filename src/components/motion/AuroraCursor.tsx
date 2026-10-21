@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from '../../lib/motion'
 
 export function AuroraCursor() {
   const ref = useRef<HTMLDivElement>(null)

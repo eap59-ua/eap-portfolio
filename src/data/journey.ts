@@ -84,8 +84,8 @@ export const JOURNEY: JourneyStation[] = [
     when: { es: 'feb – jun 2021', en: 'Feb – Jun 2021' },
     year: '2021',
     body: {
-      es: 'Continuación del proyecto de visión artificial: inspección por cámaras que detecta defectos de pintura en piezas de automoción.',
-      en: 'Continued the machine-vision project: camera inspection that detects paint defects on automotive parts.',
+      es: 'Continuación del proyecto de visión artificial con LabVIEW: inspección por cámaras que detecta defectos de pintura en piezas de automoción (captura, procesamiento de imagen y reglas de decisión en la línea de producción).',
+      en: 'Continued the LabVIEW machine-vision project: camera inspection that detects paint defects on automotive parts (image capture, processing and decision rules running on the production line).',
     },
     tags: ['LabVIEW', 'Visión artificial', 'Automoción'],
   },
@@ -112,8 +112,8 @@ export const JOURNEY: JourneyStation[] = [
     when: { es: 'nov 2025 – feb 2026', en: 'Nov 2025 – Feb 2026' },
     year: '2025',
     body: {
-      es: 'Bootcamp interno de Appian (plataforma low-code empresarial) e incorporación a un proyecto para ENAIRE, el gestor de la navegación aérea en España.',
-      en: "Internal Appian bootcamp (enterprise low-code platform) and onboarding onto a project for ENAIRE, Spain's air navigation service provider.",
+      es: 'Bootcamp interno de Appian (plataforma low-code empresarial) e incorporación a un proyecto para ENAIRE, el gestor de la navegación aérea en España. Trabajo con equipos de cliente y metodología de consultoría.',
+      en: "Internal Appian bootcamp (enterprise low-code platform) and onboarding onto a project for ENAIRE, Spain's air navigation service provider. Worked alongside client teams within a consulting delivery model.",
     },
     tags: ['Appian', 'Low-code', 'Consultoría'],
   },
@@ -164,4 +164,17 @@ export const CERCANIAS = {
     en: ['warehouse worker', 'machine operator', 'production operator (Tableprint, KUKA robots)', 'stock replenisher'],
   },
   now: { es: 'Cajero · Leroy Merlin · hoy', en: 'Cashier · Leroy Merlin · today' },
+  // the current station, in full (it used to be "Otra experiencia")
+  leroy: {
+    role: { es: 'Cajero · Leroy Merlin', en: 'Cashier · Leroy Merlin' },
+    when: { es: 'ago 2026 – actualidad', en: 'Aug 2026 – present' },
+    body: {
+      es: 'Cajas, asistencia en autopago (incidencias de las máquinas y ayuda a clientes), devoluciones y entrega de pedidos; gestión de facturas, tickets y reembolsos.',
+      en: 'Checkouts, self-checkout assistance (machine issues and customer help), returns and order pick-up; invoices, receipts and refunds.',
+    },
+  },
+  earlier: {
+    es: 'Mozo de almacén, maquinista, operario de producción (Tableprint, robots KUKA) y reponedor, compaginado con la FP y el grado.',
+    en: 'Warehouse worker, machine operator, production operator (Tableprint, KUKA robots) and stock replenisher, alongside my vocational studies and degree.',
+  },
 }

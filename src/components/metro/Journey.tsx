@@ -260,7 +260,7 @@ function PinnedJourney() {
 
 // ── Phones, tablets, keyboard-only and reduced motion: a vertical spine ─────
 function VerticalJourney() {
-  const { t, lang } = useLang()
+  const { t } = useLang()
   const reduce = useReducedMotion()
   const [active, setActive] = useState(0)
   const [trainY, setTrainY] = useState(0)
@@ -310,12 +310,35 @@ function VerticalJourney() {
           </li>
         ))}
       </ol>
-      <p className="mt-5 flex items-start gap-2.5 pl-[22px] text-[15px] text-ink-2">
-        <span className="line-badge h-[24px] min-w-[24px] flex-shrink-0 text-[13px]" style={{ ['--lc' as string]: 'var(--cer)' } as CSSProperties}>C</span>
-        <span>
-          <b className="font-semibold text-ink">{t('journey.cer_note')}</b>: {CERCANIAS.jobs[lang].join(' · ')}. <b className="font-semibold text-ink">{CERCANIAS.now[lang]}</b>.
-        </span>
-      </p>
+    </div>
+  )
+}
+
+/** Cercanías in full: today's job and the earlier ones (nothing from "Otra experiencia" is lost) */
+function CercaniasCard() {
+  const { t, lang } = useLang()
+  return (
+    <div className="mx-auto mt-8 max-w-[760px] px-5 sm:px-6 lg:max-w-[1440px] lg:px-16">
+      <article data-glow className="card glow-card grid gap-5 border-dashed p-5 sm:p-6 lg:grid-cols-[auto_1fr_1fr] lg:items-start lg:gap-8" style={{ ['--lc' as string]: 'var(--cer)' } as CSSProperties}>
+        <h3 className="flex items-center gap-2.5">
+          <span className="line-badge h-[28px] min-w-[28px] text-[14px]" style={{ ['--lc' as string]: 'var(--cer)' } as CSSProperties}>C</span>
+          <span className="font-sign text-[22px] font-bold leading-tight">
+            {t('experience.other')}
+            <span className="block text-[14px] font-semibold text-ink-3">{t('journey.cer_note')}</span>
+          </span>
+        </h3>
+        <div>
+          <p className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold text-ink">{CERCANIAS.leroy.role[lang]}</span>
+            <span className="rounded-full border border-rule px-2.5 py-0.5 text-[13px] font-medium text-ink-2">{CERCANIAS.leroy.when[lang]}</span>
+          </p>
+          <p className="mt-2 text-[15px] leading-relaxed text-ink-2">{CERCANIAS.leroy.body[lang]}</p>
+        </div>
+        <div>
+          <p className="font-semibold text-ink">{t('exp.prev.role')}</p>
+          <p className="mt-2 text-[15px] leading-relaxed text-ink-2">{CERCANIAS.earlier[lang]}</p>
+        </div>
+      </article>
     </div>
   )
 }
@@ -327,6 +350,7 @@ export function Journey() {
   return (
     <section id="trayectoria" className={`relative ${pinned ? 'pt-6' : 'py-20'}`}>
       {pinned ? <PinnedJourney /> : <VerticalJourney />}
+      <CercaniasCard />
     </section>
   )
 }

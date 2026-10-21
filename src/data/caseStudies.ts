@@ -1,4 +1,8 @@
-import type { DiagramSpec } from '../components/projects/ArchitectureDiagram'
+/** request path as stations (pipeline) + supporting pieces (aside) */
+export interface DiagramSpec {
+  pipeline: string[]
+  aside: string[]
+}
 
 export interface CaseDecision {
   decision: string
