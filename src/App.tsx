@@ -9,6 +9,8 @@ import { NotFound } from './pages/NotFound'
 
 const CaseStudy = lazy(() => import('./pages/CaseStudy').then((m) => ({ default: m.CaseStudy })))
 // pointer-only companion cursor: off the critical path, self-disables on touch
+// night only: ambient light over the lit-up map
+const AuroraCursor = lazy(() => import('./components/motion/AuroraCursor').then((m) => ({ default: m.AuroraCursor })))
 const TrainCursor = lazy(() => import('./components/metro/TrainCursor').then((m) => ({ default: m.TrainCursor })))
 
 // After navigating to the home route with a hash (nav links, logo, "back to
@@ -39,6 +41,7 @@ function App() {
       <GlowField />
       <Suspense fallback={null}>
         <TrainCursor />
+        {typeof document !== 'undefined' && document.documentElement.dataset.theme === 'night' && <AuroraCursor />}
       </Suspense>
       <main id="main">
         <Suspense fallback={<RouteFallback />}>
