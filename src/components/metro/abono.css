@@ -1,0 +1,312 @@
+/* ── Sobre mí · the "abono" (transit pass) ──────────────────────────────────
+   A physical object: plastic texture, chip, holographic band, punched slot,
+   perforated tear-off line, a validation stamp. It tilts under the pointer
+   (AboutPass.tsx writes transforms in rAF only while the pointer moves or the
+   spring settles) and flips to show a LinkedIn QR.
+   Only transform/opacity animate. Every colour is a token, except the ones
+   that sit on the photo or the QR plate (never themed). */
+
+.abono {
+  --abono-shadow:
+    0 1px 0 rgb(22 24 29 / 0.04),
+    0 2px 6px -2px rgb(22 24 29 / 0.12),
+    0 26px 48px -26px rgb(22 24 29 / 0.45);
+  --abono-noise-o: 0.07;
+  --abono-holo-o: 0.55;
+  --abono-stamp: #3b32b8; /* ink on the photo: the photo is never themed */
+  --abono-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+  perspective: 1100px;
+  -webkit-tap-highlight-color: transparent;
+}
+[data-theme='night'] .abono {
+  --abono-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.03),
+    0 2px 6px -2px rgb(0 0 0 / 0.5),
+    0 30px 56px -24px rgb(0 0 0 / 0.75);
+  --abono-noise-o: 0.09;
+  --abono-holo-o: 0.42;
+}
+
+/* the tilt layer (JS writes its transform) and the flip layer (CSS) */
+.abono-tilt,
+.abono-flip {
+  transform-style: preserve-3d;
+}
+.abono-flip {
+  display: grid; /* both faces share one cell: the box is reserved, no CLS */
+  transition: transform 0.75s var(--abono-spring);
+}
+.abono[data-flipped] .abono-flip {
+  transform: rotateY(180deg);
+}
+
+.abono-face {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow: var(--abono-shadow);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  cursor: pointer;
+}
+.abono-back {
+  transform: rotateY(180deg);
+}
+/* the proximity light border stays above the texture and the glare */
+.abono-face::after {
+  z-index: 5;
+}
+
+/* plastic: a fine static noise, painted once */
+.abono-face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: var(--abono-noise-o);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* faint guilloche lines behind the data, like security print */
+.abono-guilloche {
+  background-image:
+    repeating-radial-gradient(circle at 110% 120%, transparent 0 9px, color-mix(in srgb, var(--l1) 7%, transparent) 9px 10px),
+    repeating-radial-gradient(circle at -10% 130%, transparent 0 13px, color-mix(in srgb, var(--l1) 5%, transparent) 13px 14px);
+}
+
+/* punched lanyard slot: shows the paper behind the card */
+.abono-slot {
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 46px;
+  height: 9px;
+  translate: -50% 0;
+  border-radius: 99px;
+  background: var(--paper);
+  box-shadow: inset 0 1.5px 2px rgb(0 0 0 / 0.35);
+}
+
+/* the photo */
+.abono-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+.abono-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 28%;
+}
+
+/* validation stamp: rotated, inky, a little uneven */
+.abono-stamp {
+  position: absolute;
+  right: 12px;
+  bottom: 14px;
+  width: 104px;
+  height: 104px;
+  rotate: -14deg;
+  color: var(--abono-stamp);
+  opacity: 0.82;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.4 2.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.4 2.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  -webkit-mask-size: cover;
+  mask-size: cover;
+}
+
+/* holographic band: a static iridescent base + an oversized sheen that the
+   pointer slides with a transform (composited, never repainted) */
+.abono-holo {
+  position: relative;
+  overflow: hidden;
+  height: 26px;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--l1) 26%, var(--card)),
+    color-mix(in srgb, var(--hydro) 22%, var(--card)) 35%,
+    color-mix(in srgb, var(--studysync) 20%, var(--card)) 65%,
+    color-mix(in srgb, var(--eco) 18%, var(--card))
+  );
+  border-block: 1px solid color-mix(in srgb, var(--l1) 22%, transparent);
+}
+.abono-holo-sheen {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 300%;
+  opacity: var(--abono-holo-o);
+  mix-blend-mode: color-dodge;
+  background: linear-gradient(
+    100deg,
+    transparent 18%,
+    #ff6ec7 28%,
+    #ffe66d 36%,
+    #6dffb0 44%,
+    #6dd3ff 52%,
+    #b06dff 60%,
+    transparent 72%
+  );
+  transform: translate3d(-33.333%, 0, 0);
+}
+.abono-holo-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-inline: 14px;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--l1) 70%, var(--ink));
+  opacity: 0.75;
+}
+
+/* glare: a soft light that follows the pointer (transform + opacity only) */
+.abono-glare {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  width: 520px;
+  height: 520px;
+  margin: -260px 0 0 -260px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.12) 55%, transparent);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.abono[data-hover] .abono-glare {
+  opacity: 1;
+}
+
+/* perforated tear-off line, with half-moon notches cut in both edges */
+.abono-perf {
+  position: relative;
+  height: 10px;
+  background: radial-gradient(circle, var(--paper) 2.4px, transparent 2.9px) 7px 50% / 12px 10px repeat-x;
+}
+.abono-perf::before,
+.abono-perf::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.abono-perf::before {
+  left: -10px;
+}
+.abono-perf::after {
+  right: -10px;
+}
+
+/* the QR plate: dark on white in BOTH themes (scanners need contrast) */
+.abono-qr {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.06),
+    0 8px 24px -14px rgb(0 0 0 / 0.5);
+}
+.abono-qr img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* the flip control */
+.abono-flip-btn {
+  border: 2px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  transition:
+    transform 140ms var(--ease-out),
+    background-color 200ms ease,
+    color 200ms ease;
+}
+.abono-flip-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.abono-flip-btn:active {
+  transform: scale(0.97);
+}
+.abono-flip-btn svg {
+  transition: transform 0.5s var(--abono-spring);
+}
+.abono-flip-btn[data-flipped] svg {
+  transform: rotate(180deg);
+}
+
+/* social pills: bigger, lit border, the icon in a line-coloured roundel */
+.pill-social {
+  border-radius: 999px;
+}
+.pill-social .pill-ico {
+  background: color-mix(in srgb, var(--l1) 13%, var(--card));
+  color: var(--l1);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    transform 200ms var(--ease-out);
+}
+.pill-social:hover .pill-ico,
+.pill-social:focus-visible .pill-ico {
+  background: var(--l1);
+  color: var(--on-line);
+}
+.pill-social:hover .pill-ico {
+  transform: scale(1.06);
+}
+.pill-social .pill-arrow {
+  transition: transform 200ms var(--ease-out);
+}
+.pill-social:hover .pill-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* reduced motion: no rotation, the faces crossfade in place */
+@media (prefers-reduced-motion: reduce) {
+  .abono-flip,
+  .abono[data-flipped] .abono-flip {
+    transform: none;
+    transition: none;
+  }
+  .abono-back {
+    transform: none;
+  }
+  .abono-face {
+    transition: opacity 0.2s ease;
+  }
+  .abono[data-flipped] .abono-front,
+  .abono:not([data-flipped]) .abono-back {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .abono-flip-btn,
+  .abono-flip-btn svg,
+  .pill-social .pill-ico,
+  .pill-social .pill-arrow {
+    transition: none;
+    transform: none !important;
+  }
+}
