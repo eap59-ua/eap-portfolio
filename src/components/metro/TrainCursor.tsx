@@ -11,6 +11,8 @@ import { useFinePointer, useReducedMotion } from '../../lib/motion'
 //   keyboard → hidden until the mouse moves again
 const LINK = 'a, button, [role="button"], summary, [data-cursor="link"]'
 const TEXT = 'p, h1, h2, h3, h4, li, blockquote, input, textarea, [contenteditable]'
+// never on top of a face or a demo: the companion steps aside over photos and video
+const MEDIA = 'img, picture, video, canvas, [data-cursor="none"]'
 
 export function TrainCursor() {
   const fine = useFinePointer()
@@ -66,6 +68,10 @@ export function TrainCursor() {
       const link = t?.closest<HTMLElement>(LINK)
       const lineEl = t?.closest<HTMLElement>('[data-line]')
       const c = lineEl ? `var(--${lineEl.dataset.line})` : 'var(--l1)'
+      if (!link && t?.closest(MEDIA)) {
+        setMode('hidden')
+        return
+      }
       if (station) {
         const r = station.getBoundingClientRect()
         target.x = r.left + r.width / 2

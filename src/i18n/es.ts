@@ -11,7 +11,7 @@ export const es = {
   'nf.back': `Volver al plano`,
 
 
-  'about.status': `ABIERTO A OPORTUNIDADES FULL-TIME`,
+  'about.status': `Disponible · incorporación inmediata · jornada completa`,
   'about.greeting': `¡Hola! Soy Erardo`,
   'about.p1': `<strong>Ingeniero Informático</strong> por la Universidad de Alicante (2026), con el <strong>TFG calificado con Matrícula de Honor (10/10)</strong>. Unos 14 meses en empresa entre prácticas y contrato de formación: consultoría IT en <strong>NTT Data</strong> y visión artificial industrial en <strong>Autis Ingenieros</strong>.`,
   'about.p2': `Lo que más me interesa es la <strong>arquitectura de software</strong>: sistemas fáciles de entender y de cambiar. Trabajo con <strong>Python y FastAPI</strong> en backend, <strong>React y TypeScript</strong> en frontend, y <strong>PostgreSQL</strong> (incluido PostGIS). Uso Docker, tests y CI en mis proyectos, y patrones como la arquitectura hexagonal.`,
@@ -71,8 +71,8 @@ export const es = {
   'contact.location': `Ubicación`,
   'contact.location_value': `Gandía (Valencia) y Alicante`,
   'contact.relocate_value': `Reubicación: cualquier punto de España`,
-  'contact.avail': `Abierto a oportunidades Full-Time`,
-  'contact.time': `Respuesta en 24-48h · Inglés B2`,
+  'contact.avail': `Disponible · incorporación inmediata · jornada completa`,
+  'contact.time': `Respondo en 24–48 h · Inglés B2`,
   'contact.cta': `Enviar email`,
   'contact.copied': `¡Copiado!`,
 
@@ -153,9 +153,9 @@ export const es = {
   'nf.title': `Vía muerta`,
   'bar.skip_main': `Saltar al contenido`,
   'status.label': `Estado del servicio`,
-  'status.state': `Disponible ahora`,
-  'status.where': `Gandía · Alicante`,
-  'status.move': `Reubicación: toda España`,
+  'status.state': `Disponible · incorporación inmediata`,
+  'status.where': `Gandía (Valencia) y Alicante`,
+  'status.move': `Reubicación: cualquier punto de España`,
   'bar.to_night': `Cambiar a modo noche`,
   'bar.to_day': `Cambiar a modo día`,
   'about.f_degree': `Título`,

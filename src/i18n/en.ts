@@ -11,7 +11,7 @@ export const en = {
   'nf.back': `Back to the map`,
 
 
-  'about.status': `OPEN TO FULL-TIME OPPORTUNITIES`,
+  'about.status': `Available · immediate start · full-time`,
   'about.greeting': `Hi! I'm Erardo`,
   'about.p1': `<strong>Computer Engineering graduate</strong> from the University of Alicante (2026), with my <strong>final-year project graded 10/10 with Distinction</strong>. About 14 months of industry experience across internships and a training contract: IT consulting at <strong>NTT Data</strong> and industrial machine vision at <strong>Autis Ingenieros</strong>.`,
   'about.p2': `What interests me most is <strong>software architecture</strong>: systems that are easy to understand and to change. I work with <strong>Python and FastAPI</strong> on the backend, <strong>React and TypeScript</strong> on the frontend, and <strong>PostgreSQL</strong> (including PostGIS). I use Docker, tests and CI in my projects, and patterns such as hexagonal architecture.`,
@@ -71,8 +71,8 @@ export const en = {
   'contact.location': `Location`,
   'contact.location_value': `Gandía & Alicante, Spain`,
   'contact.relocate_value': `Relocation: within the EU · NL / CH / DE`,
-  'contact.avail': `Open to full-time opportunities`,
-  'contact.time': `Reply within 24-48h · English B2`,
+  'contact.avail': `Available · immediate start · full-time`,
+  'contact.time': `I reply within 24–48 h · English B2`,
   'contact.cta': `Send email`,
   'contact.copied': `Copied!`,
 
@@ -153,9 +153,9 @@ export const en = {
   'nf.title': `Dead end`,
   'bar.skip_main': `Skip to content`,
   'status.label': `Service status`,
-  'status.state': `Available now`,
-  'status.where': `Based in Spain · Gandía / Alicante`,
-  'status.move': `Open to EU relocation · no visa needed`,
+  'status.state': `Available · immediate start`,
+  'status.where': `Gandía & Alicante, Spain`,
+  'status.move': `Relocation: within the EU · NL / CH / DE`,
   'bar.to_night': `Switch to night mode`,
   'bar.to_day': `Switch to day mode`,
   'about.f_degree': `Degree`,
