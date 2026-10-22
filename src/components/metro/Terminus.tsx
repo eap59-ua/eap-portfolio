@@ -108,8 +108,8 @@ function Flap() {
           <stop offset="1" stopColor="#34A853" />
         </linearGradient>
       </defs>
-      <path d="M0 0 L150 38 L300 0 Z" fill="var(--flap)" />
-      <path d="M0 0 L150 38 L300 0" fill="none" stroke={`url(#${id})`} strokeWidth={3} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+      <path d="M0 0 L150 66 L300 0 Z" fill="var(--flap)" />
+      <path d="M0 0 L150 66 L300 0" fill="none" stroke={`url(#${id})`} strokeWidth={3.5} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
     </svg>
   )
 }
@@ -209,49 +209,53 @@ function EmailCard() {
   }
 
   const words: Record<CopyState, string> = { idle: t('contact.copy'), done: t('contact.copied'), fail: t('contact.copy_fail') }
-  // the three words share one cell, so the swap never shifts the layout
-  const swap = (named: boolean) => (
-    <span className="cc-swap is-text">
-      {(Object.keys(words) as CopyState[]).map((k) => (
-        <span key={k} className={state === k ? 'is-on' : ''} aria-hidden={named ? state !== k : undefined}>
-          {words[k]}
-        </span>
-      ))}
-    </span>
-  )
+  const icon = (k: CopyState) => (k === 'done' ? <Check /> : k === 'fail' ? <X /> : <Copy />)
   return (
     <CardMagnet>
-      <div data-glow className="card glow-card cc cc--mail">
-        <button ref={btn} type="button" onClick={copy} data-cursor="link" data-state={state} className="cc-main cc-hit">
-          <span className="cc-head" aria-hidden="true">
-            <Flap />
-            <span className="cc-mark">
-              <GmailMark />
+      {/* the whole card copies (the button's hit area is stretched over it); the mailto link sits on top */}
+      <div data-glow data-state={state} className="card glow-card cc cc-main cc--mail">
+        <span className="cc-head" aria-hidden="true">
+          <Flap />
+          <span className="cc-mark">
+            <GmailMark />
+          </span>
+          {/* confirmation only: appears on copy, says what happened */}
+          <span className="cc-pill">
+            {state === 'fail' ? <X /> : <Check />}
+            {state === 'fail' ? words.fail : words.done}
+          </span>
+        </span>
+        <span className="cc-body">
+          <span className="cc-label">{t('contact.email_label')}</span>
+          <span className="cc-value">{SITE.email}</span>
+          {/* phones: the state is spelt out under the address (the button is just its icon) */}
+          <span className="cc-note cc-tapnote" aria-hidden="true">
+            <span className="cc-swap is-text">
+              {(Object.keys(words) as CopyState[]).map((k) => (
+                <span key={k} className={state === k ? 'is-on' : ''}>
+                  {words[k]}
+                </span>
+              ))}
             </span>
           </span>
-          <span className="cc-body">
-            <span className="cc-label">Email</span>
-            <span className="cc-value">{SITE.email}</span>
-            {/* phones: the words live under the address (the chip is just the icon) */}
-            <span className="cc-note cc-tapnote" aria-hidden="true">
-              {swap(false)}
-            </span>
+          <a href={`mailto:${SITE.email}`} className="cc-alt" data-cursor="link">
+            {t('contact.mail_open')}
+            <ArrowUpRight aria-hidden="true" />
+          </a>
+        </span>
+        <button ref={btn} type="button" onClick={copy} data-cursor="link" className="cc-act cc-hit">
+          <span className="cc-swap" aria-hidden="true">
+            {(Object.keys(words) as CopyState[]).map((k) => (
+              <span key={k} className={state === k ? 'is-on' : ''}>
+                {icon(k)}
+              </span>
+            ))}
           </span>
-          <span className="cc-chip">
-            <span className="cc-swap" aria-hidden="true">
-              <Copy className={state === 'idle' ? 'is-on' : ''} />
-              <Check className={state === 'done' ? 'is-on' : ''} />
-              <X className={state === 'fail' ? 'is-on' : ''} />
-            </span>
-            <span className="cc-chip-text">{swap(true)}</span>
-          </span>
+          <span className="cc-act-text">{words.idle}</span>
+          <span className="sr-only"> {SITE.email}</span>
         </button>
-        <a href={`mailto:${SITE.email}`} className="cc-alt" data-cursor="link">
-          <span>{t('contact.mail_open')}</span>
-          <ArrowUpRight className="cc-arrow" aria-hidden="true" />
-        </a>
         <span className="sr-only" role="status">
-          {state === 'done' ? t('contact.copied') : state === 'fail' ? t('contact.copy_fail') : ''}
+          {state === 'done' ? words.done : state === 'fail' ? words.fail : ''}
         </span>
       </div>
     </CardMagnet>
@@ -303,14 +307,12 @@ export function Terminus() {
               value="github.com/eap59-ua"
               action={t('contact.profile')}
               head={
-                <>
-                  <span className="cc-tex" aria-hidden="true" />
-                  <span className="cc-head" aria-hidden="true">
-                    <span className="cc-mark">
-                      <GitHubMark />
-                    </span>
+                <span className="cc-head" aria-hidden="true">
+                  <span className="cc-tex" />
+                  <span className="cc-mark">
+                    <GitHubMark />
                   </span>
-                </>
+                </span>
               }
             />
           </li>
@@ -354,16 +356,17 @@ export function Terminus() {
               <p className="mt-0.5 text-[14.5px] text-ink-2">{t('contact.time')}</p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          {/* phones: the email first and full width, the two CVs side by side under it */}
+          <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center">
             {/* two plain downloads (never mistaken for the language switch): the active language first */}
             {(lang === 'en' ? (['en', 'es'] as const) : (['es', 'en'] as const)).map((l) => (
-              <a key={l} href={CV[l]} download data-cursor="link" className="btn btn-ghost h-12" title={t(`contact.cv_${l}`)}>
+              <a key={l} href={CV[l]} download data-cursor="link" className="btn btn-ghost h-12 w-full px-3 sm:w-auto sm:px-5" title={t(`contact.cv_${l}`)}>
                 <Download className="h-4 w-4" aria-hidden="true" />
                 CV ({l.toUpperCase()})<span className="sr-only"> — {t(`contact.cv_${l}`)}</span>
               </a>
             ))}
-            <Magnetic>
-              <a href={`mailto:${SITE.email}`} className="btn btn-primary" data-cursor="link">
+            <Magnetic className="order-first col-span-2 sm:order-none">
+              <a href={`mailto:${SITE.email}`} className="btn btn-primary w-full sm:w-auto" data-cursor="link">
                 {t('contact.cta')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
