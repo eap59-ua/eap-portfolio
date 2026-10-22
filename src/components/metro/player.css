@@ -1,0 +1,465 @@
+/* Case-study video player · "Línea Backend". The bezel stays dark in both themes (video chrome
+   reads as a screen); night only lifts it off the night paper with a hairline. Accent = line colour. */
+:root {
+  --vp-bezel: #16181d;
+  --vp-fg: #f4f1e8;
+  --vp-fg-2: #b9bcc6;
+  --vp-track: rgb(255 255 255 / 0.22);
+  --vp-hover: rgb(255 255 255 / 0.1);
+  --vp-edge: transparent;
+  --vp-shadow: 0 18px 40px -24px rgb(22 24 29 / 0.6);
+  --vp-backdrop: rgb(14 16 22 / 0.86);
+}
+[data-theme='night'] {
+  --vp-bezel: #070a12;
+  --vp-edge: var(--rule);
+  --vp-shadow: 0 22px 48px -26px rgb(0 0 0 / 0.9);
+  --vp-backdrop: rgb(4 6 12 / 0.88);
+}
+
+.vp {
+  position: relative;
+  color: var(--vp-fg);
+  font-family: 'Barlow', system-ui, sans-serif;
+}
+.vp:focus {
+  outline: none;
+}
+.vp:focus-visible {
+  outline: 3px solid var(--vp-accent);
+  outline-offset: 3px;
+}
+
+/* ── wide (16:9-ish): the bezel holds picture and bar, like the board frames ── */
+.vp[data-variant='wide'] {
+  background: var(--vp-bezel);
+  border: 1px solid var(--vp-edge);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: var(--vp-shadow);
+}
+.vp[data-variant='wide'] .vp-stage video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* ── phone: the board's phone frame, bigger; the bar sits under it ── */
+.vp[data-variant='phone'] {
+  width: min(300px, 100%);
+  margin-inline: auto;
+}
+.vp-device {
+  width: var(--dev-w, 100%);
+  margin-inline: auto;
+  background: var(--vp-bezel);
+  border: 1px solid var(--vp-edge);
+  border-radius: 34px;
+  padding: 10px;
+  box-shadow: var(--vp-shadow);
+}
+.vp[data-variant='phone'] .vp-stage video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--ar);
+  object-fit: cover;
+  border-radius: 24px;
+}
+.vp[data-variant='phone'] .vp-barwrap {
+  margin-top: 10px;
+  background: var(--vp-bezel);
+  border: 1px solid var(--vp-edge);
+  border-radius: 16px;
+  padding: 4px 6px;
+  box-shadow: var(--vp-shadow);
+}
+
+/* ── picture ── */
+.vp-stage {
+  position: relative;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.vp-stage video {
+  background: #000;
+}
+.vp-big {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  translate: -50% -50%;
+  border-radius: 999px;
+  background: var(--vp-accent);
+  color: var(--vp-on-accent);
+  box-shadow:
+    0 0 0 6px rgb(22 24 29 / 0.35),
+    0 12px 30px -10px rgb(0 0 0 / 0.6);
+  opacity: 0;
+  scale: 0.9;
+  pointer-events: none;
+  transition:
+    opacity 160ms ease,
+    scale 200ms var(--ease-out);
+}
+.vp-big[data-show] {
+  opacity: 1;
+  scale: 1;
+}
+@media (max-width: 639px) {
+  .vp-big {
+    width: 60px;
+    height: 60px;
+  }
+}
+@media (hover: hover) {
+  .vp-stage:hover .vp-big[data-show] {
+    scale: 1.06;
+  }
+}
+
+/* ── control bar: seek on its own row when narrow, one row when there's room ── */
+.vp-barwrap {
+  container: vpbar / inline-size;
+}
+.vp-bar {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'seek seek seek seek'
+    'play time . tools';
+  align-items: center;
+  column-gap: 4px;
+  padding-top: 2px;
+}
+@container vpbar (min-width: 520px) {
+  .vp-bar {
+    grid-template-areas: 'play time seek tools';
+    column-gap: 10px;
+    padding-top: 6px;
+  }
+}
+.vp-play {
+  grid-area: play;
+}
+.vp-time {
+  grid-area: time;
+  padding-inline: 4px;
+  font-family: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--vp-fg);
+}
+.vp-time-sep {
+  color: var(--vp-fg-2);
+}
+.vp-tools {
+  grid-area: tools;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* buttons: 44 px targets, always visible (touch has no hover) */
+.vp-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 10px;
+  border-radius: 10px;
+  color: var(--vp-fg);
+  font-family: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 120ms var(--ease-out);
+}
+.vp-btn:active {
+  transform: scale(0.94);
+}
+@media (hover: hover) {
+  .vp-btn:hover {
+    background: var(--vp-hover);
+  }
+}
+.vp .vp-btn:focus-visible,
+.vp-close:focus-visible {
+  outline: 3px solid var(--vp-accent);
+  outline-offset: 1px;
+  border-radius: 10px;
+}
+.vp-btn[aria-pressed='true'] {
+  background: var(--vp-accent);
+  color: var(--vp-on-accent);
+}
+.vp-btn[aria-disabled='true'] {
+  color: var(--vp-fg-2);
+  opacity: 0.6;
+  cursor: help;
+}
+.vp-btn[aria-disabled='true']:active {
+  transform: none;
+}
+.vp-btn-text {
+  display: none;
+}
+@container vpbar (min-width: 520px) {
+  .vp-enlarge {
+    padding: 0 14px 0 12px;
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--vp-fg) 28%, transparent);
+  }
+  .vp-enlarge .vp-btn-text {
+    display: inline;
+  }
+  .vp-enlarge .vp-tip {
+    display: none;
+  }
+}
+
+/* tooltips: the accessible name is aria-label; this is the visible echo (hover, keyboard focus, tap) */
+.vp-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  translate: -50% 0;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: var(--vp-fg);
+  color: var(--vp-bezel);
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 140ms ease;
+  z-index: 2;
+}
+.vp-tools .vp-btn:last-child .vp-tip {
+  left: auto;
+  right: 0;
+  translate: none;
+}
+.vp-btn:focus-visible .vp-tip,
+.vp-btn[data-show] .vp-tip {
+  opacity: 1;
+}
+@media (hover: hover) {
+  .vp-btn:hover .vp-tip {
+    opacity: 1;
+    transition-delay: 350ms;
+  }
+}
+
+/* seek: a native range (keyboard + screen readers for free), 44 px tall hit area */
+.vp-seek {
+  grid-area: seek;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 40px;
+  margin: 0;
+  padding: 0 6px;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  touch-action: none;
+}
+.vp-seek:focus {
+  outline: none;
+}
+.vp-seek:focus-visible {
+  outline: 3px solid var(--vp-accent);
+  outline-offset: 0;
+}
+.vp-seek::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, var(--vp-accent) var(--p, 0%), var(--vp-track) var(--p, 0%));
+}
+.vp-seek::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, var(--vp-accent) var(--p, 0%), var(--vp-track) var(--p, 0%));
+}
+.vp-seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -6px;
+  border: 3px solid var(--vp-accent);
+  border-radius: 50%;
+  background: var(--vp-fg);
+  transition: scale 120ms var(--ease-out);
+}
+.vp-seek::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 3px solid var(--vp-accent);
+  border-radius: 50%;
+  background: var(--vp-fg);
+}
+.vp-seek:active::-webkit-slider-thumb {
+  scale: 1.2;
+}
+
+/* ── full screen: picture fills, bar at the bottom ── */
+.vp:fullscreen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0 12px 10px;
+  border: 0;
+  border-radius: 0;
+  background: #000;
+  box-shadow: none;
+}
+.vp:fullscreen .vp-device {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.vp:fullscreen .vp-stage {
+  flex: 1;
+  min-height: 0;
+}
+.vp:fullscreen .vp-device .vp-stage {
+  height: 100%;
+}
+.vp:fullscreen .vp-stage video {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+  border-radius: 0;
+}
+.vp:fullscreen .vp-enlarge {
+  display: none;
+}
+.vp:fullscreen .vp-barwrap {
+  margin-top: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* ── "Ampliar": native modal dialog (Escape, inert page, focus return) ── */
+.vp-viewer {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--vp-fg);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+.vp-viewer::backdrop {
+  background: var(--vp-backdrop);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+html:has(.vp-viewer[open]) {
+  overflow: hidden;
+}
+.vp-viewer-inner {
+  --vp-top: 64px;
+  --vp-bot: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: var(--vp-top) 16px var(--vp-bot);
+}
+.vp-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  color: var(--vp-fg);
+  transition: background-color 160ms ease;
+}
+@media (hover: hover) {
+  .vp-close:hover {
+    background: rgb(255 255 255 / 0.2);
+  }
+}
+/* as large as the screen allows, at its own aspect: width capped by the height left for picture + bar */
+.vp[data-viewer][data-variant='wide'] {
+  width: min(100%, 1600px, calc((100dvh - var(--vp-top) - var(--vp-bot) - 70px) * var(--arn) + 18px));
+}
+.vp[data-viewer][data-variant='phone'] {
+  width: min(100%, 560px);
+  --dev-w: min(100%, calc((100dvh - var(--vp-top) - var(--vp-bot) - 90px) * var(--arn) + 22px));
+}
+@media (max-width: 539px) {
+  .vp[data-viewer][data-variant='phone'] {
+    --dev-w: min(100%, calc((100dvh - var(--vp-top) - var(--vp-bot) - 130px) * var(--arn) + 22px));
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .vp-viewer[open] .vp {
+    animation: vp-in 220ms var(--ease-out) both;
+  }
+  .vp-viewer[open]::backdrop {
+    animation: vp-fade 180ms ease both;
+  }
+}
+@keyframes vp-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+@keyframes vp-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-big,
+  .vp-btn,
+  .vp-tip,
+  .vp-seek::-webkit-slider-thumb {
+    transition: none;
+  }
+  .vp-btn:active,
+  .vp-seek:active::-webkit-slider-thumb {
+    transform: none;
+    scale: none;
+  }
+}

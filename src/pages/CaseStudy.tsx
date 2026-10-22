@@ -6,9 +6,9 @@ import { ArrowLeft, ArrowRight, Award, Check } from 'lucide-react'
 import { PROJECTS } from '../data/projects'
 import { CASE_STUDIES } from '../data/caseStudies'
 import { PROJECT_LINE } from '../data/lines'
-import { MEDIA } from '../data/media'
+import { MEDIA, MEDIA_EXTRA } from '../data/media'
 import { TechLogo } from '../data/techIcons'
-import { DemoVideo } from '../components/metro/DemoVideo'
+import { VideoPlayer } from '../components/metro/VideoPlayer'
 import { CodeButton, LineBadge } from '../components/metro/buttons'
 import { NotFound } from './NotFound'
 
@@ -52,6 +52,8 @@ export function CaseStudy() {
   const nextL = PROJECT_LINE[next.slug]
   const nextTitle = next.titleKey ? t(next.titleKey) : next.title
   const media = MEDIA[project.slug]
+  const extra = MEDIA_EXTRA[project.slug] ?? []
+  const accent = `var(--${L.line})`
 
   return (
     <article className="relative pb-24 pt-[calc(var(--bar-h)+28px)]" style={lc}>
@@ -70,7 +72,7 @@ export function CaseStudy() {
           {t('cs.back')}
         </Link>
 
-        <header className={`mt-6 grid gap-8 ${media?.portrait ? 'md:grid-cols-[minmax(0,1fr)_220px]' : ''}`}>
+        <header className={`mt-6 grid gap-8 ${media?.portrait ? 'md:grid-cols-[minmax(0,1fr)_300px] md:items-start' : ''}`}>
           <div>
             <p className="flex flex-wrap items-center gap-2.5">
               <LineBadge line={L.line} n={`L${L.n}`} dark={L.dark} />
@@ -93,13 +95,24 @@ export function CaseStudy() {
               </CodeButton>
             </div>
           </div>
-          {media?.portrait && <DemoVideo slug={project.slug} title={`${title} — demo`} />}
+          {media?.portrait && (
+            <figure>
+              <VideoPlayer media={media} title={`${title} — ${t('player.ecoPhone')}`} accent={accent} dark={L.dark} />
+              <figcaption className="sign-label mt-3 text-center text-[14px] text-ink-3">{t('player.ecoPhone')}</figcaption>
+            </figure>
+          )}
         </header>
         {media && !media.portrait && (
           <div className="mt-10">
-            <DemoVideo slug={project.slug} title={`${title} — demo`} />
+            <VideoPlayer media={media} title={`${title} — demo`} accent={accent} dark={L.dark} />
           </div>
         )}
+        {extra.map((x) => (
+          <figure key={x.media.src} className="mt-10">
+            <VideoPlayer media={x.media} title={`${title} — ${t(x.labelKey)}`} accent={accent} dark={L.dark} />
+            <figcaption className="sign-label mt-3 text-[14px] text-ink-3">{t(x.labelKey)}</figcaption>
+          </figure>
+        ))}
 
         <div className="mt-14 grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)]">
           {/* the platform's own little line: one station per section */}
