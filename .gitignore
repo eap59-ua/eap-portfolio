@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .claude/
+
+# Playwright MCP logs and snapshots
+.playwright-mcp/
