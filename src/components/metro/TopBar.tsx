@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
-import { Pause, Play, X, ChevronDown } from 'lucide-react'
+import { Pause, Play, X, ChevronDown, Moon, Sun } from 'lucide-react'
+import { setTheme, useTheme } from '../../lib/theme'
 import { SECTIONS, useCurrentSection } from '../../lib/sections'
 import { setMotionPaused, useMotionPaused } from '../../lib/motion'
 import { MOBILE_MAP } from '../../data/network'
@@ -45,6 +46,25 @@ export function LangSwitch({ className = '' }: { className?: string }) {
         </button>
       ))}
     </div>
+  )
+}
+
+/** day ⇄ night by hand (the default follows the system) */
+function ThemeButton() {
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const night = theme === 'night'
+  const label = t(night ? 'bar.to_day' : 'bar.to_night')
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(night ? 'day' : 'night')}
+      aria-label={label}
+      title={label}
+      className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink-3 text-ink-2 transition-colors hover:border-ink hover:text-ink"
+    >
+      {night ? <Sun className="h-4 w-4" aria-hidden="true" /> : <Moon className="h-4 w-4" aria-hidden="true" />}
+    </button>
   )
 }
 
@@ -126,6 +146,7 @@ export function TopBar() {
           </nav>
           <div className="flex items-center gap-3">
             <LangSwitch />
+            <ThemeButton />
             <span className="hidden lg:block">
               <PauseButton />
             </span>

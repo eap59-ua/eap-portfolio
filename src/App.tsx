@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SmoothScroll, scrollToHash } from './components/layout/SmoothScroll'
 import { TopBar, MiniPlan } from './components/metro/TopBar'
 import { GlowField } from './components/motion/GlowField'
+import { useTheme } from './lib/theme'
 import { SiteFooter } from './components/metro/SiteFooter'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
@@ -28,9 +29,10 @@ function HashScroll() {
 // Client-only extras mount after hydration: the prerendered HTML never contains
 // them (lazy chunks can't render on the server) nor depends on the theme.
 function ClientOnly({ night, children }: { night?: boolean; children: ReactNode }) {
-  const [on, setOn] = useState(false)
-  useEffect(() => setOn(!night || document.documentElement.dataset.theme === 'night'), [night])
-  return on ? <Suspense fallback={null}>{children}</Suspense> : null
+  const [mounted, setMounted] = useState(false)
+  const theme = useTheme()
+  useEffect(() => setMounted(true), [])
+  return mounted && (!night || theme === 'night') ? <Suspense fallback={null}>{children}</Suspense> : null
 }
 
 function RouteFallback() {

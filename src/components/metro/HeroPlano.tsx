@@ -42,7 +42,26 @@ export function HeroPlano() {
             <span className="block whitespace-nowrap">Aldana Pessoa</span>
           </h1>
           <p className="mt-4 text-[19px] font-semibold leading-snug text-ink sm:text-2xl lg:mt-6">{nb(t('hero.role'))}</p>
-          <RichText html={t('hero.pitch')} className="mt-3 max-w-[470px] text-pretty text-base leading-relaxed text-ink-2 sm:text-lg lg:mt-4" />
+          {/* the metro "service status" board: where he is and that he's available, in 3 seconds */}
+          <div className="mt-4 inline-block max-w-full rounded-lg border border-rule bg-paper-card px-3.5 py-2.5 text-[14px] leading-snug lg:mt-5">
+            <p className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5">
+              <span className="sign-label text-[12px] text-ink-3">{t('status.label')}</span>
+              <span className="inline-flex items-center gap-1.5 font-semibold text-eco">
+                <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
+                  <span className="loop-anim absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-eco" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-eco" />
+                </span>
+                {t('status.state')}
+              </span>
+            </p>
+            <p className="mt-1 flex flex-wrap items-center gap-x-1.5 font-medium text-ink">
+              <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-ink-3" aria-hidden="true" />
+              <span>{t('status.where')}</span>
+              <span className="text-ink-3" aria-hidden="true">·</span>
+              <span>{t('status.move')}</span>
+            </p>
+          </div>
+          <RichText html={t('hero.pitch')} className="mt-4 max-w-[470px] text-pretty text-base leading-relaxed text-ink-2 sm:text-lg lg:mt-4" />
           <div className="mt-6 flex flex-wrap items-center gap-3 lg:mt-8">
             <Magnetic className="w-full sm:w-auto">
               <a href="#proyectos" className="btn btn-primary w-full sm:w-auto" data-cursor="link">
@@ -69,10 +88,6 @@ export function HeroPlano() {
               </a>
             </Magnetic>
           </div>
-          <p className="mt-6 flex max-w-[470px] items-start gap-2 text-sm leading-relaxed text-ink-3 lg:mt-7">
-            <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
-            {t('hero.subheadline')}
-          </p>
         </div>
 
         <div className="mt-8 lg:mt-0 lg:pt-6">

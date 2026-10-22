@@ -44,6 +44,48 @@ export function SmoothScroll() {
   // touch scrolling is already smooth and native: Lenis only for wheel/trackpad
   const fine = useFinePointer()
 
+  // Resizing reflows the page (and swaps the journey between pinned and vertical),
+  // which defeats the browser's scroll anchoring: keep the reader in the same
+  // section, at the same offset, once the resize settles.
+  useEffect(() => {
+    let anchor: { el: HTMLElement; top: number } | null = null
+    let settling = 0
+    let raf = 0
+    const remember = () => {
+      raf = 0
+      if (settling) return
+      let pick: HTMLElement | null = null
+      for (const el of document.querySelectorAll<HTMLElement>('main section[id]')) {
+        if (el.getBoundingClientRect().top <= window.innerHeight * 0.3) pick = el
+      }
+      anchor = pick ? { el: pick, top: pick.getBoundingClientRect().top } : null
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(remember)
+    }
+    const onResize = () => {
+      window.clearTimeout(settling)
+      settling = window.setTimeout(() => {
+        settling = 0
+        if (anchor?.el.isConnected && window.scrollY > 0) {
+          const y = window.scrollY + anchor.el.getBoundingClientRect().top - anchor.top
+          // native, not Lenis: its limits still hold the old page height (it syncs on this scroll)
+          window.scrollTo({ top: y, behavior: 'instant' })
+        }
+        remember()
+      }, 200)
+    }
+    remember()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+      window.clearTimeout(settling)
+      cancelAnimationFrame(raf)
+    }
+  }, [])
+
   // in-page anchors: Lenis when it's running, a plain jump otherwise
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
