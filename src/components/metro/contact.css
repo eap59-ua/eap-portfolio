@@ -1,0 +1,554 @@
+/* Contacto · one card per service, each wearing its own identity.
+   Phones: a compact row (brand column | text | action). From sm: a card with a
+   brand header on top, the text, and an action footer pinned to the bottom so
+   the four footers line up. Brand colours are fixed; surfaces follow the theme. */
+
+.cc {
+  /* GitHub: inverted ink */
+  --gh-bg: #24292f;
+  --gh-bd: #24292f;
+  --gh-fg: #ffffff;
+  --gh-mute: #d1d9e0;
+  --gh-rule: rgba(255, 255, 255, 0.16);
+  --gh-sq: rgba(255, 255, 255, 0.075);
+  /* LinkedIn */
+  --li: #0a66c2;
+  --li-2: #004182;
+  /* Gmail envelope */
+  --flap: color-mix(in srgb, var(--paper) 55%, var(--card));
+  --ok: #137333;
+  --bad: #c5221f;
+  /* Maps tile (Google's day palette) */
+  --m-land: #eef0f2;
+  --m-road: #ffffff;
+  --m-hwy: #fde293;
+  --m-hwy-edge: #f2c046;
+  --m-water: #aecbfa;
+  --m-park: #ceead6;
+  --cc-rule: var(--rule);
+}
+[data-theme='night'] .cc {
+  --gh-bg: #0d1117;
+  --gh-bd: #3d444d;
+  --gh-fg: #f0f6fc;
+  --gh-mute: #b7bdc8;
+  --gh-rule: rgba(240, 246, 252, 0.14);
+  --gh-sq: rgba(240, 246, 252, 0.06);
+  --ok: #81c995;
+  --bad: #f28b82;
+  /* Maps' own night style */
+  --m-land: #242f3e;
+  --m-road: #38414e;
+  --m-hwy: #746855;
+  --m-hwy-edge: #1f2835;
+  --m-water: #17263c;
+  --m-park: #263c3f;
+}
+
+/* the magnet wrapper must not break the equal-height grid */
+.cc-mag,
+.cc-mag > span {
+  display: block;
+  height: 100%;
+}
+
+/* ── frame ─────────────────────────────────────────────────────────────── */
+.card.cc {
+  height: 100%;
+  color: var(--ink);
+  text-align: left;
+  transition: border-color 0.2s ease;
+}
+.cc-main {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 72px;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+}
+.cc-head {
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px 0 0 15px;
+  overflow: hidden;
+}
+.cc-mark {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+.cc-body {
+  position: relative;
+  min-width: 0;
+  padding: 12px 6px 12px 12px;
+}
+.cc-label {
+  display: block;
+  font-family: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+}
+.cc-value {
+  display: block;
+  margin-top: 5px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+.cc-note {
+  display: block;
+  margin-top: 3px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--ink-3);
+}
+.cc-act {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px 0 4px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+/* phones: the arrow alone says "link"; the words stay in the accessible name */
+.cc-act-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.cc-arrow {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: transform 0.22s var(--ease-out);
+}
+
+@media (min-width: 640px) {
+  .cc-main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 84px auto 1fr;
+    align-items: start;
+  }
+  .cc-head {
+    height: 84px;
+    border-radius: 15px 15px 0 0;
+    justify-content: flex-start;
+    align-items: flex-end;
+    padding: 0 18px 10px;
+  }
+  .cc-body {
+    padding: 16px 20px 0;
+  }
+  .cc-label {
+    font-size: 22px;
+  }
+  .cc-value {
+    margin-top: 7px;
+    font-size: 13px;
+  }
+  .cc-note {
+    margin-top: 4px;
+    font-size: 12px;
+  }
+  .cc-act,
+  .cc-alt {
+    align-self: end;
+    margin: 16px 20px 0;
+    padding: 12px 0 16px;
+    border-top: 1px solid var(--cc-rule);
+  }
+  .cc-act-text {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+  .cc-act .cc-arrow {
+    margin-left: auto;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .cc:hover .cc-arrow,
+  .cc-alt:hover .cc-arrow {
+    transform: translate(2px, -2px);
+  }
+}
+
+/* ── GitHub: inverted ink + a contribution-grid texture (pure texture, no data) */
+.card.cc--gh {
+  --lc: var(--gh-fg);
+  --cc-rule: var(--gh-rule);
+  background: var(--gh-bg);
+  border-color: var(--gh-bd);
+  color: var(--gh-fg);
+}
+.cc--gh .cc-value {
+  color: var(--gh-mute);
+}
+.cc--gh .cc-act {
+  color: var(--gh-fg);
+}
+.cc-tex {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.cc-tex::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 30%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect x='1.5' y='1.5' width='11' height='11' rx='2.5' fill='%23fff'/%3E%3C/svg%3E");
+  background-size: 14px 14px;
+  background-position: right 6px top 6px;
+  -webkit-mask-image: radial-gradient(120% 100% at 100% 0%, #000 0%, rgba(0, 0, 0, 0.55) 38%, transparent 72%);
+  mask-image: radial-gradient(120% 100% at 100% 0%, #000 0%, rgba(0, 0, 0, 0.55) 38%, transparent 72%);
+  opacity: 0.085;
+  transition: opacity 0.3s ease;
+}
+[data-theme='night'] .cc-tex::before {
+  opacity: 0.1;
+}
+@media (hover: hover) {
+  .cc--gh:hover .cc-tex::before {
+    opacity: 0.16;
+  }
+  .card.cc--gh:hover {
+    border-color: #57606a;
+  }
+}
+.cc--gh .cc-mark svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* ── LinkedIn: the blue band ───────────────────────────────────────────── */
+.cc--li {
+  --lc: var(--li);
+}
+[data-theme='night'] .cc--li {
+  --lc: #70b5f9;
+}
+.cc--li .cc-head {
+  background: var(--li);
+  color: #fff;
+  transition: background-color 0.2s ease;
+}
+.cc--li .cc-mark svg {
+  width: 30px;
+  height: 30px;
+}
+@media (hover: hover) {
+  .cc--li:hover .cc-head {
+    background: var(--li-2);
+  }
+  .card.cc--li:hover {
+    border-color: var(--li);
+  }
+}
+
+/* ── Gmail: the envelope, its flap traced in the four colours ──────────── */
+.cc--mail.glow-card::after {
+  background: conic-gradient(
+    from calc(var(--start, 0) * 1deg),
+    transparent 0deg,
+    #4285f4 12deg 26deg,
+    #ea4335 26deg 40deg,
+    #fbbc05 40deg 54deg,
+    #34a853 54deg 66deg,
+    transparent 112deg
+  );
+}
+.card.cc--mail {
+  display: flex;
+  flex-direction: column;
+}
+.cc-flap {
+  display: none;
+}
+.cc--mail .cc-mark svg {
+  width: 32px;
+  height: 24px;
+}
+/* phones: the four colours run down the brand column instead */
+.cc--mail .cc-head::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(#4285f4 0 25%, #ea4335 25% 50%, #fbbc05 50% 75%, #34a853 75%);
+}
+.cc-hit {
+  border-radius: 15px;
+}
+.cc-hit:focus-visible {
+  border-radius: 15px;
+}
+.cc-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 38px;
+  height: 38px;
+  margin-right: 14px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--card);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+/* phones: icon-only chip, its words read out but shown under the address */
+.cc-chip-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.cc-tapnote {
+  transition: color 0.2s ease;
+}
+.cc-hit[data-state='done'] .cc-chip {
+  border-color: color-mix(in srgb, var(--ok) 55%, transparent);
+  background: color-mix(in srgb, #34a853 12%, var(--card));
+  color: var(--ok);
+}
+.cc-hit[data-state='done'] .cc-tapnote {
+  color: var(--ok);
+}
+.cc-hit[data-state='fail'] .cc-chip,
+.cc-hit[data-state='fail'] .cc-tapnote {
+  color: var(--bad);
+}
+/* the icon and the words morph in place: stacked, only opacity/transform move */
+.cc-swap {
+  display: inline-grid;
+  align-items: center;
+}
+.cc-swap > * {
+  grid-area: 1 / 1;
+  transition:
+    opacity 0.18s ease,
+    transform 0.26s var(--ease-out);
+}
+.cc-swap > :not(.is-on) {
+  opacity: 0;
+  transform: scale(0.5);
+}
+.cc-swap.is-text > :not(.is-on) {
+  transform: translateY(5px);
+}
+.cc-swap > .is-on {
+  transition-delay: 0.04s;
+}
+.cc-swap svg {
+  width: 15px;
+  height: 15px;
+}
+.cc-alt {
+  display: none;
+}
+@media (hover: hover) {
+  .card.cc--mail:hover {
+    border-color: color-mix(in srgb, #ea4335 60%, var(--rule));
+  }
+  .cc-hit:not([data-state='done']):hover .cc-chip {
+    border-color: var(--ink-3);
+    color: var(--ink);
+  }
+}
+
+@media (min-width: 640px) {
+  .cc-flap {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .cc--mail .cc-head::before {
+    display: none;
+  }
+  .cc--mail .cc-mark {
+    justify-content: flex-start;
+  }
+  .cc--mail .cc-mark svg {
+    width: 36px;
+    height: 27px;
+  }
+  /* the state chip sits on the envelope, level with the mark */
+  .cc-chip {
+    position: absolute;
+    top: 44px;
+    right: 14px;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 5px 10px 5px 8px;
+  }
+  .cc-chip-text {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+  .cc-tapnote {
+    display: none;
+  }
+  .cc--mail .cc-main {
+    grid-template-rows: 84px 1fr;
+  }
+  .cc-alt {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.2;
+    color: var(--ink);
+    border-radius: 0 0 6px 6px;
+  }
+  .cc-alt .cc-arrow {
+    margin-left: auto;
+  }
+  .cc-alt:hover span {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+/* ── Maps: a stylised tile (the coast on the east, like both cities) + pin ── */
+.cc--map {
+  --lc: #1a73e8;
+}
+[data-theme='night'] .cc--map {
+  --lc: #8ab4f8;
+}
+.cc-tile {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.cc-pin {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 37px;
+  margin-top: -10px;
+  isolation: isolate;
+  transition: transform 0.25s var(--ease-out);
+}
+.cc-pin svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+}
+.cc-pin::after {
+  /* the shadow where the tip lands */
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 12px;
+  height: 4px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+  z-index: -1;
+}
+@media (min-width: 640px) {
+  .cc--map .cc-mark {
+    width: 40px;
+    justify-content: center;
+  }
+}
+@media (hover: hover) {
+  .card.cc--map:hover {
+    border-color: var(--lc);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .cc--map:hover .cc-pin svg {
+    transform: translateY(-3px);
+  }
+  .cc-pin svg {
+    transition: transform 0.25s var(--ease-out);
+  }
+}
+/* drops in once when the card comes into view (never with reduced motion) */
+@media (prefers-reduced-motion: no-preference) {
+  .cc-head[data-drop='wait'] .cc-pin {
+    opacity: 0;
+    transform: translateY(-26px);
+  }
+  .cc-head[data-drop='go'] .cc-pin {
+    animation: cc-pin-drop 0.62s cubic-bezier(0.3, 0.9, 0.35, 1) 0.15s both;
+  }
+  .cc-head[data-drop='go'] .cc-pin::after {
+    animation: cc-pin-shadow 0.62s ease-out 0.15s both;
+  }
+}
+@keyframes cc-pin-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-26px);
+  }
+  45% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(1.5px) scaleY(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes cc-pin-shadow {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
