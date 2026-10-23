@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, MouseEvent, ReactNode, RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Expand, Maximize, Minimize, Pause, Play, RotateCcw, Volume2, VolumeX, X } from 'lucide-react'
+import { Maximize, Minimize, Pause, Play, RotateCcw, Volume2, VolumeX, X, ZoomIn } from 'lucide-react'
 import type { DemoMedia } from '../../data/media'
 import { useMotionPaused, useReducedMotion } from '../../lib/motion'
 import './player.css'
@@ -13,27 +13,32 @@ const fmt = (s: number) => {
   return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`
 }
 
-type FsVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void; webkitDisplayingFullscreen?: boolean }
+type FsVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void }
 type FsBox = HTMLDivElement & { webkitRequestFullscreen?: () => void }
 type FsDoc = Document & { webkitFullscreenElement?: Element | null; webkitExitFullscreen?: () => void }
 
 interface Props {
   media: DemoMedia
+  /** project title */
   title: string
+  /** what this clip shows, when the data has a caption for it */
+  label?: string
   /** the project's line colour, e.g. var(--eco) */
   accent: string
   /** light line colour (EasyCab yellow): dark icons on it */
   dark?: boolean
 }
 
-export function VideoPlayer({ media, title, accent, dark }: Props) {
+export function VideoPlayer({ media, title, label, accent, dark }: Props) {
   const { t } = useTranslation()
   const dialogRef = useRef<HTMLDialogElement>(null)
   const enlargeRef = useRef<HTMLButtonElement>(null)
   const inlineVideo = useRef<HTMLVideoElement>(null)
   const viewerVideo = useRef<HTMLVideoElement>(null)
+  const titleId = useId()
   const [open, setOpen] = useState(false)
   const [startAt, setStartAt] = useState(0)
+  const name = `${title} — ${label ?? 'demo'}`
 
   const openViewer = () => {
     const v = inlineVideo.current
@@ -64,15 +69,24 @@ export function VideoPlayer({ media, title, accent, dark }: Props) {
 
   return (
     <>
-      <Core media={media} title={title} style={style} videoRef={inlineVideo} enlargeRef={enlargeRef} onEnlarge={openViewer} />
+      <Core media={media} name={name} style={style} videoRef={inlineVideo} enlargeRef={enlargeRef} onEnlarge={openViewer} />
       {/* top layer: Escape, inert page and focus return come with showModal */}
-      <dialog ref={dialogRef} className="vp-viewer" aria-label={t('player.viewer', { title })} onClose={onClose} onClick={onBackdrop} data-lenis-prevent style={style}>
+      <dialog ref={dialogRef} className="vp-viewer" aria-labelledby={titleId} onClose={onClose} onClick={onBackdrop} data-lenis-prevent style={style}>
         {open && (
-          <div className="vp-viewer-inner" onClick={onBackdrop}>
-            <button type="button" className="vp-close" aria-label={t('player.close')} onClick={() => dialogRef.current?.close()}>
-              <X className="h-6 w-6" aria-hidden="true" />
-            </button>
-            <Core media={hd} title={title} style={style} videoRef={viewerVideo} viewer startAt={startAt} />
+          <div className="vp-viewer-inner">
+            <div className="vp-viewer-head">
+              <p id={titleId} className="vp-viewer-title">
+                <span className="vp-viewer-name">{title}</span>
+                {label && <span className="vp-viewer-label"> · {label}</span>}
+                <span className="vp-viewer-dur tnum"> ({fmt(media.dur)})</span>
+              </p>
+              <button type="button" className="vp-close" aria-label={t('player.close')} onClick={() => dialogRef.current?.close()}>
+                <X className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <div className="vp-viewer-body" onClick={onBackdrop}>
+              <Core media={hd} name={name} style={style} videoRef={viewerVideo} viewer startAt={startAt} />
+            </div>
           </div>
         )}
       </dialog>
@@ -82,7 +96,7 @@ export function VideoPlayer({ media, title, accent, dark }: Props) {
 
 interface CoreProps {
   media: DemoMedia
-  title: string
+  name: string
   style: CSSProperties
   videoRef: RefObject<HTMLVideoElement | null>
   viewer?: boolean
@@ -91,7 +105,7 @@ interface CoreProps {
   onEnlarge?: () => void
 }
 
-function Core({ media, title, style, videoRef, viewer, startAt = 0, enlargeRef, onEnlarge }: CoreProps) {
+function Core({ media, name, style, videoRef, viewer, startAt = 0, enlargeRef, onEnlarge }: CoreProps) {
   const { t } = useTranslation()
   const boxRef = useRef<FsBox>(null)
   const keysId = useId()
@@ -214,7 +228,7 @@ function Core({ media, title, style, videoRef, viewer, startAt = 0, enlargeRef, 
   }
 
   const portrait = !!media.portrait
-  const label = playing ? t('player.pause') : ended ? t('player.replay') : t('player.play')
+  const playLabel = playing ? t('player.pause') : ended ? t('player.replay') : t('player.play')
   const PlayIcon = playing ? Pause : ended ? RotateCcw : Play
   const pct = dur ? (cur / dur) * 100 : 0
   const big = !playing && (!started || ended)
@@ -230,7 +244,7 @@ function Core({ media, title, style, videoRef, viewer, startAt = 0, enlargeRef, 
         preload={viewer ? 'metadata' : 'none'}
         playsInline
         muted={muted}
-        aria-label={title}
+        aria-label={name}
         onPlay={() => {
           setPlaying(true)
           setStarted(true)
@@ -252,6 +266,51 @@ function Core({ media, title, style, videoRef, viewer, startAt = 0, enlargeRef, 
     </div>
   )
 
+  const bar = (
+    <div className="vp-barwrap">
+      <div className="vp-bar">
+        <Btn className="vp-play" label={playLabel} onClick={toggle}>
+          <PlayIcon className="h-5 w-5" fill={playing || ended ? 'none' : 'currentColor'} aria-hidden="true" />
+        </Btn>
+        <span className="vp-time tnum">
+          {fmt(cur)} <span className="vp-time-sep">/</span> {fmt(dur)}
+        </span>
+        <input
+          className="vp-seek"
+          type="range"
+          min={0}
+          max={dur}
+          step="any"
+          value={Math.min(cur, dur)}
+          onChange={(e) => seek(Number(e.target.value))}
+          aria-label={t('player.seek')}
+          aria-valuetext={t('player.timeOf', { cur: fmt(cur), dur: fmt(dur) })}
+          style={{ ['--p' as string]: `${pct}%` } as CSSProperties}
+        />
+        <span className="vp-tools">
+          {media.audio ? (
+            <Btn label={t('player.mute')} pressed={muted} onClick={mute}>
+              {muted ? <VolumeX className="h-5 w-5" aria-hidden="true" /> : <Volume2 className="h-5 w-5" aria-hidden="true" />}
+            </Btn>
+          ) : (
+            // honest state: no sound track to toggle (ffprobe), so no fake switch
+            <Btn label={t('player.noAudio')} disabled showTip={tip} onClick={flashTip}>
+              <VolumeX className="h-5 w-5" aria-hidden="true" />
+            </Btn>
+          )}
+          {onEnlarge && (
+            <Btn btnRef={enlargeRef} className="vp-enlarge" label={t('player.enlarge')} text={t('player.enlarge')} onClick={onEnlarge}>
+              <ZoomIn className="h-5 w-5" aria-hidden="true" />
+            </Btn>
+          )}
+          <Btn className="vp-fs" label={t('player.fullscreen')} text={t('player.fullscreen')} pressed={fs} onClick={fullscreen}>
+            {fs ? <Minimize className="h-5 w-5" aria-hidden="true" /> : <Maximize className="h-5 w-5" aria-hidden="true" />}
+          </Btn>
+        </span>
+      </div>
+    </div>
+  )
+
   return (
     <div
       ref={boxRef}
@@ -259,60 +318,43 @@ function Core({ media, title, style, videoRef, viewer, startAt = 0, enlargeRef, 
       data-variant={portrait ? 'phone' : 'wide'}
       data-viewer={viewer || undefined}
       role="group"
-      aria-label={t('player.region', { title })}
+      aria-label={t('player.region', { title: name })}
       aria-describedby={keysId}
       tabIndex={-1}
       onKeyDown={onKey}
       style={{ ...style, ['--ar' as string]: `${media.w} / ${media.h}`, ['--arn' as string]: media.w / media.h } as CSSProperties}
     >
-      {portrait ? <div className="vp-device">{stage}</div> : stage}
-      <div className="vp-barwrap">
-        <div className="vp-bar">
-          <Btn className="vp-play" label={label} onClick={toggle}>
-            <PlayIcon className="h-5 w-5" fill={playing || ended ? 'none' : 'currentColor'} aria-hidden="true" />
-          </Btn>
-          <span className="vp-time tnum">
-            {fmt(cur)} <span className="vp-time-sep">/</span> {fmt(dur)}
-          </span>
-          <input
-            className="vp-seek"
-            type="range"
-            min={0}
-            max={dur}
-            step="any"
-            value={Math.min(cur, dur)}
-            onChange={(e) => seek(Number(e.target.value))}
-            aria-label={t('player.seek')}
-            aria-valuetext={t('player.timeOf', { cur: fmt(cur), dur: fmt(dur) })}
-            style={{ ['--p' as string]: `${pct}%` } as CSSProperties}
-          />
-          <span className="vp-tools">
-            {media.audio ? (
-              <Btn label={t('player.mute')} pressed={muted} onClick={mute}>
-                {muted ? <VolumeX className="h-5 w-5" aria-hidden="true" /> : <Volume2 className="h-5 w-5" aria-hidden="true" />}
-              </Btn>
-            ) : (
-              // honest state: no sound track to toggle (ffprobe), so no fake switch
-              <Btn label={t('player.noAudio')} disabled showTip={tip} onClick={flashTip}>
-                <VolumeX className="h-5 w-5" aria-hidden="true" />
-              </Btn>
-            )}
-            {onEnlarge && (
-              <Btn btnRef={enlargeRef} className="vp-enlarge" label={t('player.enlarge')} text={t('player.enlarge')} onClick={onEnlarge}>
-                <Expand className="h-5 w-5" aria-hidden="true" />
-              </Btn>
-            )}
-            <Btn label={t('player.fullscreen')} pressed={fs} onClick={fullscreen}>
-              {fs ? <Minimize className="h-5 w-5" aria-hidden="true" /> : <Maximize className="h-5 w-5" aria-hidden="true" />}
-            </Btn>
-          </span>
+      {/* phone: the bar is the handset's chin, inside the same body */}
+      {portrait ? (
+        <div className="vp-device">
+          {stage}
+          {bar}
         </div>
-      </div>
+      ) : (
+        <>
+          {stage}
+          {bar}
+        </>
+      )}
       <p id={keysId} className="sr-only">
         {t('player.keys')}
       </p>
     </div>
   )
+}
+
+/** keep a tooltip centred over its button, but 8 px inside the player's frame */
+function placeTip(btn: HTMLElement) {
+  const tip = btn.querySelector<HTMLElement>('.vp-tip')
+  const frame = btn.closest<HTMLElement>('.vp-device, .vp')
+  if (!tip || !frame) return
+  tip.style.setProperty('--dx', '0px')
+  const r = tip.getBoundingClientRect()
+  const f = frame.getBoundingClientRect()
+  let dx = 0
+  if (r.left < f.left + 8) dx = f.left + 8 - r.left
+  else if (r.right > f.right - 8) dx = f.right - 8 - r.right
+  tip.style.setProperty('--dx', `${Math.round(dx)}px`)
 }
 
 function Btn({
@@ -346,10 +388,20 @@ function Btn({
       aria-pressed={pressed}
       aria-label={label}
       data-show={showTip || undefined}
-      onClick={onClick}
+      data-text={text ? '' : undefined}
+      onPointerEnter={(e) => placeTip(e.currentTarget)}
+      onFocus={(e) => placeTip(e.currentTarget)}
+      onClick={(e) => {
+        placeTip(e.currentTarget)
+        onClick()
+      }}
     >
       {children}
-      {text && <span className="vp-btn-text" aria-hidden="true">{text}</span>}
+      {text && (
+        <span className="vp-btn-text" aria-hidden="true">
+          {text}
+        </span>
+      )}
       <span className="vp-tip" aria-hidden="true">
         {label}
       </span>

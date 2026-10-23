@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Award, Check } from 'lucide-react'
 import { PROJECTS } from '../data/projects'
 import { CASE_STUDIES } from '../data/caseStudies'
-import { PROJECT_LINE } from '../data/lines'
+import { EVIDENCE, PROJECT_LINE } from '../data/lines'
 import { MEDIA, MEDIA_EXTRA } from '../data/media'
 import { TechLogo } from '../data/techIcons'
 import { VideoPlayer } from '../components/metro/VideoPlayer'
@@ -72,7 +72,7 @@ export function CaseStudy() {
           {t('cs.back')}
         </Link>
 
-        <header className={`mt-6 grid gap-8 ${media?.portrait ? 'md:grid-cols-[minmax(0,1fr)_300px] md:items-start' : ''}`}>
+        <header className={`mt-6 grid gap-8 ${media?.portrait ? 'md:grid-cols-[minmax(0,1fr)_auto] md:items-start' : ''}`}>
           <div>
             <p className="flex flex-wrap items-center gap-2.5">
               <LineBadge line={L.line} n={`L${L.n}`} dark={L.dark} />
@@ -94,22 +94,49 @@ export function CaseStudy() {
                 {t('cs.repo')}
               </CodeButton>
             </div>
+            {/* beside the phone: what the project proves and its main stack, straight from the data (no new copy) */}
+            {media?.portrait && (
+              <div className="mt-10 max-w-[560px] space-y-6 border-t border-dashed border-rule pt-6">
+                <div>
+                  <p className="sign-label text-[14px] text-ink-3">{t('projects.evidence')}</p>
+                  <ul className="mt-2.5 flex flex-wrap gap-2">
+                    {(EVIDENCE[project.slug] ?? []).map((ev) => (
+                      <li key={ev.es} className="inline-flex h-8 items-center gap-2 rounded-full border border-rule bg-paper-card px-3 text-[14px] font-medium text-ink-2">
+                        <span className="h-2 w-2 rounded-full" style={{ background: `var(--${L.line})` }} aria-hidden="true" />
+                        {ev[lang]}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="sign-label text-[14px] text-ink-3">{t('cs.stack')}</p>
+                  <ul className="mt-2.5 flex flex-wrap gap-2">
+                    {[...study.diagram.pipeline, ...study.diagram.aside].map((s) => (
+                      <li key={s} className="inline-flex h-8 items-center gap-1.5 rounded-full border border-rule bg-paper-card px-3 text-[14px] font-medium text-ink-2">
+                        <TechLogo label={s} mono className="h-3.5 w-3.5" />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
           {media?.portrait && (
             <figure>
-              <VideoPlayer media={media} title={`${title} — ${t('player.ecoPhone')}`} accent={accent} dark={L.dark} />
+              <VideoPlayer media={media} title={title} label={t('player.ecoPhone')} accent={accent} dark={L.dark} />
               <figcaption className="sign-label mt-3 text-center text-[14px] text-ink-3">{t('player.ecoPhone')}</figcaption>
             </figure>
           )}
         </header>
         {media && !media.portrait && (
           <div className="mt-10">
-            <VideoPlayer media={media} title={`${title} — demo`} accent={accent} dark={L.dark} />
+            <VideoPlayer media={media} title={title} accent={accent} dark={L.dark} />
           </div>
         )}
         {extra.map((x) => (
           <figure key={x.media.src} className="mt-10">
-            <VideoPlayer media={x.media} title={`${title} — ${t(x.labelKey)}`} accent={accent} dark={L.dark} />
+            <VideoPlayer media={x.media} title={title} label={t(x.labelKey)} accent={accent} dark={L.dark} />
             <figcaption className="sign-label mt-3 text-[14px] text-ink-3">{t(x.labelKey)}</figcaption>
           </figure>
         ))}

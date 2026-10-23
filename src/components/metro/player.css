@@ -19,6 +19,8 @@
 
 .vp {
   position: relative;
+  /* hidden tooltips must never widen the page (clip keeps overflow-y visible, unlike hidden) */
+  overflow-x: clip;
   color: var(--vp-fg);
   font-family: 'Barlow', system-ui, sans-serif;
 }
@@ -45,18 +47,17 @@
   border-radius: 10px;
 }
 
-/* ── phone: the board's phone frame, bigger; the bar sits under it ── */
+/* ── phone: the board's handset, bigger; the control bar is its chin ── */
 .vp[data-variant='phone'] {
-  width: min(300px, 100%);
+  --vh: 540px; /* screen height: handset + chin + caption fit a 900 px viewport */
+  width: min(100%, calc(var(--vh) * var(--arn) + 18px));
   margin-inline: auto;
 }
 .vp-device {
-  width: var(--dev-w, 100%);
-  margin-inline: auto;
   background: var(--vp-bezel);
   border: 1px solid var(--vp-edge);
   border-radius: 34px;
-  padding: 10px;
+  padding: 10px 8px 0;
   box-shadow: var(--vp-shadow);
 }
 .vp[data-variant='phone'] .vp-stage video {
@@ -67,13 +68,41 @@
   object-fit: cover;
   border-radius: 24px;
 }
+/* chin: one row of controls; the progress runs along its top edge, under the screen */
 .vp[data-variant='phone'] .vp-barwrap {
-  margin-top: 10px;
-  background: var(--vp-bezel);
-  border: 1px solid var(--vp-edge);
-  border-radius: 16px;
-  padding: 4px 6px;
-  box-shadow: var(--vp-shadow);
+  position: relative;
+  padding: 10px 2px 4px;
+}
+.vp[data-variant='phone'] .vp-bar {
+  grid-template-areas: 'play time . tools';
+  padding-top: 0;
+}
+.vp[data-variant='phone'] .vp-seek {
+  grid-area: auto;
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: -7px;
+  width: auto;
+  height: 24px;
+  padding: 0;
+}
+.vp[data-variant='phone'] .vp-seek::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+}
+.vp[data-variant='phone'] .vp-seek::-moz-range-track {
+  height: 4px;
+}
+.vp[data-variant='phone'] .vp-seek::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border-width: 2px;
+}
+.vp[data-variant='phone'] .vp-time {
+  font-size: 15px;
+  padding-inline: 2px;
 }
 
 /* ── picture ── */
@@ -137,7 +166,7 @@
   column-gap: 4px;
   padding-top: 2px;
 }
-@container vpbar (min-width: 520px) {
+@container vpbar (min-width: 480px) {
   .vp-bar {
     grid-template-areas: 'play time seek tools';
     column-gap: 10px;
@@ -197,46 +226,69 @@
     background: var(--vp-hover);
   }
 }
-.vp .vp-btn:focus-visible,
-.vp-close:focus-visible {
+/* the ring follows the control's own shape */
+.vp .vp-btn:focus-visible {
   outline: 3px solid var(--vp-accent);
   outline-offset: 1px;
   border-radius: 10px;
+}
+.vp-close:focus-visible {
+  outline: 3px solid var(--vp-accent);
+  outline-offset: 2px;
+  border-radius: 999px;
 }
 .vp-btn[aria-pressed='true'] {
   background: var(--vp-accent);
   color: var(--vp-on-accent);
 }
+/* dimmed icon (not the whole button, so its tooltip stays fully legible) */
 .vp-btn[aria-disabled='true'] {
-  color: var(--vp-fg-2);
-  opacity: 0.6;
-  cursor: help;
+  cursor: not-allowed;
+}
+.vp-btn[aria-disabled='true'] > svg {
+  opacity: 0.4;
+}
+@media (hover: hover) {
+  .vp-btn[aria-disabled='true']:hover {
+    background: transparent;
+  }
 }
 .vp-btn[aria-disabled='true']:active {
   transform: none;
 }
+
+/* one rule for labels: text when the bar is at least 480 px wide, icon only below */
 .vp-btn-text {
   display: none;
 }
-@container vpbar (min-width: 520px) {
-  .vp-enlarge {
+@container vpbar (min-width: 480px) {
+  .vp-btn[data-text] {
     padding: 0 14px 0 12px;
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--vp-fg) 28%, transparent);
   }
-  .vp-enlarge .vp-btn-text {
+  .vp-btn[data-text] .vp-btn-text {
     display: inline;
   }
-  .vp-enlarge .vp-tip {
+  .vp-btn[data-text] .vp-tip {
+    display: none;
+  }
+  .vp-enlarge {
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--vp-fg) 28%, transparent);
+  }
+}
+/* on touch / narrow screens "Ampliar" is the same thing as full screen: one control is enough */
+@media (pointer: coarse), (max-width: 639px) {
+  .vp-enlarge {
     display: none;
   }
 }
 
-/* tooltips: the accessible name is aria-label; this is the visible echo (hover, keyboard focus, tap) */
+/* tooltips: the accessible name is aria-label; this is the visible echo (hover, keyboard focus, tap).
+   Centred over the button, nudged (--dx, set in JS) to stay 8 px inside the frame. */
 .vp-tip {
   position: absolute;
   bottom: calc(100% + 8px);
   left: 50%;
-  translate: -50% 0;
+  translate: calc(-50% + var(--dx, 0px)) 0;
   padding: 5px 9px;
   border-radius: 7px;
   background: var(--vp-fg);
@@ -252,11 +304,6 @@
   transition: opacity 140ms ease;
   z-index: 2;
 }
-.vp-tools .vp-btn:last-child .vp-tip {
-  left: auto;
-  right: 0;
-  translate: none;
-}
 .vp-btn:focus-visible .vp-tip,
 .vp-btn[data-show] .vp-tip {
   opacity: 1;
@@ -268,7 +315,7 @@
   }
 }
 
-/* seek: a native range (keyboard + screen readers for free), 44 px tall hit area */
+/* seek: a native range (keyboard + screen readers for free) */
 .vp-seek {
   grid-area: seek;
   -webkit-appearance: none;
@@ -279,15 +326,16 @@
   padding: 0 6px;
   background: transparent;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 999px;
   touch-action: none;
 }
 .vp-seek:focus {
   outline: none;
 }
 .vp-seek:focus-visible {
-  outline: 3px solid var(--vp-accent);
-  outline-offset: 0;
+  outline: 2px solid var(--vp-accent);
+  outline-offset: 2px;
+  border-radius: 999px;
 }
 .vp-seek::-webkit-slider-runnable-track {
   height: 6px;
@@ -334,6 +382,8 @@
   box-shadow: none;
 }
 .vp:fullscreen .vp-device {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
   width: 100%;
@@ -347,9 +397,6 @@
   flex: 1;
   min-height: 0;
 }
-.vp:fullscreen .vp-device .vp-stage {
-  height: 100%;
-}
 .vp:fullscreen .vp-stage video {
   width: 100%;
   height: 100%;
@@ -359,12 +406,6 @@
 }
 .vp:fullscreen .vp-enlarge {
   display: none;
-}
-.vp:fullscreen .vp-barwrap {
-  margin-top: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
 }
 
 /* ── "Ampliar": native modal dialog (Escape, inert page, focus return) ── */
@@ -390,19 +431,47 @@ html:has(.vp-viewer[open]) {
   overflow: hidden;
 }
 .vp-viewer-inner {
-  --vp-top: 64px;
-  --vp-bot: 16px;
+  /* height left for the player: 100dvh − top pad − title row − gap − bottom margin */
+  --vp-avail: calc(100dvh - 20px - 44px - 16px - 48px);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
   width: 100%;
   height: 100%;
-  padding: var(--vp-top) 16px var(--vp-bot);
+  padding: 20px 48px 48px;
+}
+.vp-viewer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+}
+.vp-viewer-title {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+  color: var(--vp-fg);
+}
+.vp-viewer-label,
+.vp-viewer-dur {
+  color: var(--vp-fg-2);
+}
+.vp-viewer-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
 }
 .vp-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
+  flex: none;
   display: grid;
   place-items: center;
   width: 44px;
@@ -417,21 +486,25 @@ html:has(.vp-viewer[open]) {
     background: rgb(255 255 255 / 0.2);
   }
 }
-/* as large as the screen allows, at its own aspect: width capped by the height left for picture + bar */
-.vp[data-viewer][data-variant='wide'] {
-  width: min(100%, 1600px, calc((100dvh - var(--vp-top) - var(--vp-bot) - 70px) * var(--arn) + 18px));
-}
-.vp[data-viewer][data-variant='phone'] {
-  width: min(100%, 560px);
-  --dev-w: min(100%, calc((100dvh - var(--vp-top) - var(--vp-bot) - 90px) * var(--arn) + 22px));
-}
-@media (max-width: 539px) {
-  .vp[data-viewer][data-variant='phone'] {
-    --dev-w: min(100%, calc((100dvh - var(--vp-top) - var(--vp-bot) - 130px) * var(--arn) + 22px));
+@media (max-width: 639px) {
+  .vp-viewer-inner {
+    --vp-avail: calc(100dvh - 12px - 44px - 12px - 16px);
+    gap: 12px;
+    padding: 12px 12px 16px;
+  }
+  .vp-viewer-title {
+    font-size: 18px;
   }
 }
+/* as large as the screen allows, at its own aspect: width capped by the height left for picture + bar */
+.vp[data-viewer][data-variant='wide'] {
+  width: min(100%, 1600px, calc((var(--vp-avail) - 68px) * var(--arn) + 18px));
+}
+.vp[data-viewer][data-variant='phone'] {
+  --vh: calc(var(--vp-avail) - 70px);
+}
 @media (prefers-reduced-motion: no-preference) {
-  .vp-viewer[open] .vp {
+  .vp-viewer[open] .vp-viewer-inner {
     animation: vp-in 220ms var(--ease-out) both;
   }
   .vp-viewer[open]::backdrop {
@@ -441,7 +514,7 @@ html:has(.vp-viewer[open]) {
 @keyframes vp-in {
   from {
     opacity: 0;
-    scale: 0.97;
+    scale: 0.98;
   }
 }
 @keyframes vp-fade {
