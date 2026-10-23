@@ -14,7 +14,7 @@ interface MagneticProps {
 // The author's magnetic buttons (kept, design-rationale §2.1), rebuilt cheaper:
 // the hit area never moves (only the inner content does), the rect is read once
 // on pointerenter, and the pull eases with a short spring so it has weight.
-export function Magnetic({ children, strength = 0.3, max = 10, className }: MagneticProps) {
+export function Magnetic({ children, strength = 0.25, max = 6, className }: MagneticProps) {
   const outer = useRef<HTMLSpanElement>(null)
   const inner = useRef<HTMLSpanElement>(null)
   const reduce = useReducedMotion()

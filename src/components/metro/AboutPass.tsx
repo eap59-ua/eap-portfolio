@@ -20,7 +20,7 @@ const D = 21 // damping (1/s): ratio ≈ 0.68, a small overshoot when it springs
 const TURN_MS = 700
 // the photo box: 386px from sm up (420 pass − 2×16 padding − 2 border); below,
 // the pass is min(330px, 100vw − 40px) wide, so the photo is that minus 34px
-const PHOTO_SIZES = '(min-width: 640px) 386px, min(296px, calc(100vw - 74px))'
+const PHOTO_SIZES = '(min-width: 1024px) 346px, (min-width: 640px) 366px, min(296px, calc(100vw - 74px))'
 
 function Field({ label, children, wide }: { label: string; children: ReactNode; wide?: boolean }) {
   return (
@@ -193,9 +193,9 @@ function Abono() {
       // writes only
       const ry = (cur.x - 0.5) * 2 * MAX_TILT
       const rx = -(cur.y - 0.5) * 2 * MAX_TILT
-      tl.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateZ(${(14 * Math.max(0, lift)).toFixed(2)}px)`
+      tl.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateZ(${(10 * Math.max(0, lift)).toFixed(2)}px)`
       // the shadow falls away from the raised edge: opposite to the tilt
-      sd.style.transform = `translate3d(${(-ry * 2.2).toFixed(1)}px, ${(rx * 2.2).toFixed(1)}px, 0) scale(${(1 + 0.03 * Math.max(0, lift)).toFixed(4)})`
+      sd.style.transform = `translate3d(${(-ry * 2.2).toFixed(1)}px, ${(rx * 2.2).toFixed(1)}px, 0) scale(${(1 + 0.02 * Math.max(0, lift)).toFixed(4)})`
       // the foil slides against the pointer and shifts hue with the angle
       sh.style.transform = `translate3d(${(-cur.x * 66.666).toFixed(2)}%, 0, 0)`
       sh.style.filter = `hue-rotate(${((Math.abs(rx) + Math.abs(ry)) * 2.5).toFixed(0)}deg)`
@@ -278,7 +278,7 @@ function Abono() {
     <div
       ref={wrap}
       id="abono"
-      className="abono mx-auto w-full max-w-[330px] sm:max-w-[420px] lg:mx-0"
+      className="abono mx-auto w-full max-w-[330px] sm:max-w-[400px] lg:mx-0 lg:max-w-[380px]"
       {...(flipped ? { 'data-flipped': '' } : {})}
       {...(turning ? { 'data-turning': '' } : {})}
     >
@@ -442,7 +442,7 @@ export function AboutPass() {
     <section id="sobre-mi" className="relative scroll-mt-3 py-20 lg:py-28">
       <h2 className="sr-only">{t('about.pass')}</h2>
       {/* mobile: greeting → pass → story; desktop: pass (sticky) | greeting + story */}
-      <div className="mx-auto grid max-w-[1440px] items-start gap-y-10 px-5 sm:px-6 lg:grid-cols-[420px_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-0 lg:px-16 xl:gap-x-20">
+      <div className="mx-auto grid max-w-[1440px] items-start gap-y-10 px-5 sm:px-6 lg:grid-cols-[380px_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-0 lg:px-16 xl:gap-x-20">
         <div className="max-w-[680px] lg:col-start-2 lg:row-start-1">
           <p className="inline-flex items-center gap-2 rounded-xl border border-rule bg-paper-card px-3 py-1 font-mono text-[12px] font-medium tracking-wide text-eco sm:rounded-full">
             <span className="relative flex h-2 w-2">

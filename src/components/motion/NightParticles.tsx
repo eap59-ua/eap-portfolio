@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useFinePointer, useMotionPaused, useReducedMotion } from '../../lib/motion'
 import type { Runner } from './particles/core'
 
@@ -41,6 +42,17 @@ export function NightParticles() {
   const fine = useFinePointer()
   const reduce = useReducedMotion()
   const paused = useMotionPaused()
+  // full strength only behind the home hero; where people read (the rest of the home,
+  // the case studies) the network steps back so it never runs through a paragraph
+  const { pathname } = useLocation()
+  const [pastHero, setPastHero] = useState(false)
+  useEffect(() => {
+    const on = () => setPastHero(window.scrollY > window.innerHeight * 0.55)
+    on()
+    window.addEventListener('scroll', on, { passive: true })
+    return () => window.removeEventListener('scroll', on)
+  }, [])
+  const dim = pathname !== '/' || pastHero
 
   useEffect(() => {
     pausedRef.current = paused
@@ -88,7 +100,7 @@ export function NightParticles() {
       aria-hidden="true"
       data-night-bg={variant}
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
-      style={{ opacity: shown ? 1 : 0, transition: 'opacity 900ms var(--ease-out)' }}
+      style={{ opacity: shown ? (dim ? 0.42 : 1) : 0, transition: 'opacity 700ms var(--ease-out)' }}
     />
   )
 }

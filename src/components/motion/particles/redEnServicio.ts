@@ -132,7 +132,7 @@ export function createScene(opts: SceneOpts, pal: Palette): Scene {
     // ── tracks, stations ──
     stations = []
     lines = routes.map(({ c, pts }, li) => {
-      const track = roundedTrack(pts, G * 0.7)
+      const track = roundedTrack(pts, G * 0.45) // ~24 px bends, like the hero map
       const path = new Path2D()
       track.pts.forEach((p, i) => (i ? path.lineTo(p.x, p.y) : path.moveTo(p.x, p.y)))
       const line: Line = { c, track, path, stations: [] }

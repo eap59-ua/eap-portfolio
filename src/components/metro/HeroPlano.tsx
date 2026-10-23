@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ArrowDown, ArrowRight, Download, MapPin } from 'lucide-react'
+import { ArrowDown, ArrowRight, Download, MapPin, Route } from 'lucide-react'
 import { RichText } from '../ui/RichText'
 import { Segments } from '../ui/Segments'
 import { GitHubIcon } from '../ui/icons'
@@ -57,15 +57,14 @@ export function HeroPlano() {
                 <Segments text={t('status.state')} />
               </span>
             </p>
-            <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-[14px] leading-snug text-ink-2">
+            {/* two rows, each with its own icon: a wrapped "· Reubicación" never starts a line */}
+            <p className="mt-1 flex items-center gap-x-1.5 text-[14px] leading-snug text-ink-2">
               <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-ink-3" aria-hidden="true" />
-              <span className="whitespace-nowrap">{t('status.where')}</span>
-              <span className="whitespace-nowrap">
-                <span className="text-ink-3" aria-hidden="true">
-                  ·{' '}
-                </span>
-                {t('status.move')}
-              </span>
+              <span>{t('status.where')}</span>
+            </p>
+            <p className="mt-0.5 flex items-center gap-x-1.5 text-[14px] leading-snug text-ink-2">
+              <Route className="h-3.5 w-3.5 flex-shrink-0 text-ink-3" aria-hidden="true" />
+              <span>{t('status.move')}</span>
             </p>
           </div>
           <RichText html={t('hero.pitch')} className="mt-4 max-w-[470px] text-pretty text-base leading-relaxed text-ink-2 sm:text-lg lg:mt-4" />
