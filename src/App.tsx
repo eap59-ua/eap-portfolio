@@ -14,6 +14,8 @@ const CaseStudy = lazy(() => import('./pages/CaseStudy').then((m) => ({ default:
 // pointer-only companion cursor: off the critical path, self-disables on touch
 // night only: ambient light over the lit-up map
 const AuroraCursor = lazy(() => import('./components/motion/AuroraCursor').then((m) => ({ default: m.AuroraCursor })))
+// night only: the living network behind the content (?bg=a|b|off)
+const NightParticles = lazy(() => import('./components/motion/NightParticles').then((m) => ({ default: m.NightParticles })))
 const TrainCursor = lazy(() => import('./components/metro/TrainCursor').then((m) => ({ default: m.TrainCursor })))
 
 // After navigating to the home route with a hash (nav links, logo, "back to
@@ -58,6 +60,7 @@ export function AppShell({ caseStudy: CaseStudyPage = CaseStudy }: { caseStudy?:
         <TrainCursor />
       </ClientOnly>
       <ClientOnly night>
+        <NightParticles />
         <AuroraCursor />
       </ClientOnly>
       <main id="main">
