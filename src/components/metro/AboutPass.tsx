@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Segments } from '../ui/Segments'
 import { ArrowUpRight, Code2, Mail, RotateCw } from 'lucide-react'
 import { RichText } from '../ui/RichText'
 import { GitHubIcon, LinkedInIcon } from '../ui/icons'
@@ -423,12 +424,14 @@ export function AboutPass() {
       {/* mobile: greeting → pass → story; desktop: pass (sticky) | greeting + story */}
       <div className="mx-auto grid max-w-[1440px] items-start gap-y-10 px-5 sm:px-6 lg:grid-cols-[420px_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-0 lg:px-16 xl:gap-x-20">
         <div className="max-w-[680px] lg:col-start-2 lg:row-start-1">
-          <p className="inline-flex items-center gap-2 rounded-full border border-rule bg-paper-card px-3 py-1 font-mono text-[12px] font-medium tracking-wide text-eco">
+          <p className="inline-flex items-center gap-2 rounded-xl border border-rule bg-paper-card px-3 py-1 font-mono text-[12px] font-medium tracking-wide text-eco sm:rounded-full">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-eco loop-anim" aria-hidden="true" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-eco" />
             </span>
-            {t('about.status')}
+            <span>
+              <Segments text={t('about.status')} />
+            </span>
           </p>
           <h3 ref={greet} className="sign-type mt-4 text-[clamp(2.6rem,5vw,4rem)]">
             {t('about.greeting')}{' '}

@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, ArrowUpRight, Check, Copy, Download, X } from 'lucide-react'
+import { Segments } from '../ui/Segments'
 import { GitHubMark, GmailMark, LinkedInMark, MapsPin } from '../ui/brandIcons'
 import { Magnetic } from '../motion/Magnetic'
 import { PROJECT_LINE } from '../../data/lines'
@@ -352,7 +353,9 @@ export function Terminus() {
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-eco" />
             </span>
             <div>
-              <p className="font-semibold text-ink">{t('contact.avail')}</p>
+              <p className="font-semibold text-ink">
+                <Segments text={t('contact.avail')} />
+              </p>
               <p className="mt-0.5 text-[14.5px] text-ink-2">{t('contact.time')}</p>
             </div>
           </div>

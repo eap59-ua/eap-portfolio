@@ -183,7 +183,7 @@ export const es = {
   'player.close': `Cerrar`,
   'player.region': `Reproductor de vídeo: {{title}}`,
   'player.keys': `Atajos con el reproductor enfocado: Espacio o K reproduce o pausa, flechas izquierda y derecha avanzan o retroceden 5 segundos, F pantalla completa, M sonido.`,
-  'player.ecoPhone': `Vista móvil: reportar una incidencia`,
+  'player.ecoPhone': `Vista móvil: mapa y reporte de incidencias`,
   'player.ecoDesktop': `Vista de escritorio: mapa, 2FA y panel de administración`,
   'contact.email_label': `Email`,
   'about.flip_qr_sr': ` de LinkedIn`,

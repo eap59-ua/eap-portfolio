@@ -523,7 +523,8 @@ html.lenis body {
   height: 40px;
   border-radius: 50%;
   background: transparent;
-  border-width: 2.5px;
+  border-width: 2px;
+  opacity: 0.6; /* a ring around the pointer, light enough to read the text beneath */
 }
 .train-cursor[data-mode='station'] > span {
   width: 32px;

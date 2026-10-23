@@ -183,7 +183,7 @@ export const en = {
   'player.close': `Close`,
   'player.region': `Video player: {{title}}`,
   'player.keys': `Shortcuts while the player has focus: Space or K plays or pauses, left and right arrows seek 5 seconds, F full screen, M sound.`,
-  'player.ecoPhone': `Mobile view: reporting an incident`,
+  'player.ecoPhone': `Mobile view: map and incident reporting`,
   'player.ecoDesktop': `Desktop view: map, 2FA and admin panel`,
   'contact.email_label': `Email`,
   'about.flip_qr_sr': ` for LinkedIn`,

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { ArrowDown, ArrowRight, Download, MapPin } from 'lucide-react'
 import { RichText } from '../ui/RichText'
+import { Segments } from '../ui/Segments'
 import { GitHubIcon } from '../ui/icons'
 import { ScrambleText } from '../motion/ScrambleText'
 import { Magnetic } from '../motion/Magnetic'
@@ -43,7 +44,7 @@ export function HeroPlano() {
           </h1>
           <p className="mt-4 text-[19px] font-semibold leading-snug text-ink sm:text-2xl lg:mt-6">{nb(t('hero.role'))}</p>
           {/* the metro "service status" board: where he is and that he's available, in 3 seconds */}
-          <div className="relative mt-4 block w-full overflow-hidden rounded-xl border border-rule bg-paper-card py-3 pl-5 pr-4 sm:inline-block sm:w-auto sm:max-w-full lg:mt-5">
+          <div className="relative mt-4 block w-full overflow-hidden rounded-xl border border-rule bg-paper-card py-3 pl-5 pr-4 sm:w-fit sm:max-w-[470px] lg:mt-5">
             {/* the L1 stripe: an information sign on the platform */}
             <span className="absolute inset-y-0 left-0 w-1 bg-l1" aria-hidden="true" />
             <p className="sign-label text-[12px] text-ink-3">{t('status.label')}</p>
@@ -52,13 +53,19 @@ export function HeroPlano() {
                 <span className="loop-anim absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-eco" />
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-eco" />
               </span>
-              {t('status.state')}
+              <span>
+                <Segments text={t('status.state')} />
+              </span>
             </p>
             <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-[14px] leading-snug text-ink-2">
               <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-ink-3" aria-hidden="true" />
-              <span>{t('status.where')}</span>
-              <span className="text-ink-3" aria-hidden="true">·</span>
-              <span>{t('status.move')}</span>
+              <span className="whitespace-nowrap">{t('status.where')}</span>
+              <span className="whitespace-nowrap">
+                <span className="text-ink-3" aria-hidden="true">
+                  ·{' '}
+                </span>
+                {t('status.move')}
+              </span>
             </p>
           </div>
           <RichText html={t('hero.pitch')} className="mt-4 max-w-[470px] text-pretty text-base leading-relaxed text-ink-2 sm:text-lg lg:mt-4" />

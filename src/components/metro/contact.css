@@ -28,8 +28,8 @@
   --gh-bd: #30363d;
   --gh-sq: 0.2;
   /* toned down: never the brightest block on the night page */
-  --li-band: color-mix(in srgb, #0a66c2 85%, var(--card));
-  --li-band-2: #004182;
+  --li-band: #004182; /* LinkedIn dark blue: white "in" still 10:1 */
+  --li-band-2: #0a66c2; /* hover: back to the brand blue */
   --env: var(--paper-2);
   --flap: #222a3e;
   --ok: #81c995;

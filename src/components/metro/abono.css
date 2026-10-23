@@ -40,7 +40,7 @@
   --abono-holo-o: 0.24;
   --abono-holo-ink: var(--ink); /* ≥ 3:1 on the foil at night */
   --abono-holo-tint: 0.55;
-  --abono-stamp: #aaa6ff;
+  --abono-stamp: #b7a8ff;
   --abono-stamp-blend: screen;
 }
 
@@ -465,4 +465,23 @@
     rotate: none !important;
     transform: none !important;
   }
+}
+
+/* With a mouse the tag is a tooltip (hover/focus), so it never sits on the header/photo
+   seam at rest; on touch there's no hover, so it stays visible. Its text is still part
+   of the button's accessible name either way (opacity, not display). */
+@media (hover: hover) and (pointer: fine) {
+  .abono-turn-tag {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  .abono-turn:hover .abono-turn-tag,
+  .abono-turn:focus-visible .abono-turn-tag {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-theme='night'] .abono-stamp {
+  opacity: 0.9;
 }
