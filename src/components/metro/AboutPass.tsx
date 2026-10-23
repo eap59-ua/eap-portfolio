@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowUpRight, Code2, Mail, QrCode, RotateCw } from 'lucide-react'
+import { ArrowUpRight, Code2, Mail, RotateCw } from 'lucide-react'
 import { RichText } from '../ui/RichText'
 import { GitHubIcon, LinkedInIcon } from '../ui/icons'
 import { Magnetic } from '../motion/Magnetic'
@@ -11,24 +11,27 @@ import './abono.css'
 
 const nb = (s: string) => s.replace(/Full-Stack/g, 'Full‑Stack')
 const lc = (v: string) => ({ ['--lc' as string]: v }) as CSSProperties
+const linkedinShort = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
 
-const MAX_TILT = 7 // degrees
+const MAX_TILT = 8 // degrees
 const K = 240 // spring stiffness (1/s²)
 const D = 21 // damping (1/s): ratio ≈ 0.68, a small overshoot when it springs back
+const TURN_MS = 700
 
 function Field({ label, children, wide }: { label: string; children: ReactNode; wide?: boolean }) {
   return (
-    <div className={wide ? 'col-span-2' : ''}>
-      <dt className="sign-label text-[11.5px] text-ink-3">{label}</dt>
-      <dd className="mt-0.5 text-[15px] font-semibold leading-snug text-ink">{children}</dd>
+    <div className={wide ? 'col-span-2' : 'min-w-0'}>
+      <dt className="sign-label text-[11px] leading-[13px] text-ink-3">{label}</dt>
+      <dd className="mt-0.5 text-[15px] font-semibold leading-[1.25] text-ink">{children}</dd>
     </div>
   )
 }
 
-/** the strip at the top of both faces, with the punched lanyard slot */
+/** the strip at the top of both faces, with the punched lanyard slot; the
+ *  right end is left free for the flip button that sits above both faces */
 function Band({ children }: { children: ReactNode }) {
   return (
-    <div className="relative flex items-center justify-between gap-3 bg-l1 px-5 pb-3 pt-[26px] text-paper" aria-hidden="true">
+    <div className="relative flex h-[64px] shrink-0 items-center gap-3 bg-l1 pl-5 pr-[66px] pt-[16px] text-paper" aria-hidden="true">
       <span className="abono-slot" />
       {children}
     </div>
@@ -37,7 +40,7 @@ function Band({ children }: { children: ReactNode }) {
 
 function Capsule() {
   return (
-    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border-2 border-paper px-2.5 py-0.5 font-sign text-[14px] font-bold tracking-[0.06em]">
+    <span className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full border-2 border-paper px-2.5 py-0.5 font-sign text-[14px] font-bold tracking-[0.06em]">
       <span className="h-1.5 w-1.5 rounded-full bg-paper" />
       EAP
       <span className="h-1.5 w-1.5 rounded-full bg-paper" />
@@ -48,7 +51,7 @@ function Capsule() {
 /** an EMV-like contact chip (material colour: gold in both themes) */
 function Chip() {
   return (
-    <svg viewBox="0 0 46 36" width="46" height="36" aria-hidden="true" className="block drop-shadow-[0_1px_0_rgb(0_0_0/0.18)]">
+    <svg viewBox="0 0 46 36" width="44" height="34" aria-hidden="true" className="block drop-shadow-[0_1px_0_rgb(0_0_0/0.18)]">
       <defs>
         <linearGradient id="abono-chip" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#f1d88f" />
@@ -95,46 +98,56 @@ function Stamp({ title, sub }: { title: string; sub: string }) {
   )
 }
 
-// The pass itself: a physical object. Pointer effects (tilt, holo sheen, glare)
-// only with a fine pointer and motion allowed; rAF runs only while the pointer
-// moves or the spring is settling, and the only layout read is the wrapper's
-// rect on pointerenter (the wrapper never transforms, so it stays valid).
+// The pass itself: a physical object. Pointer effects (tilt, moving shadow,
+// holo sheen + hue, specular light) only with a fine pointer and motion
+// allowed; rAF runs only while the pointer moves or the spring is settling,
+// and the only layout read is the wrapper's rect on pointerenter (the wrapper
+// never transforms, so it stays valid until a scroll/resize).
 function Abono() {
   const { t } = useTranslation()
   const fine = useFinePointer()
   const reduce = useReducedMotion()
   const [flipped, setFlipped] = useState(false)
+  const [turning, setTurning] = useState(false)
   const flippedRef = useRef(false)
   const wrap = useRef<HTMLDivElement>(null)
   const tilt = useRef<HTMLDivElement>(null)
+  const shadow = useRef<HTMLSpanElement>(null)
   const sheen = useRef<HTMLSpanElement>(null)
   const glareF = useRef<HTMLSpanElement>(null)
   const glareB = useRef<HTMLSpanElement>(null)
-  const front = useRef<HTMLDivElement>(null)
-  const back = useRef<HTMLDivElement>(null)
   const btn = useRef<HTMLButtonElement>(null)
+  const turnTimer = useRef(0)
 
   const toggle = () => {
     const next = !flippedRef.current
-    // never strand focus inside the face that is about to become inert
-    const leaving = next ? front.current : back.current
-    if (leaving && leaving.contains(document.activeElement)) btn.current?.focus()
+    // the button lives outside both faces, so focus never lands in an inert face;
+    // still, if a click came from inside the leaving face, park focus on the button
+    const face = wrap.current?.querySelector(next ? '.abono-front' : '.abono-back')
+    if (face?.contains(document.activeElement)) btn.current?.focus()
     flippedRef.current = next
     setFlipped(next)
+    if (!reduce) {
+      setTurning(true)
+      window.clearTimeout(turnTimer.current)
+      turnTimer.current = window.setTimeout(() => setTurning(false), TURN_MS)
+    }
   }
   const onFaceClick = (e: ReactMouseEvent) => {
     if ((e.target as Element).closest('a, button')) return
     toggle()
   }
+  useEffect(() => () => window.clearTimeout(turnTimer.current), [])
 
   useEffect(() => {
     if (!fine || reduce) return
     const w = wrap.current
     const tl = tilt.current
+    const sd = shadow.current
     const sh = sheen.current
     const gF = glareF.current
     const gB = glareB.current
-    if (!w || !tl || !sh || !gF || !gB) return
+    if (!w || !tl || !sd || !sh || !gF || !gB) return
     let rect: DOMRect | null = null
     let raf = 0
     let last = 0
@@ -162,7 +175,11 @@ function Abono() {
       const ry = (cur.x - 0.5) * 2 * MAX_TILT
       const rx = -(cur.y - 0.5) * 2 * MAX_TILT
       tl.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)${hover ? ' translateZ(14px)' : ''}`
+      // the shadow falls away from the raised edge: opposite to the tilt
+      sd.style.transform = `translate3d(${(-ry * 2.2).toFixed(1)}px, ${(rx * 2.2).toFixed(1)}px, 0)${hover ? ' scale(1.03)' : ''}`
+      // the foil slides against the pointer and shifts hue with the angle
       sh.style.transform = `translate3d(${(-cur.x * 66.666).toFixed(2)}%, 0, 0)`
+      sh.style.filter = `hue-rotate(${((Math.abs(rx) + Math.abs(ry)) * 2.5).toFixed(0)}deg)`
       if (rect) {
         gF.style.transform = `translate3d(${gx.toFixed(1)}px, ${gy.toFixed(1)}px, 0)`
         // the back face is mirrored inside the flip
@@ -174,6 +191,8 @@ function Abono() {
         if (!hover) {
           tl.style.transform = ''
           tl.style.willChange = ''
+          sd.style.transform = ''
+          sh.style.filter = ''
         }
       } else raf = requestAnimationFrame(frame)
     }
@@ -227,7 +246,9 @@ function Abono() {
       delete w.dataset.hover
       tl.style.transform = ''
       tl.style.willChange = ''
+      sd.style.transform = ''
       sh.style.transform = ''
+      sh.style.filter = ''
     }
   }, [fine, reduce])
 
@@ -235,126 +256,131 @@ function Abono() {
   const ext = { target: '_blank', rel: 'noopener noreferrer' } as const
 
   return (
-    <div className="mx-auto w-full max-w-[420px] lg:mx-0">
-      <h2 className="sr-only">{t('about.pass')}</h2>
-      <div ref={wrap} id="abono" className="abono" {...(flipped ? { 'data-flipped': '' } : {})}>
-        <div ref={tilt} className="abono-tilt">
-          <div className="abono-flip">
-            {/* ── front: the photo and the facts ── */}
-            <div
-              ref={front}
-              data-glow
-              className="abono-face abono-front card glow-card"
-              style={lc('var(--l1)')}
-              onClick={onFaceClick}
-              inert={flipped}
-              aria-hidden={flipped || undefined}
-            >
-              <Band>
-                <span className="sign-label text-[17px] leading-none">{t('about.pass')}</span>
-                <Capsule />
-              </Band>
-              <div className="px-4 pt-4">
-                <div className="abono-photo aspect-square w-full">
-                  <picture>
-                    <source srcSet="/profile.webp" type="image/webp" />
-                    <img src="/profile.jpg" alt={t('about.photo')} loading="lazy" decoding="async" width={800} height={1000} />
-                  </picture>
-                  <Stamp title={t('about.stamp')} sub={t('about.stamp_sub')} />
-                </div>
+    <div
+      ref={wrap}
+      id="abono"
+      className="abono mx-auto w-full max-w-[330px] sm:max-w-[420px] lg:mx-0"
+      {...(flipped ? { 'data-flipped': '' } : {})}
+      {...(turning ? { 'data-turning': '' } : {})}
+    >
+      <span ref={shadow} className="abono-drop" aria-hidden="true" />
+      <div ref={tilt} className="abono-tilt">
+        <div className="abono-flip">
+          {/* ── front: the photo and the facts ── */}
+          <div
+            data-glow
+            className="abono-face abono-front card glow-card"
+            style={lc('var(--l1)')}
+            onClick={onFaceClick}
+            inert={flipped}
+            aria-hidden={flipped || undefined}
+          >
+            <Band>
+              <span className="sign-label truncate text-[16px] leading-none">{t('about.pass')}</span>
+              <Capsule />
+            </Band>
+            <div className="relative px-4 pt-4">
+              <div className="abono-photo aspect-square w-full sm:aspect-[386/330]">
+                <picture>
+                  <source srcSet="/profile.webp" type="image/webp" />
+                  <img src="/profile.jpg" alt={t('about.photo')} loading="lazy" decoding="async" width={800} height={1000} />
+                </picture>
               </div>
-              <div className="abono-holo mt-4" aria-hidden="true">
-                <span ref={sheen} className="abono-holo-sheen" />
-                <span className="abono-holo-text">{micro}</span>
-              </div>
-              <div className="abono-guilloche relative flex-1 px-5 pb-4 pt-3.5">
-                <div className="absolute right-5 top-4 flex items-center gap-1.5">
-                  <Contactless />
-                  <Chip />
-                </div>
-                <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5">
-                  <div className="col-span-2 pr-[84px]">
-                    <dt className="sign-label text-[11.5px] text-ink-3">{t('about.f_holder')}</dt>
-                    <dd className="sign-type mt-1 text-[26px] leading-[1] text-ink">{SITE.name}</dd>
-                  </div>
-                  <Field label={t('about.f_profile')} wide>
-                    {nb(t('hero.role'))}
-                  </Field>
-                  <Field label={t('about.f_degree')} wide>
-                    {t('about.degree')}
-                  </Field>
-                  <Field label={t('about.f_zone')}>{t('about.zone')}</Field>
-                  <Field label={t('about.f_langs')}>{t('about.langs')}</Field>
-                </dl>
-              </div>
-              <div className="abono-perf" aria-hidden="true" />
-              <p className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-5 pb-3.5 pt-2 font-mono text-[11.5px] text-ink-3">
-                <span>{t('about.valid_from')}</span>
-                <span className="tnum">{t('about.pass_no')}</span>
-              </p>
-              <span ref={glareF} className="abono-glare" aria-hidden="true" />
+              <Stamp title={t('about.stamp')} sub={t('about.stamp_sub')} />
             </div>
+            <div className="abono-holo mt-2.5" aria-hidden="true">
+              <span ref={sheen} className="abono-holo-sheen" />
+              <span className="abono-holo-text">{micro}</span>
+            </div>
+            <div className="abono-guilloche relative flex-1 px-5 pb-2 pt-2">
+              <div className="absolute right-5 top-3 flex items-center gap-1.5">
+                <Contactless />
+                <Chip />
+              </div>
+              <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-2.5">
+                <div className="col-span-2 pr-[80px]">
+                  <dt className="sign-label text-[11px] leading-[13px] text-ink-3">{t('about.f_holder')}</dt>
+                  <dd className="sign-type mt-1 text-[25px] leading-[1] text-ink">{SITE.name}</dd>
+                </div>
+                <Field label={t('about.f_profile')} wide>
+                  {nb(t('hero.role'))}
+                </Field>
+                <Field label={t('about.f_degree')} wide>
+                  {t('about.degree')}
+                </Field>
+                <Field label={t('about.f_zone')}>{t('about.zone')}</Field>
+                <Field label={t('about.f_langs')}>{t('about.langs').replace(/ (B2|C1|C2)\b/g, ' $1')}</Field>
+              </dl>
+            </div>
+            <div className="abono-perf" aria-hidden="true" />
+            <p className="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 px-5 pb-2 pt-0.5 font-mono text-[11px] text-ink-3">
+              <span>{t('about.valid_from')}</span>
+              <span className="tnum">{t('about.pass_no')}</span>
+            </p>
+            <span ref={glareF} className="abono-glare" aria-hidden="true" />
+          </div>
 
-            {/* ── back: one big QR to LinkedIn ── */}
-            <div
-              ref={back}
-              data-glow
-              className="abono-face abono-back card glow-card"
-              style={lc('var(--l1)')}
-              onClick={onFaceClick}
-              inert={!flipped}
-              aria-hidden={!flipped || undefined}
-            >
-              <Band>
-                <span className="sign-label inline-flex items-center gap-2 text-[17px] leading-none">
-                  <LinkedInIcon className="h-4 w-4" />
-                  {t('about.qr_title')}
-                </span>
-                <Capsule />
-              </Band>
-              <div className="abono-guilloche flex flex-1 flex-col items-center justify-center gap-5 px-5 py-6 text-center">
-                <h3 className="sr-only">{t('about.qr_title')}</h3>
-                <div className="abono-qr w-full max-w-[280px] sm:max-w-[320px]">
-                  <img src="/abono/qr-linkedin.svg" alt={t('about.qr_alt')} width={320} height={320} loading="lazy" decoding="async" />
-                </div>
-                <p className="max-w-[30ch] font-mono text-[12.5px] leading-relaxed text-ink-2">{t('about.qr_caption')}</p>
-                <a
-                  href={SITE.linkedin}
-                  {...ext}
-                  data-cursor="link"
-                  className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-1 text-[15.5px] font-semibold text-l1 underline decoration-2 underline-offset-4 hover:decoration-[3px]"
-                >
-                  {t('about.qr_link')}
-                  <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-                  <span className="sr-only">{t('about.new_tab')}</span>
-                </a>
+          {/* ── back: magnetic stripe + one big QR to LinkedIn ── */}
+          <div
+            data-glow
+            className="abono-face abono-back card glow-card"
+            style={lc('var(--l1)')}
+            onClick={onFaceClick}
+            inert={!flipped}
+            aria-hidden={!flipped || undefined}
+          >
+            <Band>
+              <span className="sign-label inline-flex min-w-0 items-center gap-2 text-[16px] leading-none">
+                <LinkedInIcon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{t('about.qr_title')}</span>
+              </span>
+            </Band>
+            <div className="abono-stripe" aria-hidden="true" />
+            <div className="abono-guilloche flex flex-1 flex-col items-center justify-center px-5 pb-3 pt-5 text-center">
+              <h3 className="sr-only">{t('about.qr_title')}</h3>
+              <div className="abono-qr w-full max-w-[262px] sm:max-w-[290px]">
+                <img src="/abono/qr-linkedin.svg" alt={t('about.qr_alt')} width={290} height={290} loading="lazy" decoding="async" />
               </div>
-              <div className="abono-perf" aria-hidden="true" />
-              <p className="flex items-center justify-between gap-4 px-5 pb-3.5 pt-2 font-mono text-[11.5px] text-ink-3" aria-hidden="true">
-                <span>{t('about.pass')}</span>
-                <span className="tnum">{t('about.pass_no')}</span>
-              </p>
-              <span ref={glareB} className="abono-glare" aria-hidden="true" />
+              <p className="mt-3.5 text-[14px] font-semibold leading-snug text-ink-2">{t('about.qr_caption')}</p>
+              <p className="mt-1.5 font-mono text-[12px] text-ink-3">{linkedinShort}</p>
+              <a
+                href={SITE.linkedin}
+                {...ext}
+                data-cursor="link"
+                className="mt-1 inline-flex min-h-11 items-center gap-1.5 rounded-md px-1 text-[15px] font-semibold text-l1 underline decoration-2 underline-offset-4 hover:decoration-[3px]"
+              >
+                {t('about.qr_link')}
+                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                <span className="sr-only">{t('about.new_tab')}</span>
+              </a>
             </div>
+            <div className="abono-perf" aria-hidden="true" />
+            <p className="flex items-center justify-between gap-4 px-5 pb-2 pt-0.5 font-mono text-[11px] text-ink-3" aria-hidden="true">
+              <span>{t('about.pass')}</span>
+              <span className="tnum">{t('about.pass_no')}</span>
+            </p>
+            <span ref={glareB} className="abono-glare" aria-hidden="true" />
           </div>
         </div>
-      </div>
 
-      <div className="mt-6 flex justify-center">
-        <Magnetic strength={0.25} max={7}>
-          <button
-            ref={btn}
-            type="button"
-            onClick={toggle}
-            aria-controls="abono"
-            data-cursor="link"
-            {...(flipped ? { 'data-flipped': '' } : {})}
-            className="abono-flip-btn inline-flex h-12 items-center gap-2.5 rounded-full px-6 text-[16px] font-semibold"
-          >
-            {flipped ? <RotateCw className="h-[18px] w-[18px]" aria-hidden="true" /> : <QrCode className="h-[18px] w-[18px]" aria-hidden="true" />}
+        {/* the flip control: one real button above both faces, so it is never
+            inert and focus stays on it; its visible tag is part of its name */}
+        <button
+          ref={btn}
+          type="button"
+          onClick={toggle}
+          aria-controls="abono"
+          data-cursor="link"
+          className="abono-turn"
+        >
+          <span className="abono-turn-ring">
+            <RotateCw className="h-[18px] w-[18px]" aria-hidden="true" strokeWidth={2.4} />
+          </span>
+          <span className="abono-turn-tag">
             {flipped ? t('about.flip_back') : t('about.flip_qr')}
-          </button>
-        </Magnetic>
+            {!flipped && <span className="sr-only">{t('about.flip_qr_sr')}</span>}
+          </span>
+        </button>
       </div>
     </div>
   )
@@ -392,13 +418,11 @@ export function AboutPass() {
   ]
 
   return (
-    <section id="sobre-mi" className="relative py-20 lg:py-28">
-      <div className="mx-auto grid max-w-[1440px] items-start gap-12 px-5 sm:px-6 lg:grid-cols-[420px_1fr] lg:gap-16 lg:px-16 xl:gap-20">
-        <div className="lg:sticky lg:top-[calc(var(--bar-h)+32px)]">
-          <Abono />
-        </div>
-
-        <div className="max-w-[680px]">
+    <section id="sobre-mi" className="relative scroll-mt-3 py-20 lg:py-28">
+      <h2 className="sr-only">{t('about.pass')}</h2>
+      {/* mobile: greeting → pass → story; desktop: pass (sticky) | greeting + story */}
+      <div className="mx-auto grid max-w-[1440px] items-start gap-y-10 px-5 sm:px-6 lg:grid-cols-[420px_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-0 lg:px-16 xl:gap-x-20">
+        <div className="max-w-[680px] lg:col-start-2 lg:row-start-1">
           <p className="inline-flex items-center gap-2 rounded-full border border-rule bg-paper-card px-3 py-1 font-mono text-[12px] font-medium tracking-wide text-eco">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-eco loop-anim" aria-hidden="true" />
@@ -412,15 +436,22 @@ export function AboutPass() {
               👋
             </span>
           </h3>
-          <div className="mt-5 space-y-4 text-[17px] leading-[1.7] text-ink-2">
+        </div>
+
+        <div className="self-start lg:sticky lg:top-[calc(var(--bar-h)+28px)] lg:col-start-1 lg:row-span-2 lg:row-start-1">
+          <Abono />
+        </div>
+
+        <div className="max-w-[680px] lg:col-start-2 lg:row-start-2 lg:mt-5">
+          <div className="space-y-4 text-[17px] leading-[1.7] text-ink-2">
             <RichText html={t('about.p1')} />
             <RichText html={t('about.p2')} />
             <RichText html={t('about.p3')} />
           </div>
           <p className="mt-6 flex gap-3 border-l-[3px] border-dashed border-cer pl-4 text-[15.5px] italic leading-relaxed text-ink-2">{t('about.grit')}</p>
-          <ul className="mt-9 flex flex-wrap gap-x-3 gap-y-4">
-            {pills.map((p, i) => (
-              <li key={p.href} className={settled ? '' : 'pill-float loop-anim'} style={{ animationDelay: `${i * 0.45}s` }}>
+          <ul className={`mt-9 flex flex-wrap gap-x-3 gap-y-4 ${settled ? '' : 'pill-float-sync loop-anim'}`}>
+            {pills.map((p) => (
+              <li key={p.href}>
                 <Magnetic strength={0.22} max={6}>
                   <a
                     href={p.href}
@@ -433,12 +464,8 @@ export function AboutPass() {
                   >
                     <span className="pill-ico grid h-10 w-10 place-items-center rounded-full">{p.icon}</span>
                     {p.label}
-                    {p.external !== false && (
-                      <>
-                        <ArrowUpRight className="pill-arrow -ml-1 h-4 w-4 text-ink-3" aria-hidden="true" />
-                        <span className="sr-only">{t('about.new_tab')}</span>
-                      </>
-                    )}
+                    <ArrowUpRight className="pill-arrow -ml-1 h-4 w-4 text-ink-3" aria-hidden="true" />
+                    {p.external !== false && <span className="sr-only">{t('about.new_tab')}</span>}
                   </a>
                 </Magnetic>
               </li>
