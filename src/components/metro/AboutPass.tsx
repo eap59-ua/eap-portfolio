@@ -334,7 +334,7 @@ function Abono() {
               </dl>
             </div>
             <div className="abono-perf" aria-hidden="true" />
-            <p className="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 px-5 pb-2 pt-0.5 font-mono text-[11px] text-ink-3">
+            <p className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 px-5 pb-2 pt-0.5 font-mono text-[11px] text-ink-3">
               <span>{t('about.valid_from')}</span>
               <span className="tnum ml-auto">{t('about.pass_no')}</span>
             </p>
