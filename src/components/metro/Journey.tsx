@@ -188,7 +188,7 @@ function PinnedJourney() {
               pointerEvents: d === 0 ? 'auto' : 'none',
             }
             return (
-              <div key={s.id} className="absolute bottom-6 left-1/2 w-[min(480px,36vw)] transition-[transform,opacity] duration-[450ms] ease-out" style={style} aria-hidden={d !== 0} inert={d !== 0}>
+              <div key={s.id} className="absolute bottom-6 left-1/2 w-[min(480px,36vw)] transition-[transform,opacity] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]" style={style} aria-hidden={d !== 0} inert={d !== 0}>
                 <StationCard s={s} active={d === 0} />
               </div>
             )
@@ -231,7 +231,7 @@ function PinnedJourney() {
                   {s.branches?.map((b, k) => (
                     <span
                       key={b}
-                      className="absolute left-1/2 top-[34px] h-[6px] origin-left rounded-full transition-transform duration-[450ms] ease-out"
+                      className="absolute left-1/2 top-[34px] h-[6px] origin-left rounded-full transition-transform duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
                       style={{
                         width: 58,
                         background: `var(--${PROJECT_LINE[b].line})`,
@@ -313,7 +313,7 @@ function VerticalJourney() {
         <span className="absolute bottom-0 left-[30px] top-6 w-[4px]" style={{ backgroundImage: 'repeating-linear-gradient(180deg, var(--cer) 0 12px, transparent 12px 19px)' }} aria-hidden="true" />
         {!reduce && (
           <span
-            className="absolute left-[6px] top-0 z-10 h-[38px] w-[24px] rounded-[7px] bg-ink shadow-[0_0_0_3px_var(--paper)] transition-transform duration-[450ms] ease-out"
+            className="absolute left-[6px] top-0 z-10 h-[38px] w-[24px] rounded-[7px] bg-ink shadow-[0_0_0_3px_var(--paper)] transition-transform duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
             style={{ transform: `translateY(${trainY - 19}px)` }}
             aria-hidden="true"
           />

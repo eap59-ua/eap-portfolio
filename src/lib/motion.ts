@@ -20,6 +20,12 @@ export const useReducedMotion = () => useMedia('(prefers-reduced-motion: reduce)
 export const useFinePointer = () => useMedia('(hover: hover) and (pointer: fine)')
 export { useMedia }
 
+/** per-frame follow factor tuned at 60 fps, made frame-rate independent:
+ *  the same feel on a 120 Hz screen or when frames drop */
+export function follow(k60: number, dtMs: number) {
+  return 1 - Math.pow(1 - k60, Math.min(dtMs, 64) / (1000 / 60))
+}
+
 // ── user pause (WCAG 2.2.2): one switch that stops every decorative loop ──
 const KEY = 'motion-paused'
 const listeners = new Set<() => void>()

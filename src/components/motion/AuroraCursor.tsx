@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useFinePointer, useMotionPaused, useReducedMotion } from '../../lib/motion'
+import { follow, useFinePointer, useMotionPaused, useReducedMotion } from '../../lib/motion'
 
 // Night only (design-rationale §2.2): ambient light over the lit-up map that
 // follows the cursor. No permanent loop: the rAF runs while it is catching up
@@ -17,11 +17,15 @@ export function AuroraCursor() {
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
     const cur = { ...target }
     let raf = 0
-    const step = () => {
-      cur.x += (target.x - cur.x) * 0.08
-      cur.y += (target.y - cur.y) * 0.08
+    let prev = 0
+    const step = (now: number) => {
+      const k = follow(0.08, prev ? now - prev : 1000 / 60)
+      prev = now
+      cur.x += (target.x - cur.x) * k
+      cur.y += (target.y - cur.y) * k
       el.style.transform = `translate3d(${cur.x - 170}px, ${cur.y - 170}px, 0)`
       raf = Math.hypot(target.x - cur.x, target.y - cur.y) > 0.5 ? requestAnimationFrame(step) : 0
+      if (!raf) prev = 0
     }
     const onMove = (e: PointerEvent) => {
       target.x = e.clientX

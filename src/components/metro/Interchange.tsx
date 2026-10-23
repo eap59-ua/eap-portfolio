@@ -26,12 +26,15 @@ export function Interchange({ from, to, fromLabel, toLabel, kicker }: Props) {
     if (!el || reduce) return
     const q = (s: string) => el.querySelector(s) as HTMLElement
     const opts: KeyframeAnimationOptions = { duration: D, fill: 'both', easing: 'linear' }
+    // the scroll stays linear; within each keyframe span the part accelerates and settles
+    const io2 = 'cubic-bezier(0.65, 0, 0.35, 1)'
+    const easing = ['linear', io2, 'linear']
     const anims = [
-      q('.ix-disc').animate({ transform: ['scale(0)', 'scale(0)', 'scale(1)', 'scale(1)'], offset: [0, 0.3, 0.75, 1] }, opts),
-      q('.ix-out').animate({ transform: ['scaleX(1)', 'scaleX(1)', 'scaleX(0)', 'scaleX(0)'], offset: [0, 0.1, 0.5, 1] }, opts),
-      q('.ix-in').animate({ transform: ['rotate(45deg) scaleX(0)', 'rotate(45deg) scaleX(0)', 'rotate(45deg) scaleX(1)', 'rotate(45deg) scaleX(1)'], offset: [0, 0.4, 0.85, 1] }, opts),
-      q('.ix-from').animate({ opacity: [1, 1, 0, 0], transform: ['none', 'none', 'translateY(-8px)', 'translateY(-8px)'], offset: [0, 0.36, 0.47, 1] }, opts),
-      q('.ix-to').animate({ opacity: [0, 0, 1, 1], transform: ['translateY(8px)', 'translateY(8px)', 'none', 'none'], offset: [0, 0.5, 0.62, 1] }, opts),
+      q('.ix-disc').animate({ transform: ['scale(0)', 'scale(0)', 'scale(1)', 'scale(1)'], offset: [0, 0.3, 0.75, 1], easing }, opts),
+      q('.ix-out').animate({ transform: ['scaleX(1)', 'scaleX(1)', 'scaleX(0)', 'scaleX(0)'], offset: [0, 0.1, 0.5, 1], easing }, opts),
+      q('.ix-in').animate({ transform: ['rotate(45deg) scaleX(0)', 'rotate(45deg) scaleX(0)', 'rotate(45deg) scaleX(1)', 'rotate(45deg) scaleX(1)'], offset: [0, 0.4, 0.85, 1], easing }, opts),
+      q('.ix-from').animate({ opacity: [1, 1, 0, 0], transform: ['none', 'none', 'translateY(-8px)', 'translateY(-8px)'], offset: [0, 0.36, 0.47, 1], easing }, opts),
+      q('.ix-to').animate({ opacity: [0, 0, 1, 1], transform: ['translateY(8px)', 'translateY(8px)', 'none', 'none'], offset: [0, 0.5, 0.62, 1], easing }, opts),
     ]
     anims.forEach((a) => a.pause())
 

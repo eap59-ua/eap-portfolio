@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
-import { useFinePointer, useReducedMotion } from '../../lib/motion'
+import { follow, useFinePointer, useReducedMotion } from '../../lib/motion'
 
 interface MagneticProps {
   children: ReactNode
@@ -27,17 +27,21 @@ export function Magnetic({ children, strength = 0.3, max = 10, className }: Magn
     if (!o || !el) return
     let rect: DOMRect | null = null
     let raf = 0
+    let prev = 0
     const target = { x: 0, y: 0 }
     const cur = { x: 0, y: 0 }
 
-    const tick = () => {
+    const tick = (now: number) => {
+      const k = follow(0.25, prev ? now - prev : 1000 / 60)
+      prev = now
       // critically-damped-ish approach: fast to start, settles without wobble
-      cur.x += (target.x - cur.x) * 0.25
-      cur.y += (target.y - cur.y) * 0.25
+      cur.x += (target.x - cur.x) * k
+      cur.y += (target.y - cur.y) * k
       el.style.transform = `translate3d(${cur.x.toFixed(2)}px, ${cur.y.toFixed(2)}px, 0)`
       if (Math.abs(target.x - cur.x) > 0.05 || Math.abs(target.y - cur.y) > 0.05) raf = requestAnimationFrame(tick)
       else {
         raf = 0
+        prev = 0
         if (!target.x && !target.y) el.style.willChange = ''
       }
     }

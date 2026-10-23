@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useFinePointer, useReducedMotion } from '../../lib/motion'
+import { follow, useFinePointer, useReducedMotion } from '../../lib/motion'
 
 // The author's custom cursor (design-rationale §2.1), redesigned for the metro:
 // a small train that RIDES ALONGSIDE the system cursor (option A — the system
@@ -29,11 +29,14 @@ export function TrainCursor() {
     let mode: 'rest' | 'link' | 'station' | 'text' | 'hidden' = 'hidden'
     let color = 'var(--l1)'
     let raf = 0
+    let prev = 0
     let last = { x: 0, y: 0 }
 
-    const render = () => {
+    const render = (now: number) => {
+      const dt = prev ? now - prev : 1000 / 60
+      prev = now
       // firm spring: the eye reads >80 ms of lag as a fault
-      const k = mode === 'station' ? 0.32 : 0.38
+      const k = follow(mode === 'station' ? 0.32 : 0.38, dt)
       pos.x += (target.x - pos.x) * k
       pos.y += (target.y - pos.y) * k
       const dx = target.x - last.x
@@ -43,12 +46,15 @@ export function TrainCursor() {
         // shortest turn, eased
         let d = a - angle
         d = ((d + 540) % 360) - 180
-        angle += d * 0.25
+        angle += d * follow(0.25, dt)
       }
       last = { ...target }
       node.style.transform = `translate3d(${pos.x.toFixed(1)}px, ${pos.y.toFixed(1)}px, 0) rotate(${mode === 'rest' ? angle.toFixed(1) : 0}deg)`
       if (Math.abs(target.x - pos.x) > 0.3 || Math.abs(target.y - pos.y) > 0.3) raf = requestAnimationFrame(render)
-      else raf = 0
+      else {
+        raf = 0
+        prev = 0
+      }
     }
     const kick = () => {
       if (!raf) raf = requestAnimationFrame(render)
@@ -116,7 +122,8 @@ export function TrainCursor() {
   if (!fine || reduce) return null
   return (
     <div ref={el} className="train-cursor" data-mode="hidden" aria-hidden="true">
-      <span />
+      <span className="tc-pill" />
+      <span className="tc-ring" />
     </div>
   )
 }

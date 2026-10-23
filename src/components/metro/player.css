@@ -220,7 +220,7 @@
     transform 120ms var(--ease-out);
 }
 .vp-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.96);
 }
 @media (hover: hover) {
   .vp-btn:hover {

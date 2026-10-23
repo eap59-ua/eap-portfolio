@@ -173,7 +173,7 @@ export function TopBar() {
         {home && (
           <div className="relative mx-5 h-3 sm:mx-6 lg:hidden" aria-hidden="true">
             <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-rule" />
-            <div className="absolute left-0 top-1/2 h-[3px] -translate-y-1/2 bg-l1" style={{ width: `${progress * 100}%` }} />
+            <div className="absolute inset-x-0 top-1/2 h-[3px] origin-left bg-l1" style={{ transform: `translateY(-50%) scaleX(${progress})` }} />
             <div className="absolute inset-0 flex items-center justify-between">
               {SECTIONS.map((s) => {
                 const idx = SECTIONS.findIndex((x) => x.id === current)
@@ -189,7 +189,7 @@ export function TopBar() {
         ref={dlg}
         onClose={() => setSheet(false)}
         aria-label={t('bar.plan')}
-        className="m-0 h-[100dvh] max-h-none w-full max-w-none bg-paper p-0 text-ink backdrop:bg-transparent lg:hidden"
+        className="plan-sheet m-0 h-[100dvh] max-h-none w-full max-w-none bg-paper p-0 text-ink backdrop:bg-transparent lg:hidden"
       >
         {sheet && (
         <div>
@@ -244,15 +244,14 @@ export function MiniPlan() {
             href={`#${s.id}`}
             aria-label={t(s.key)}
             aria-current={i === idx ? 'location' : undefined}
-            title={t(s.key)}
             className="group relative flex h-6 w-6 items-center justify-center rounded-full"
           >
             <span
-              className={`block rounded-full border-[3px] transition-[transform,background-color,border-color] duration-200 ease-out ${
-                i === idx ? 'h-3.5 w-3.5 border-l1 bg-l1 shadow-[0_0_0_4px_var(--paper),0_0_0_6px_var(--l1)]' : i < idx ? 'h-3 w-3 border-l1 bg-l1' : 'h-3 w-3 border-ink-3 bg-paper'
+              className={`block h-3.5 w-3.5 rounded-full border-[3px] transition-[transform,background-color,border-color,box-shadow] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+                i === idx ? 'border-l1 bg-l1 shadow-[0_0_0_4px_var(--paper),0_0_0_6px_var(--l1)]' : i < idx ? 'scale-[0.857] border-l1 bg-l1' : 'scale-[0.857] border-ink-3 bg-paper'
               }`}
             />
-            <span className="pointer-events-none absolute right-8 whitespace-nowrap rounded bg-ink px-2 py-0.5 font-sign text-sm font-semibold text-paper opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
+            <span className="pointer-events-none absolute right-8 whitespace-nowrap rounded bg-ink px-2 py-0.5 font-sign text-sm font-semibold text-paper translate-x-1 opacity-0 transition-[opacity,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100 motion-reduce:translate-x-0">
               {t(s.key)}
             </span>
           </a>

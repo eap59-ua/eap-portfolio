@@ -55,7 +55,7 @@ export function StationTrack({ stops, line, dashed }: { stops: string[]; line: L
       {stops.map((s, i) => (
         <span key={s}>
           <span
-            className="absolute h-[17px] w-[17px] rounded-full border-4 bg-paper-card transition-transform duration-200 ease-out"
+            className="absolute h-[17px] w-[17px] rounded-full border-4 bg-paper-card transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]"
             style={{ top: T - 5, left: `calc(${at(i)}% - 8.5px)`, borderColor: i === active ? 'var(--ink)' : `var(--${line})`, transform: i === active ? 'scale(1.25)' : 'none' }}
           />
           <span
@@ -70,7 +70,7 @@ export function StationTrack({ stops, line, dashed }: { stops: string[]; line: L
       ))}
       {!reduce && (
         <span
-          className="absolute h-[15px] w-[28px] rounded-[5px] bg-ink shadow-[0_0_0_3px_var(--card)] transition-transform duration-[260ms] ease-out"
+          className="absolute h-[15px] w-[28px] rounded-[5px] bg-ink shadow-[0_0_0_3px_var(--card)] transition-transform duration-[260ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           style={{ top: T - 4, transform: `translateX(calc(${trainAt}cqw - 14px))` }}
         />
       )}

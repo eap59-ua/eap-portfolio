@@ -21,10 +21,17 @@ export function ScrambleText({ text, className, duration = 1100 }: ScrambleTextP
     }
     const locks = Array.from(text, () => 0.1 + Math.random() * 0.78)
     let startTs = 0
+    let lastTs = 0
 
     const frame = (ts: number) => {
       if (!startTs) startTs = ts
       const progress = Math.min((ts - startTs) / duration, 1)
+      // fresh glyphs about every 45 ms: per-frame noise strobes and re-renders for nothing
+      if (progress < 1 && ts - lastTs < 45) {
+        rafRef.current = requestAnimationFrame(frame)
+        return
+      }
+      lastTs = ts
       let out = ''
       for (let i = 0; i < text.length; i++) {
         const ch = text[i]

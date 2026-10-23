@@ -165,7 +165,7 @@
   }
   .net-labels > * {
     opacity: 0;
-    animation: net-fade 400ms ease 700ms forwards;
+    animation: net-label-in 400ms var(--ease-out) 700ms forwards;
   }
 }
 @keyframes net-draw {
@@ -176,6 +176,16 @@
 @keyframes net-fade {
   to {
     opacity: 1;
+  }
+}
+@keyframes net-label-in {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
   }
 }
 @keyframes net-pop {
