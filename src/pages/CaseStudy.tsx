@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useRestoreLanguage } from '../i18n/useRestoreLanguage'
 import { ArrowLeft, ArrowRight, Award, Check } from 'lucide-react'
 import { PROJECTS } from '../data/projects'
 import { CASE_STUDIES } from '../data/caseStudies'
@@ -18,6 +19,7 @@ const SECTIONS = ['problem', 'role', 'architecture', 'decisions', 'challenges', 
 export function CaseStudy() {
   const { slug } = useParams()
   const { t, i18n } = useTranslation()
+  useRestoreLanguage()
   const project = PROJECTS.find((p) => p.slug === slug)
   const study = slug ? CASE_STUDIES[slug] : undefined
   const [current, setCurrent] = useState<string>(SECTIONS[0])

@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { storedLang } from '../i18n/config'
+import { useRestoreLanguage } from '../i18n/useRestoreLanguage'
 import { HeroPlano } from '../components/metro/HeroPlano'
 import { ProjectsBoard } from '../components/metro/ProjectsBoard'
 import { Journey } from '../components/metro/Journey'
@@ -10,13 +9,8 @@ import { Terminus } from '../components/metro/Terminus'
 import { Interchange } from '../components/metro/Interchange'
 
 export function Home() {
-  const { t, i18n } = useTranslation()
-  // The prerendered home is Spanish. A visitor who chose English gets it once this
-  // boundary has hydrated (switching earlier makes hydration fail on the text).
-  useEffect(() => {
-    const lang = storedLang()
-    if (i18n.language !== lang) void i18n.changeLanguage(lang)
-  }, [i18n])
+  const { t } = useTranslation()
+  useRestoreLanguage()
   const kicker = t('ix.kicker')
   return (
     <>

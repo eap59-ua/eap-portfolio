@@ -3,6 +3,10 @@ import { createRoot, hydrateRoot } from 'react-dom/client'
 import './i18n/config'
 import './index.css'
 import App from './App.tsx'
+import { isPrerendered } from './lib/ssr'
+
+// landing on a case study: fetch its lazy chunk alongside hydration, not after it
+if (location.pathname.startsWith('/projects/')) void import('./pages/CaseStudy')
 
 const root = document.getElementById('root')!
 const app = (
@@ -11,10 +15,9 @@ const app = (
   </StrictMode>
 )
 
-// Only "/" is prerendered with markup. Unknown routes are served the same
-// index.html by the host's SPA fallback, so there the home markup is dropped.
-if (root.hasChildNodes() && location.pathname === '/') {
-  // prerendered home (Spanish): hydrate as-is; Home restores the visitor's language after
+// Hydrate only markup prerendered for this very URL (see lib/ssr.ts); otherwise render.
+if (isPrerendered()) {
+  // prerendered page (Spanish): hydrate as-is; the page restores the visitor's language after
   hydrateRoot(root, app)
 } else {
   root.replaceChildren()

@@ -71,7 +71,7 @@
 /* chin: one row of controls; the progress runs along its top edge, under the screen */
 .vp[data-variant='phone'] .vp-barwrap {
   position: relative;
-  padding: 10px 2px 4px;
+  padding: 18px 2px 4px; /* the 24 px seek band ends above the buttons (WCAG 2.5.8) */
 }
 .vp[data-variant='phone'] .vp-bar {
   grid-template-areas: 'play time . tools';
@@ -82,7 +82,8 @@
   position: absolute;
   left: 16px;
   right: 16px;
-  top: -7px;
+  top: -6px;
+  z-index: 2; /* above the screen's edge: the whole 24 px band is clickable */
   width: auto;
   height: 24px;
   padding: 0;

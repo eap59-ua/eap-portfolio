@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import type { ReactNode } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import { SmoothScroll, scrollToHash } from './components/layout/SmoothScroll'
@@ -44,7 +44,9 @@ function RouteFallback() {
 }
 
 /** the whole site, under whichever router renders it (browser, or the prerender's static one) */
-export function AppShell() {
+/** caseStudy: the prerender passes the page itself (not lazy), so its HTML comes out complete
+ *  in place; in the browser it stays a lazy chunk that hydrates that markup once loaded. */
+export function AppShell({ caseStudy: CaseStudyPage = CaseStudy }: { caseStudy?: ComponentType } = {}) {
   return (
     <>
       <HashScroll />
@@ -62,7 +64,7 @@ export function AppShell() {
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/projects/:slug" element={<CaseStudy />} />
+            <Route path="/projects/:slug" element={<CaseStudyPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
