@@ -9,8 +9,14 @@ import { useTheme } from './lib/theme'
 import { SiteFooter } from './components/metro/SiteFooter'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
+import { loadCaseStudy, loadedCaseStudy } from './lib/caseStudyChunk'
 
-const CaseStudy = lazy(() => import('./pages/CaseStudy').then((m) => ({ default: m.CaseStudy })))
+const LazyCaseStudy = lazy(() => loadCaseStudy().then((c) => ({ default: c })))
+/** straight to the page once its chunk is in (see lib/caseStudyChunk.ts), lazy before that */
+function CaseStudy() {
+  const Page = loadedCaseStudy()
+  return Page ? <Page /> : <LazyCaseStudy />
+}
 // pointer-only companion cursor: off the critical path, self-disables on touch
 // night only: ambient light over the lit-up map
 const AuroraCursor = lazy(() => import('./components/motion/AuroraCursor').then((m) => ({ default: m.AuroraCursor })))

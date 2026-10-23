@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { ViewLink } from '../ui/ViewLink'
 import { ArrowUpRight } from 'lucide-react'
 import { GitHubIcon } from '../ui/icons'
 import { Magnetic } from '../motion/Magnetic'
@@ -65,10 +65,9 @@ export function CaseButton({ to, line, dark, label, children }: { to: string; li
   const { ref, inviting } = useInviteOnce<HTMLAnchorElement>(3600)
   return (
     <Magnetic>
-      <Link
+      <ViewLink
         ref={ref}
         to={to}
-        viewTransition
         aria-label={label}
         data-cursor="link"
         data-line={line}
@@ -78,7 +77,7 @@ export function CaseButton({ to, line, dark, label, children }: { to: string; li
       >
         {children}
         <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-      </Link>
+      </ViewLink>
     </Magnetic>
   )
 }

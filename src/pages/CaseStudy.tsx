@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { ViewLink } from '../components/ui/ViewLink'
 import { useTranslation } from 'react-i18next'
 import { useRestoreLanguage } from '../i18n/useRestoreLanguage'
 import { ArrowLeft, ArrowRight, Award, Check } from 'lucide-react'
@@ -246,16 +247,16 @@ export function CaseStudy() {
             </Section>
 
             <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-rule pt-6">
-              <Link to={`/#proyecto-${project.slug}`} viewTransition className="inline-flex items-center gap-2 font-sign text-[16px] font-semibold text-ink-2 hover:text-ink">
+              <ViewLink to={`/#proyecto-${project.slug}`} className="inline-flex items-center gap-2 font-sign text-[16px] font-semibold text-ink-2 hover:text-ink">
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 {t('cs.back')}
-              </Link>
-              <Link to={`/projects/${next.slug}`} viewTransition className="inline-flex items-center gap-2.5 font-sign text-[17px] font-semibold text-ink hover:underline">
+              </ViewLink>
+              <ViewLink to={`/projects/${next.slug}`} className="inline-flex items-center gap-2.5 font-sign text-[17px] font-semibold text-ink hover:underline">
                 <span className="text-ink-3">{t('cs.next')}:</span>
                 <LineBadge line={nextL.line} n={`L${nextL.n}`} dark={nextL.dark} className="h-[26px] min-w-[26px] text-[13px]" />
                 {nextTitle}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
+              </ViewLink>
             </div>
           </div>
         </div>

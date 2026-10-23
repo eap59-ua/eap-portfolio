@@ -11,7 +11,11 @@ const template = readFileSync('dist/index.html', 'utf8')
 if (!template.includes('<div id="root"></div>')) throw new Error('prerender: empty #root not found in dist/index.html')
 const { render } = await import(pathToFileURL('dist-ssr/entry-server.js').href)
 /** #root with the markup and the route it was rendered for (see src/lib/ssr.ts) */
-const withApp = (html, route, app) => html.replace('<div id="root"></div>', `<div id="root" data-ssr="${route}">${app}</div>`)
+/** The page's <title>/<meta> (React 19 hoistables) come out inline in renderToString's
+ *  string; <head> already carries them (swapped below), so they're dropped from the body.
+ *  Hydration doesn't look for hoistables in place, and on the client React puts its own in <head>. */
+const stripHoistables = (app) => app.replace(/<title>[\s\S]*?<\/title>|<meta\b[^>]*>/g, '')
+const withApp = (html, route, app) => html.replace('<div id="root"></div>', `<div id="root" data-ssr="${route}">${stripHoistables(app)}</div>`)
 
 const esc = (s) =>
   s

@@ -4,9 +4,10 @@ import './i18n/config'
 import './index.css'
 import App from './App.tsx'
 import { isPrerendered } from './lib/ssr'
+import { loadCaseStudy } from './lib/caseStudyChunk'
 
 // landing on a case study: fetch its lazy chunk alongside hydration, not after it
-if (location.pathname.startsWith('/projects/')) void import('./pages/CaseStudy')
+if (location.pathname.startsWith('/projects/')) void loadCaseStudy()
 
 const root = document.getElementById('root')!
 const app = (
