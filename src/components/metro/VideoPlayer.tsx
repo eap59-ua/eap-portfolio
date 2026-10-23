@@ -106,7 +106,8 @@ interface CoreProps {
 }
 
 function Core({ media, name, style, videoRef, viewer, startAt = 0, enlargeRef, onEnlarge }: CoreProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lang = i18n.resolvedLanguage === 'en' ? 'en' : 'es'
   const boxRef = useRef<FsBox>(null)
   const keysId = useId()
   const reduce = useReducedMotion()
@@ -258,7 +259,7 @@ function Core({ media, name, style, videoRef, viewer, startAt = 0, enlargeRef, o
         onTimeUpdate={(e) => setCur(e.currentTarget.currentTime)}
         onLoadedMetadata={(e) => Number.isFinite(e.currentTarget.duration) && setDur(e.currentTarget.duration)}
       >
-        {media.captions && <track kind="descriptions" srcLang="es" src={media.captions} />}
+        {media.captions && <track key={lang} kind="descriptions" srcLang={lang} src={`${media.captions}.${lang}.vtt`} />}
       </video>
       <span className="vp-big" data-show={big || undefined} aria-hidden="true">
         {ended ? <RotateCcw className="h-8 w-8" /> : <Play className="ml-1 h-8 w-8" fill="currentColor" />}

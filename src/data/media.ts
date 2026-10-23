@@ -11,14 +11,15 @@ export interface DemoMedia {
   /** false = the file has no audio track (ffprobe), so the mute button says so instead of faking a toggle */
   audio: boolean
   portrait?: boolean
+  /** description track base path: <base>.es.vtt / <base>.en.vtt, picked by the UI language */
   captions?: string
   /** native-resolution crop of the same clip, fetched only when the viewer opens */
   hd?: { src: string; w: number; h: number }
 }
 
 export const MEDIA: Record<string, DemoMedia> = {
-  // phone viewport only (frames 0–594 of ecoalerta-demo.mp4, crop=488:1072:714:4): the rest of that recording is desktop
-  ecoalerta: { src: '/media/ecoalerta-phone.mp4', poster: '/media/ecoalerta-phone-poster.webp', w: 488, h: 1072, dur: 19.83, audio: false, portrait: true, captions: '/media/ecoalerta-demo.es.vtt' },
+  // phone viewport only (frames 0–594 of media-originales/ecoalerta-demo.mp4, crop=488:1072:714:4): the rest of that recording is desktop
+  ecoalerta: { src: '/media/ecoalerta-phone.mp4', poster: '/media/ecoalerta-phone-poster.webp', w: 488, h: 1072, dur: 19.83, audio: false, portrait: true, captions: '/media/ecoalerta' },
   'food-donation': { src: '/media/food-donation-web.mp4', poster: '/media/food-donation-web-poster.webp', w: 1280, h: 718, dur: 22.13, audio: false, hd: { src: '/media/food-donation-hd.mp4', w: 1460, h: 820 } },
   // crop=1904:920:0:88: no browser scrollbar (x≥1912) and no "localhost:5173/…" link bubble (y≥1010)
   hydrofulness: { src: '/media/hydrofulness-web.mp4', poster: '/media/hydrofulness-web-poster.webp', w: 1280, h: 618, dur: 28, audio: false, hd: { src: '/media/hydrofulness-hd.mp4', w: 1904, h: 920 } },
@@ -31,7 +32,7 @@ export const MEDIA_EXTRA: Record<string, { media: DemoMedia; labelKey: string }[
   ecoalerta: [
     {
       labelKey: 'player.ecoDesktop',
-      media: { src: '/media/ecoalerta-desktop-web.mp4', poster: '/media/ecoalerta-desktop-web-poster.webp', w: 1280, h: 620, dur: 75.17, audio: false, captions: '/media/ecoalerta-demo.es.vtt', hd: { src: '/media/ecoalerta-desktop-hd.mp4', w: 1900, h: 920 } },
+      media: { src: '/media/ecoalerta-desktop-web.mp4', poster: '/media/ecoalerta-desktop-web-poster.webp', w: 1280, h: 620, dur: 75.17, audio: false, captions: '/media/ecoalerta', hd: { src: '/media/ecoalerta-desktop-hd.mp4', w: 1900, h: 920 } },
     },
   ],
 }

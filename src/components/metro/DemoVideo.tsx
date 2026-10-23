@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MEDIA } from '../../data/media'
 import { useMotionPaused, useReducedMotion } from '../../lib/motion'
 
 /** plays muted while on screen; never with reduced motion or the pause button (WCAG 2.2.2): poster + controls instead */
 export function DemoVideo({ slug, title }: { slug: string; title: string }) {
   const m = MEDIA[slug]
+  const lang = useTranslation().i18n.resolvedLanguage === 'en' ? 'en' : 'es'
   const ref = useRef<HTMLVideoElement>(null)
   const reduce = useReducedMotion()
   const paused = useMotionPaused()
@@ -52,7 +54,7 @@ export function DemoVideo({ slug, title }: { slug: string; title: string }) {
       width={m.w}
       height={m.h}
     >
-      {near && m.captions && <track kind="descriptions" srcLang="es" src={m.captions} />}
+      {near && m.captions && <track key={lang} kind="descriptions" srcLang={lang} src={`${m.captions}.${lang}.vtt`} />}
     </video>
   )
   return m.portrait ? (
