@@ -40,8 +40,10 @@
   --abono-holo-o: 0.24;
   --abono-holo-ink: var(--ink); /* ≥ 3:1 on the foil at night */
   --abono-holo-tint: 0.55;
-  --abono-stamp: #b7a8ff;
-  --abono-stamp-blend: screen;
+  /* plain ink, not `screen`: screen washes the stamp out where it crosses
+     the light photo; a mid lavender reads on both the photo and the card */
+  --abono-stamp: #a294ff;
+  --abono-stamp-blend: normal;
 }
 
 /* the cast shadow: its own blurred layer, moved by transform (never an
@@ -140,7 +142,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 20%;
+  /* the asset is exported at the box's 4:5, so nothing is cropped here; if
+     the ratio ever drifts, keep the face and trim from the waist */
+  object-position: 50% 15%;
 }
 
 /* validation stamp: struck across the photo's bottom-right edge, onto the card */

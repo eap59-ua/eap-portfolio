@@ -18,6 +18,9 @@ const MAX_TILT = 8 // degrees
 const K = 240 // spring stiffness (1/s²)
 const D = 21 // damping (1/s): ratio ≈ 0.68, a small overshoot when it springs back
 const TURN_MS = 700
+// the photo box: 386px from sm up (420 pass − 2×16 padding − 2 border); below,
+// the pass is min(330px, 100vw − 40px) wide, so the photo is that minus 34px
+const PHOTO_SIZES = '(min-width: 640px) 386px, min(296px, calc(100vw - 74px))'
 
 function Field({ label, children, wide }: { label: string; children: ReactNode; wide?: boolean }) {
   return (
@@ -158,6 +161,10 @@ function Abono() {
     const vel = { x: 0, y: 0 }
     let gx = 0
     let gy = 0
+    // the lift (0 at rest, 1 under the pointer) rides the same spring, so the
+    // card rises and settles instead of popping on enter/leave
+    let lift = 0
+    let liftV = 0
 
     const frame = (now: number) => {
       const dt = last ? Math.min(0.032, (now - last) / 1000) : 1 / 60
@@ -166,18 +173,29 @@ function Abono() {
         vel[k] += (K * (tgt[k] - cur[k]) - D * vel[k]) * dt
         cur[k] += vel[k] * dt
       }
-      const settled = Math.abs(tgt.x - cur.x) < 0.0008 && Math.abs(tgt.y - cur.y) < 0.0008 && Math.abs(vel.x) < 0.004 && Math.abs(vel.y) < 0.004
+      const liftT = hover ? 1 : 0
+      liftV += (K * (liftT - lift) - D * liftV) * dt
+      lift += liftV * dt
+      const settled =
+        Math.abs(tgt.x - cur.x) < 0.0008 &&
+        Math.abs(tgt.y - cur.y) < 0.0008 &&
+        Math.abs(vel.x) < 0.004 &&
+        Math.abs(vel.y) < 0.004 &&
+        Math.abs(liftT - lift) < 0.002 &&
+        Math.abs(liftV) < 0.01
       if (settled) {
         cur.x = tgt.x
         cur.y = tgt.y
         vel.x = vel.y = 0
+        lift = liftT
+        liftV = 0
       }
       // writes only
       const ry = (cur.x - 0.5) * 2 * MAX_TILT
       const rx = -(cur.y - 0.5) * 2 * MAX_TILT
-      tl.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)${hover ? ' translateZ(14px)' : ''}`
+      tl.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateZ(${(14 * Math.max(0, lift)).toFixed(2)}px)`
       // the shadow falls away from the raised edge: opposite to the tilt
-      sd.style.transform = `translate3d(${(-ry * 2.2).toFixed(1)}px, ${(rx * 2.2).toFixed(1)}px, 0)${hover ? ' scale(1.03)' : ''}`
+      sd.style.transform = `translate3d(${(-ry * 2.2).toFixed(1)}px, ${(rx * 2.2).toFixed(1)}px, 0) scale(${(1 + 0.03 * Math.max(0, lift)).toFixed(4)})`
       // the foil slides against the pointer and shifts hue with the angle
       sh.style.transform = `translate3d(${(-cur.x * 66.666).toFixed(2)}%, 0, 0)`
       sh.style.filter = `hue-rotate(${((Math.abs(rx) + Math.abs(ry)) * 2.5).toFixed(0)}deg)`
@@ -281,10 +299,12 @@ function Abono() {
               <Capsule />
             </Band>
             <div className="relative px-4 pt-4">
-              <div className="abono-photo aspect-square w-full sm:aspect-[386/330]">
+              {/* 4:5, the same ratio as the exported crop (full width of the
+                  original, headroom to the waist, crossed arms whole) */}
+              <div className="abono-photo aspect-[4/5] w-full">
                 <picture>
-                  <source srcSet="/profile.webp" type="image/webp" />
-                  <img src="/profile.jpg" alt={t('about.photo')} loading="lazy" decoding="async" width={800} height={1000} />
+                  <source srcSet="/abono/foto-800.webp 800w, /abono/foto-1200.webp 1200w" sizes={PHOTO_SIZES} type="image/webp" />
+                  <img src="/abono/foto-800.jpg" alt={t('about.photo')} loading="lazy" decoding="async" width={800} height={1000} />
                 </picture>
               </div>
               <Stamp title={t('about.stamp')} sub={t('about.stamp_sub')} />
@@ -316,7 +336,7 @@ function Abono() {
             <div className="abono-perf" aria-hidden="true" />
             <p className="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 px-5 pb-2 pt-0.5 font-mono text-[11px] text-ink-3">
               <span>{t('about.valid_from')}</span>
-              <span className="tnum">{t('about.pass_no')}</span>
+              <span className="tnum ml-auto">{t('about.pass_no')}</span>
             </p>
             <span ref={glareF} className="abono-glare" aria-hidden="true" />
           </div>
@@ -339,7 +359,7 @@ function Abono() {
             <div className="abono-stripe" aria-hidden="true" />
             <div className="abono-guilloche flex flex-1 flex-col items-center justify-center px-5 pb-3 pt-5 text-center">
               <h3 className="sr-only">{t('about.qr_title')}</h3>
-              <div className="abono-qr w-full max-w-[262px] sm:max-w-[290px]">
+              <div className="abono-qr w-full max-w-[280px] sm:max-w-[320px]">
                 <img src="/abono/qr-linkedin.svg" alt={t('about.qr_alt')} width={290} height={290} loading="lazy" decoding="async" />
               </div>
               <p className="mt-3.5 text-[14px] font-semibold leading-snug text-ink-2">{t('about.qr_caption')}</p>
