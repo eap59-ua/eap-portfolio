@@ -74,7 +74,7 @@ export function Interchange({ from, to, fromLabel, toLabel, kicker }: Props) {
   return (
     <div ref={root} className={`interchange relative h-[166px] overflow-hidden lg:h-[240px] ${reduce ? 'is-static' : ''}`} style={vars} aria-hidden="true">
       {/* the knot "lights up": a defined disc of the next chapter's colour */}
-      <span className="ix-disc absolute left-1/2 top-1/2 -ml-[102px] -mt-[102px] h-[204px] w-[204px] rounded-full lg:-ml-[120px] lg:-mt-[120px] lg:h-[240px] lg:w-[240px]" />
+      <span className="ix-disc absolute left-1/2 top-1/2 -ml-[80px] -mt-[80px] h-[160px] w-[160px] rounded-full lg:-ml-[120px] lg:-mt-[120px] lg:h-[240px] lg:w-[240px]" />
       <span className="ix-out absolute left-0 top-1/2 h-[10px] w-1/2 origin-right rounded-r-full" style={{ marginTop: -5 }} />
       <span className="ix-in absolute left-1/2 top-1/2 h-[10px] w-[200px] origin-left rounded-full lg:w-[280px]" style={{ marginTop: -5 }} />
       <span className="absolute left-1/2 top-1/2 h-[28px] w-[56px] -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-ink bg-paper-card" />

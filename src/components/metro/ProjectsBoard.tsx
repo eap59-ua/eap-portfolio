@@ -219,7 +219,7 @@ export function ProjectsBoard() {
         </div>
 
         {/* desktop: board (tabs) + platform */}
-        <div className="board-grid mt-10 hidden gap-10 lg:grid">
+        <div className="board-grid mt-10 hidden gap-10 lg:grid" data-anchor-fallback>
           <div role="tablist" aria-orientation="vertical" aria-label={t('projects.title')} className="flex flex-col gap-2.5">
             {PROJECTS.map((p, i) => {
               const L = PROJECT_LINE[p.slug]

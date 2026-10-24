@@ -5,10 +5,13 @@ type LenisLike = { scrollTo: (target: HTMLElement | number, opts?: { offset?: nu
 let lenisInstance: LenisLike | null = null
 
 // An anchor can point at something only one layout renders (e.g. a project's
-// accordion row, hidden on desktop): then land on its section instead.
+// accordion row, hidden on desktop): then land on the visible stand-in the section
+// marks with data-anchor-fallback (the desktop board), or on the section itself.
 function anchorTarget(el: HTMLElement): HTMLElement {
   if (el.getClientRects().length) return el
-  return (el.closest('section') as HTMLElement | null) ?? el
+  const section = el.closest('section') as HTMLElement | null
+  const standIn = [...(section?.querySelectorAll<HTMLElement>('[data-anchor-fallback]') ?? [])].find((s) => s.getClientRects().length)
+  return standIn ?? section ?? el
 }
 
 function scrollToEl(el: HTMLElement) {
