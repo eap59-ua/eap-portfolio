@@ -1,35 +1,67 @@
-// Pure geometry for the night backgrounds (no DOM): octilinear routing, rounded
-// metro bends, arc-length sampling and a train's speed profile. Unit-tested.
+// Pure geometry for the night background (no DOM): octilinear routes on a grid,
+// rounded metro bends, arc-length sampling and a train's speed profile. Unit-tested.
 
 export type Pt = { x: number; y: number }
 
-/** the 8 metro directions (E, SE, S, SW, W, NW, N, NE) as unit steps on the grid */
-export const DIRS: readonly Pt[] = [
-  { x: 1, y: 0 },
-  { x: 1, y: 1 },
-  { x: 0, y: 1 },
-  { x: -1, y: 1 },
-  { x: -1, y: 0 },
-  { x: -1, y: -1 },
-  { x: 0, y: -1 },
-  { x: 1, y: -1 },
-]
+/** the area a network covers (a plane is a bit larger than the viewport) */
+export type Rect = { x0: number; y0: number; x1: number; y1: number }
+
+/** a square grid of pitch G anchored at (ox, oy), with the seeded random it draws from */
+export type Grid = { G: number; ox: number; oy: number; rnd: () => number }
+
+const snap = (v: number, o: number, G: number) => Math.round((v - o) / G) * G + o
+const randInt = (g: Grid, a: number, b: number) => a + Math.floor(g.rnd() * (b - a + 1))
 
 /**
- * Octilinear route between two points: one straight run plus one 45° run, the
- * way a schematic map draws a link. The straight run goes first, so the bend
- * slides continuously as the points move (no flip when |dx| ≈ |dy|).
- * Returns [a, bend, b].
+ * A line crossing the area west → east around a horizontal band: straight runs
+ * of 3–6 cells joined by 45° kinks of 1–2 cells that keep it near its band and
+ * inside the area. Every segment is 0° or 45°.
  */
-export function octiRoute(a: Pt, b: Pt): [Pt, Pt, Pt] {
-  const dx = b.x - a.x
-  const dy = b.y - a.y
-  const ax = Math.abs(dx)
-  const ay = Math.abs(dy)
-  const sx = Math.sign(dx)
-  const sy = Math.sign(dy)
-  const bend = ax >= ay ? { x: a.x + sx * (ax - ay), y: a.y } : { x: a.x, y: a.y + sy * (ay - ax) }
-  return [a, bend, b]
+export function routeAcross(band: number, r: Rect, g: Grid): Pt[] {
+  const { G } = g
+  const lo = snap(r.y0 + G, g.oy, G)
+  const hi = snap(r.y1 - G, g.oy, G)
+  let x = snap(r.x0 - 2 * G, g.ox, G)
+  let y = Math.min(hi, Math.max(lo, snap(band, g.oy, G)))
+  const pts: Pt[] = [{ x, y }]
+  while (x < r.x1 + 2 * G) {
+    x += randInt(g, 3, 6) * G
+    pts.push({ x, y })
+    if (x >= r.x1 + 2 * G) break
+    const k = randInt(g, 1, 2)
+    const dy = y > band + G ? -1 : y < band - G ? 1 : g.rnd() < 0.5 ? -1 : 1
+    const ny = Math.min(hi, Math.max(lo, y + dy * k * G))
+    if (ny === y) continue
+    x += Math.abs(ny - y)
+    y = ny
+    pts.push({ x, y })
+  }
+  return pts
+}
+
+/** the same, north → south around a vertical band: 90° runs and 45° kinks */
+export function routeDown(band: number, r: Rect, g: Grid): Pt[] {
+  // a down route is an across route with the axes swapped
+  const t = routeAcross(band, { x0: r.y0, y0: r.x0, x1: r.y1, y1: r.x1 }, { G: g.G, ox: g.oy, oy: g.ox, rnd: g.rnd })
+  return t.map((p) => ({ x: p.y, y: p.x }))
+}
+
+/**
+ * The trunk (L1): enters from the west at `fromY`, runs east, climbs one long
+ * 45° diagonal of `cells` cells and leaves to the east.
+ */
+export function routeTrunk(fromY: number, cells: number, r: Rect, g: Grid): Pt[] {
+  const { G } = g
+  let x = snap(r.x0 - 2 * G, g.ox, G)
+  let y = snap(fromY, g.oy, G)
+  const pts: Pt[] = [{ x, y }]
+  x += randInt(g, 3, 4) * G
+  pts.push({ x, y })
+  x += cells * G
+  y -= cells * G
+  pts.push({ x, y })
+  pts.push({ x: snap(r.x1 + 2 * G, g.ox, G), y })
+  return pts
 }
 
 /** a polyline flattened with rounded bends, ready to draw and to ride along */

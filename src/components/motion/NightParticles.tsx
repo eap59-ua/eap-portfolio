@@ -3,30 +3,12 @@ import { useLocation } from 'react-router-dom'
 import { useFinePointer, useMotionPaused, useReducedMotion } from '../../lib/motion'
 import type { Runner } from './particles/core'
 
-// Night only: a living network behind the content (design-rationale, night map).
-//   ?bg=a → "Red en servicio": faint octilinear lines with trains that stop at stations
-//   ?bg=b → "Malla de estaciones": drifting stations that link up octilinearly
-//   ?bg=off → none
-// The choice sticks for the session so it survives in-app navigation.
+// Night only: "Red en servicio", a living metro network behind the content
+// (design-rationale, night map), drawn in depth on two or three planes.
 // Cost model: mounted after hydration (ClientOnly), engine fetched on idle as its own
-// chunk, a fixed pointer-events:none canvas pair (no layout, CLS 0), the loop stops
-// in hidden tabs and with the pause button; reduced motion gets one still frame.
-type Variant = 'a' | 'b'
-const DEFAULT: Variant = 'a'
-const KEY = 'night-bg'
-
-function pickVariant(): Variant | null {
-  try {
-    const q = new URLSearchParams(window.location.search).get('bg')
-    if (q === 'a' || q === 'b' || q === 'off') sessionStorage.setItem(KEY, q)
-    const v = q ?? sessionStorage.getItem(KEY)
-    if (v === 'off') return null
-    if (v === 'a' || v === 'b') return v
-  } catch {
-    /* storage blocked: fall through to the default */
-  }
-  return DEFAULT
-}
+// chunk, fixed pointer-events:none canvases (no layout, CLS 0), cached planes moved
+// by compositor transforms, the loop stops in hidden tabs and with the pause button;
+// reduced motion gets one still frame.
 
 type IdleWindow = Window & {
   requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number
@@ -37,7 +19,6 @@ export function NightParticles() {
   const host = useRef<HTMLDivElement>(null)
   const runner = useRef<Runner | null>(null)
   const pausedRef = useRef(false)
-  const [variant] = useState(pickVariant)
   const [shown, setShown] = useState(false)
   const fine = useFinePointer()
   const reduce = useReducedMotion()
@@ -61,17 +42,14 @@ export function NightParticles() {
 
   useEffect(() => {
     const el = host.current
-    if (!el || !variant) return
+    if (!el) return
     let cancelled = false
-    const lite = !fine // touch / pen: fewer elements, DPR ≤ 1.5, 30 fps, no cursor
+    const lite = !fine // touch / pen: two planes, DPR ≤ 1.5, 30 fps, no cursor
     const go = async () => {
-      const [core, mod] = await Promise.all([
-        import('./particles/core'),
-        variant === 'a' ? import('./particles/redEnServicio') : import('./particles/mallaEstaciones'),
-      ])
+      const [core, red] = await Promise.all([import('./particles/core'), import('./particles/redEnServicio')])
       if (cancelled) return
       const interactive = fine && !reduce
-      const scene = mod.createScene({ lite, interactive }, core.readPalette())
+      const scene = red.createScene({ lite, interactive }, core.readPalette())
       runner.current = core.run(el, scene, {
         lite,
         interactive,
@@ -91,14 +69,13 @@ export function NightParticles() {
       runner.current = null
       setShown(false)
     }
-  }, [variant, fine, reduce])
+  }, [fine, reduce])
 
-  if (!variant) return null
   return (
     <div
       ref={host}
       aria-hidden="true"
-      data-night-bg={variant}
+      data-night-bg=""
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
       style={{ opacity: shown ? (dim ? 0.42 : 1) : 0, transition: 'opacity 700ms var(--ease-out)' }}
     />

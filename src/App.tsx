@@ -20,7 +20,7 @@ function CaseStudy() {
 // pointer-only companion cursor: off the critical path, self-disables on touch
 // night only: ambient light over the lit-up map
 const AuroraCursor = lazy(() => import('./components/motion/AuroraCursor').then((m) => ({ default: m.AuroraCursor })))
-// night only: the living network behind the content (?bg=a|b|off)
+// night only: the living metro network behind the content, in depth
 const NightParticles = lazy(() => import('./components/motion/NightParticles').then((m) => ({ default: m.NightParticles })))
 const TrainCursor = lazy(() => import('./components/metro/TrainCursor').then((m) => ({ default: m.TrainCursor })))
 

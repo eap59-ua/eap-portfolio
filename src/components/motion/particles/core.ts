@@ -1,7 +1,7 @@
-// Shared plumbing for the night backgrounds: canvas sizing (capped DPR), a
-// frame loop that only runs while it is allowed to (visible tab, not paused,
-// motion welcome), pointer tracking, and the palette read from the CSS tokens.
-// No library: two canvases and requestAnimationFrame.
+// Plumbing for the night background: canvas sizing (capped DPR), a frame loop
+// that only runs while it is allowed to (visible tab, not paused, motion
+// welcome), pointer and scroll tracking, and the palette read from the CSS
+// tokens. No library: a few canvases and requestAnimationFrame.
 
 export type RGB = readonly [number, number, number]
 export type Palette = {
@@ -18,20 +18,34 @@ export type SceneOpts = {
   interactive: boolean
 }
 
-export type Pointer = { x: number; y: number; active: boolean }
+/** what the scene reacts to: the mouse (fine pointers only) and the page scroll */
+export type Input = { x: number; y: number; active: boolean; scrollY: number }
+
+/**
+ * A cached layer of the scene: painted once per build on its own canvas, then
+ * only moved (a compositor transform), never repainted per frame.
+ */
+export type Plane = {
+  canvas: HTMLCanvasElement
+  /** CSS box relative to the viewport, before the offset */
+  left: number
+  top: number
+  width: number
+  height: number
+  /** current offset in CSS px, written by the scene in update() */
+  dx: number
+  dy: number
+}
 
 export interface Scene {
-  /** (re)build the geometry for a viewport, then paint the static layer */
-  build(w: number, h: number, dpr: number): void
-  /** optional: a layer painted once per build (scenes where everything moves omit it: one canvas less) */
-  paintStatic?(ctx: CanvasRenderingContext2D): void
-  /** advance the simulation by dt seconds */
-  update(dt: number, pointer: Pointer): void
-  paintDynamic(ctx: CanvasRenderingContext2D, pointer: Pointer): void
+  /** (re)build for a viewport; returns the planes, back to front, already painted */
+  build(w: number, h: number, dpr: number): Plane[]
+  /** advance the simulation by dt seconds (0: just settle the planes) */
+  update(dt: number, input: Input): void
+  /** the moving part, redrawn every frame over the planes */
+  paintDynamic(ctx: CanvasRenderingContext2D): void
   /** a single frame with no movement (prefers-reduced-motion) */
   paintStill(ctx: CanvasRenderingContext2D): void
-  /** optional: page scroll delta in CSS px (for depth) */
-  scrolled?(dy: number): void
 }
 
 export const LINE_TOKENS = ['--l1', '--eco', '--hydro', '--donation', '--studysync', '--easycab', '--chaos'] as const
@@ -92,23 +106,24 @@ export type Runner = {
   destroy(): void
 }
 
+const transform = (p: Plane) => `translate3d(${p.dx}px,${p.dy}px,0)`
+
 /**
- * Mounts the scene on two stacked canvases inside `host`: a static layer painted
- * once per build and a dynamic layer redrawn each frame. The loop stops when the
- * tab is hidden, when the visitor pauses motion, and never starts with
- * prefers-reduced-motion (one still frame instead).
+ * Mounts the scene inside `host`: its cached planes (one canvas each, moved
+ * with compositor transforms) under one dynamic canvas redrawn each frame.
+ * The loop stops when the tab is hidden, when the visitor pauses motion, and
+ * never starts with prefers-reduced-motion (one still frame instead).
  */
 export function run(host: HTMLElement, scene: Scene, opts: SceneOpts & { still: boolean; paused: boolean; onFirstPaint?: () => void }): Runner {
-  const stat = scene.paintStatic ? document.createElement('canvas') : null
   const dyn = document.createElement('canvas')
-  const layers = stat ? [stat, dyn] : [dyn]
-  for (const c of layers) {
-    c.setAttribute('aria-hidden', 'true')
-    c.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none'
-    host.appendChild(c)
-  }
-  const sctx = stat?.getContext('2d') ?? null
   const dctx = dyn.getContext('2d')!
+  let planes: Plane[] = []
+  const mount = (c: HTMLCanvasElement, css: string) => {
+    c.setAttribute('aria-hidden', 'true')
+    c.style.cssText = `position:absolute;pointer-events:none;${css}`
+  }
+  mount(dyn, 'left:0;top:0')
+  host.appendChild(dyn)
 
   const dprCap = opts.lite ? 1.5 : 2
   // phones: 30 fps, scheduled with a timer so the page isn't woken up on every vsync
@@ -122,7 +137,13 @@ export function run(host: HTMLElement, scene: Scene, opts: SceneOpts & { still: 
   let paused = opts.paused
   let destroyed = false
   let painted = false
-  const pointer: Pointer = { x: -9999, y: -9999, active: false }
+  const input: Input = { x: -9999, y: -9999, active: false, scrollY: window.scrollY }
+
+  const release = (c: HTMLCanvasElement) => {
+    // free the backing store right away (GPU memory) instead of waiting for GC
+    c.width = c.height = 0
+    c.remove()
+  }
 
   const size = () => {
     const nw = window.innerWidth
@@ -132,38 +153,40 @@ export function run(host: HTMLElement, scene: Scene, opts: SceneOpts & { still: 
     w = nw
     h = nh
     dpr = Math.min(window.devicePixelRatio || 1, dprCap)
-    for (const c of layers) {
-      c.width = Math.round(w * dpr)
-      c.height = Math.round(h * dpr)
-      c.style.width = `${w}px`
-      c.style.height = `${h}px`
-    }
-    scene.build(w, h, dpr)
-    if (stat && sctx && scene.paintStatic) {
-      sctx.setTransform(1, 0, 0, 1, 0, 0)
-      sctx.clearRect(0, 0, stat.width, stat.height)
-      sctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      scene.paintStatic(sctx)
+    dyn.width = Math.round(w * dpr)
+    dyn.height = Math.round(h * dpr)
+    dyn.style.width = `${w}px`
+    dyn.style.height = `${h}px`
+    planes.forEach((p) => release(p.canvas))
+    planes = scene.build(w, h, dpr)
+    placed = []
+    for (const p of planes) {
+      mount(p.canvas, `left:${p.left}px;top:${p.top}px;width:${p.width}px;height:${p.height}px;will-change:transform`)
+      host.insertBefore(p.canvas, dyn)
     }
     return true
   }
 
-  const clearDyn = () => {
+  // the planes only move: a transform per plane per frame, written when it changed
+  let placed: string[] = []
+  const place = () => {
+    planes.forEach((p, i) => {
+      const t = transform(p)
+      if (placed[i] !== t) p.canvas.style.transform = placed[i] = t
+    })
+  }
+
+  const paint = (still: boolean) => {
     dctx.setTransform(1, 0, 0, 1, 0, 0)
     dctx.clearRect(0, 0, dyn.width, dyn.height)
     dctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-  }
-
-  const firstPaint = () => {
-    if (painted) return
-    painted = true
-    opts.onFirstPaint?.()
-  }
-
-  const paintStill = () => {
-    clearDyn()
-    scene.paintStill(dctx)
-    firstPaint()
+    if (still) scene.paintStill(dctx)
+    else scene.paintDynamic(dctx)
+    place()
+    if (!painted) {
+      painted = true
+      opts.onFirstPaint?.()
+    }
   }
 
   let running = false
@@ -171,10 +194,8 @@ export function run(host: HTMLElement, scene: Scene, opts: SceneOpts & { still: 
     raf = 0
     const dt = Math.min(now - last, 64) / 1000 // a long gap never makes things jump
     last = now
-    scene.update(dt, pointer)
-    clearDyn()
-    scene.paintDynamic(dctx, pointer)
-    firstPaint()
+    scene.update(dt, input)
+    paint(false)
     if (!running) return
     if (frameGap) timer = window.setTimeout(() => (raf = requestAnimationFrame(frame)), frameGap - (performance.now() - now) - 2)
     else raf = requestAnimationFrame(frame)
@@ -195,52 +216,43 @@ export function run(host: HTMLElement, scene: Scene, opts: SceneOpts & { still: 
   }
   const sync = () => (canRun() ? start() : stop())
 
-  // resize: debounced, then rebuild (the still frame is repainted too)
+  // a frame without advancing time: the first one, and after a rebuild while stopped
+  const settle = () => {
+    if (opts.still) return paint(true)
+    scene.update(0, input)
+    paint(false)
+  }
+
+  // resize: debounced, then rebuild and repaint once
   let resizeT = 0
   const onResize = () => {
     clearTimeout(resizeT)
     resizeT = window.setTimeout(() => {
-      if (!size()) return
-      if (opts.still) paintStill()
-      else if (!running) {
-        // paused or hidden: repaint the new geometry once, without advancing time
-        scene.update(0, pointer)
-        clearDyn()
-        scene.paintDynamic(dctx, pointer)
-      }
+      if (size() && !running) settle()
     }, 180)
   }
 
   const onMove = (e: PointerEvent) => {
     if (e.pointerType !== 'mouse') return
-    pointer.x = e.clientX
-    pointer.y = e.clientY
-    pointer.active = true
+    input.x = e.clientX
+    input.y = e.clientY
+    input.active = true
   }
   const onLeave = () => {
-    pointer.active = false
+    input.active = false
   }
-  let lastY = window.scrollY
   const onScroll = () => {
-    const y = window.scrollY
-    if (running) scene.scrolled?.(y - lastY) // paused: the mesh stays put, no jump on resume
-    lastY = y
+    input.scrollY = window.scrollY
   }
 
   size()
-  if (opts.still) paintStill()
-  else {
-    // the first frame paints right away, even if the loop is paused
-    scene.update(0, pointer)
-    clearDyn()
-    scene.paintDynamic(dctx, pointer)
-    firstPaint()
-  }
+  settle()
 
   window.addEventListener('resize', onResize, { passive: true })
   document.addEventListener('visibilitychange', sync)
   if (!opts.still) {
-    if (scene.scrolled) window.addEventListener('scroll', onScroll, { passive: true })
+    // stopped (paused, hidden), the planes stay put and glide to the new scroll on resume
+    window.addEventListener('scroll', onScroll, { passive: true })
     if (opts.interactive) {
       window.addEventListener('pointermove', onMove, { passive: true })
       document.documentElement.addEventListener('pointerleave', onLeave)
@@ -252,7 +264,7 @@ export function run(host: HTMLElement, scene: Scene, opts: SceneOpts & { still: 
   return {
     setPaused(p) {
       paused = p
-      if (p) pointer.active = false
+      if (p) input.active = false
       sync()
     },
     destroy() {
@@ -265,11 +277,9 @@ export function run(host: HTMLElement, scene: Scene, opts: SceneOpts & { still: 
       window.removeEventListener('pointermove', onMove)
       document.documentElement.removeEventListener('pointerleave', onLeave)
       window.removeEventListener('blur', onLeave)
-      // release the backing stores right away (GPU memory) instead of waiting for GC
-      for (const c of layers) {
-        c.width = c.height = 0
-        c.remove()
-      }
+      planes.forEach((p) => release(p.canvas))
+      planes = []
+      release(dyn)
     },
   }
 }
