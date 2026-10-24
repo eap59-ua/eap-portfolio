@@ -177,6 +177,8 @@ export const TECH_MARQUEE: string[] = [
 // case study's own architecture paragraph. A technology with no entry lights no project.
 export const TECH_PROJECTS: Record<string, string[]> = {
   TypeScript: ['hydrofulness', 'studysync'],
+  // confirmed by the author (2026-10-24): EcoAlerta's Node/React 18 is plain JavaScript
+  JavaScript: ['ecoalerta'],
   Python: ['food-donation', 'hydrofulness', 'studysync', 'easycab'],
   Kotlin: ['studysync'],
   'C / C++': ['chaos-crew'],
@@ -207,6 +209,8 @@ export const TECH_PROJECTS: Record<string, string[]> = {
   'scikit-learn': ['hydrofulness'],
   // StudySync's stack: "PWA / Android" (Kotlin + Jetpack Compose client)
   Android: ['studysync'],
+  // confirmed by the author (2026-10-24): every project lives in Git
+  Git: ['ecoalerta', 'food-donation', 'hydrofulness', 'studysync', 'easycab', 'chaos-crew'],
 }
 
 // The interchanges (★) shown first, as one line: backend first, since that is the job he's after.
