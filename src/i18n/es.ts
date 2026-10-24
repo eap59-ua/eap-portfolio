@@ -193,4 +193,5 @@ export const es = {
   'stack.hint': `Los puntos de color son proyectos. Pasa el cursor o toca una tecnología para ver dónde la usé.`,
   'stack.active': `{{tech}} · en {{count}} de {{total}} proyectos`,
   'stack.used_in': `Usada en:`,
+  'stack.hint_touch': `Los puntos de color son proyectos. Toca una tecnología para ver dónde la usé.`,
 } as const

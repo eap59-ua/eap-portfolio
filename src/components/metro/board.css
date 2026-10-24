@@ -10,6 +10,16 @@
   .board-grid {
     grid-template-columns: 470px minmax(0, 1fr);
   }
+  /* as tall as the list, but never taller than the screen: on a 1366x768 laptop the
+     buttons stay in view (the demo gives up a little height) and the card holds still
+     under the bar while the last few px of the list go by */
+  .board-panel {
+    align-self: start;
+    position: sticky;
+    top: calc(var(--bar-h) + 16px);
+    height: min(100%, calc(100dvh - var(--bar-h) - 32px));
+    min-height: min-content; /* never shorter than its own content (the demo is what shrinks) */
+  }
 }
 .board-panel {
   container: anden / inline-size;

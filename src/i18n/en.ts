@@ -193,4 +193,5 @@ export const en = {
   'stack.hint': `The coloured dots are projects. Hover or tap a technology to see where I used it.`,
   'stack.active': `{{tech}} · in {{count}} of {{total}} projects`,
   'stack.used_in': `Used in:`,
+  'stack.hint_touch': `Coloured dots are projects. Tap a technology to see where I used it.`,
 } as const

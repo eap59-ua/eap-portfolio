@@ -123,8 +123,9 @@ export function TopBar() {
             </Link>
             {home && (
               <p className="hidden items-center gap-2.5 font-sign text-[15px] font-semibold uppercase tracking-[0.04em] text-ink-2 md:flex" aria-live="off">
-                {t('bar.now')}
-                <span className="rounded bg-ink px-2.5 py-0.5 tracking-[0.06em] text-paper">{t(now.key)}</span>
+                {/* the label only where the bar has room; the station sign itself always shows */}
+                <span className="hidden xl:inline">{t('bar.now')}</span>
+                <span className="whitespace-nowrap rounded bg-ink px-2.5 py-0.5 tracking-[0.06em] text-paper">{t(now.key)}</span>
               </p>
             )}
           </div>
@@ -137,7 +138,7 @@ export function TopBar() {
                   key={id}
                   href={href(id)}
                   aria-current={on ? 'location' : undefined}
-                  className={`font-sign text-lg font-semibold transition-colors ${on ? 'text-ink shadow-[inset_0_-3px_0_var(--l1)]' : 'text-ink-2 hover:text-ink'}`}
+                  className={`whitespace-nowrap font-sign text-lg font-semibold transition-colors ${on ? 'text-ink shadow-[inset_0_-3px_0_var(--l1)]' : 'text-ink-2 hover:text-ink'}`}
                 >
                   {t(s.key)}
                 </a>

@@ -132,7 +132,11 @@ export function StackMap() {
                   {lit.size > 0 && <span className="sm:hidden">: {usedIn(shown).join(', ')}</span>}
                 </>
               ) : (
-                t('stack.hint')
+                // both rendered (the prerender can't know the pointer); CSS shows the one that fits
+                <>
+                  <span className="st-hint-mouse">{t('stack.hint')}</span>
+                  <span className="st-hint-touch">{t('stack.hint_touch')}</span>
+                </>
               )}
             </p>
           </div>

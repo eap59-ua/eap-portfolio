@@ -153,6 +153,19 @@ button.st:focus-visible {
   }
 }
 
+/* hint: "pasa el cursor" with a mouse, "toca" on touch */
+.st-hint-touch {
+  display: none;
+}
+@media (hover: none) {
+  .st-hint-mouse {
+    display: none;
+  }
+  .st-hint-touch {
+    display: inline;
+  }
+}
+
 /* en obras: dashed, not in service yet */
 .st[data-works] {
   border: 1px dashed var(--ink-3);
