@@ -360,34 +360,18 @@
   }
 
   /* "Ver código": a loading-arc that runs around the button like a train on a
-     loop — a Gemini-style comet in Google's four brand colours (only here;
-     every other button and card keeps its line colour). A static border mask
-     holds an oversized conic square that ROTATES — a composited transform
-     instead of repainting an @property gradient.
-     Tail -> head (clockwise): green -> yellow -> red -> blue, so neighbours
-     blend into lime, orange and violet instead of mud. Alphas per theme:
-     yellow stays opaque on the white card; at night yellow/green are eased
-     back so the blue head isn't out-shouted on the navy card. */
+     loop. Its colours are the author's original sweep (098dc33: indigo -> violet
+     -> pink, a Gemini-style comet), now taken from this theme's own tokens —
+     L1 indigo, StudySync violet, Donación pink — so they follow day and night.
+     Only here; every other button and card keeps its line colour. A static
+     border mask holds an oversized conic square that ROTATES — a composited
+     transform instead of repainting an @property gradient. */
   .code-btn {
     position: relative;
     isolation: isolate;
     border: 1.5px solid var(--rule);
     background: var(--card);
     color: var(--ink);
-    --cr-blue: #4285f4;
-    --cr-red: #ea4335;
-    --cr-yellow: #fbbc04;
-    --cr-green: #34a853;
-    --cr-g0: 25%; /* green at the very end of the tail */
-    --cr-g1: 75%; /* green where it meets yellow */
-    --cr-y: 100%;
-    --cr-r: 100%;
-    --cr-b: 100%;
-  }
-  [data-theme='night'] .code-btn {
-    --cr-g0: 30%;
-    --cr-g1: 80%;
-    --cr-y: 88%;
   }
   .code-ring {
     position: absolute;
@@ -411,28 +395,14 @@
     width: 300%;
     aspect-ratio: 1;
     translate: -50% -50%;
-    /* fallback (sRGB) first; the oklch one wins where gradient colour spaces
-       are supported and keeps the hue blends vivid (red -> blue via magenta, not grey) */
+    /* the original profile: a faint tail, a bright violet head, a pink fade-out */
     background: conic-gradient(
       transparent 0deg,
-      color-mix(in srgb, var(--cr-green) var(--cr-g0), transparent) 25deg,
-      color-mix(in srgb, var(--cr-green) var(--cr-g1), transparent) 75deg,
-      color-mix(in srgb, var(--cr-yellow) var(--cr-y), transparent) 115deg,
-      color-mix(in srgb, var(--cr-red) var(--cr-r), transparent) 158deg,
-      color-mix(in srgb, var(--cr-blue) var(--cr-b), transparent) 198deg,
-      color-mix(in srgb, var(--cr-blue) var(--cr-b), transparent) 208deg,
-      transparent 224deg
-    );
-    background: conic-gradient(
-      in oklch,
-      transparent 0deg,
-      color-mix(in srgb, var(--cr-green) var(--cr-g0), transparent) 25deg,
-      color-mix(in srgb, var(--cr-green) var(--cr-g1), transparent) 75deg,
-      color-mix(in srgb, var(--cr-yellow) var(--cr-y), transparent) 115deg,
-      color-mix(in srgb, var(--cr-red) var(--cr-r), transparent) 158deg,
-      color-mix(in srgb, var(--cr-blue) var(--cr-b), transparent) 198deg,
-      color-mix(in srgb, var(--cr-blue) var(--cr-b), transparent) 208deg,
-      transparent 224deg
+      color-mix(in srgb, var(--l1) 55%, transparent) 55deg,
+      color-mix(in srgb, var(--l1) 95%, transparent) 95deg,
+      var(--studysync) 125deg,
+      color-mix(in srgb, var(--donation) 85%, transparent) 150deg,
+      transparent 195deg
     );
   }
   .code-btn:focus-visible .code-ring,

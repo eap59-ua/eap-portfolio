@@ -34,7 +34,7 @@ function useInviteOnce<T extends HTMLElement>(ms: number) {
   return { ref, inviting }
 }
 
-// "Ver código": the author's loading-arc button, the arc a four-colour Google/Gemini comet (see .code-ring in index.css).
+// "Ver código": the author's loading-arc button, the arc his original indigo -> violet -> pink sweep in this theme's tokens (see .code-ring in index.css).
 export function CodeButton({ href, line, label, children }: { href: string; line: LineId; label: string; children?: ReactNode }) {
   const { ref, inviting } = useInviteOnce<HTMLAnchorElement>(4300)
   return (
