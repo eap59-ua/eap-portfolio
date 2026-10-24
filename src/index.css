@@ -360,15 +360,34 @@
   }
 
   /* "Ver código": a loading-arc that runs around the button like a train on a
-     loop (author's Gemini-style sweep ring, now in the project's line colour).
-     A static border mask holds an oversized conic square that ROTATES — a
-     composited transform instead of repainting an @property gradient. */
+     loop — a Gemini-style comet in Google's four brand colours (only here;
+     every other button and card keeps its line colour). A static border mask
+     holds an oversized conic square that ROTATES — a composited transform
+     instead of repainting an @property gradient.
+     Tail -> head (clockwise): green -> yellow -> red -> blue, so neighbours
+     blend into lime, orange and violet instead of mud. Alphas per theme:
+     yellow stays opaque on the white card; at night yellow/green are eased
+     back so the blue head isn't out-shouted on the navy card. */
   .code-btn {
     position: relative;
     isolation: isolate;
     border: 1.5px solid var(--rule);
     background: var(--card);
     color: var(--ink);
+    --cr-blue: #4285f4;
+    --cr-red: #ea4335;
+    --cr-yellow: #fbbc04;
+    --cr-green: #34a853;
+    --cr-g0: 25%; /* green at the very end of the tail */
+    --cr-g1: 75%; /* green where it meets yellow */
+    --cr-y: 100%;
+    --cr-r: 100%;
+    --cr-b: 100%;
+  }
+  [data-theme='night'] .code-btn {
+    --cr-g0: 30%;
+    --cr-g1: 80%;
+    --cr-y: 88%;
   }
   .code-ring {
     position: absolute;
@@ -392,7 +411,29 @@
     width: 300%;
     aspect-ratio: 1;
     translate: -50% -50%;
-    background: conic-gradient(transparent 0deg, var(--lc, var(--l1)) 70deg, var(--lc, var(--l1)) 130deg, transparent 190deg);
+    /* fallback (sRGB) first; the oklch one wins where gradient colour spaces
+       are supported and keeps the hue blends vivid (red -> blue via magenta, not grey) */
+    background: conic-gradient(
+      transparent 0deg,
+      color-mix(in srgb, var(--cr-green) var(--cr-g0), transparent) 25deg,
+      color-mix(in srgb, var(--cr-green) var(--cr-g1), transparent) 75deg,
+      color-mix(in srgb, var(--cr-yellow) var(--cr-y), transparent) 115deg,
+      color-mix(in srgb, var(--cr-red) var(--cr-r), transparent) 158deg,
+      color-mix(in srgb, var(--cr-blue) var(--cr-b), transparent) 198deg,
+      color-mix(in srgb, var(--cr-blue) var(--cr-b), transparent) 208deg,
+      transparent 224deg
+    );
+    background: conic-gradient(
+      in oklch,
+      transparent 0deg,
+      color-mix(in srgb, var(--cr-green) var(--cr-g0), transparent) 25deg,
+      color-mix(in srgb, var(--cr-green) var(--cr-g1), transparent) 75deg,
+      color-mix(in srgb, var(--cr-yellow) var(--cr-y), transparent) 115deg,
+      color-mix(in srgb, var(--cr-red) var(--cr-r), transparent) 158deg,
+      color-mix(in srgb, var(--cr-blue) var(--cr-b), transparent) 198deg,
+      color-mix(in srgb, var(--cr-blue) var(--cr-b), transparent) 208deg,
+      transparent 224deg
+    );
   }
   .code-btn:focus-visible .code-ring,
   .code-btn.is-inviting .code-ring {
@@ -412,6 +453,9 @@
   }
   .code-btn.is-inviting .code-ring > i {
     animation-iteration-count: 2;
+  }
+  [data-motion='paused'] .code-ring > i {
+    animation-play-state: paused !important;
   }
   @keyframes ring-spin {
     to {
@@ -470,7 +514,7 @@
     }
     .code-btn:hover .code-ring,
     .code-btn:focus-visible .code-ring {
-      opacity: 0.6;
+      opacity: 0.9; /* static four-colour arc; 0.6 washed the yellow out on the white card */
     }
     .case-btn::before,
     .case-btn::after {
