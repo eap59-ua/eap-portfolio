@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, FocusEvent, PointerEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TechLogo } from '../../data/techIcons'
@@ -7,6 +7,14 @@ import { PROJECTS } from '../../data/projects'
 import { PROJECT_LINE, lineVar } from '../../data/lines'
 import { LineBadge } from './buttons'
 import './stack.css'
+
+// The brand logos are ~70 % of this section's HTML (≈35 KB gzip of inline SVG paths) and
+// sit far below the fold: the prerender ships the names with a same-size empty slot, and
+// the logos are drawn once the section comes within ~1.5 screens. Same box, so no shift.
+const IconsOn = createContext(false)
+function Logo(props: { label: string; className?: string; mono?: boolean }) {
+  return useContext(IconsOn) ? <TechLogo {...props} /> : <span className={`inline-block ${props.className ?? ''}`} aria-hidden="true" />
+}
 
 const ZONES = 'ABCDEFGH'
 // zones are neutral on purpose: colour on this page means "a project line"
@@ -30,6 +38,22 @@ export function StackMap() {
   // the marquee repeats the list above: decorative, so it isn't prerendered (~100 KB of HTML)
   const [client, setClient] = useState(false)
   useEffect(() => setClient(true), [])
+  const root = useRef<HTMLElement>(null)
+  const [icons, setIcons] = useState(false)
+  useEffect(() => {
+    const el = root.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return
+        setIcons(true)
+        io.disconnect()
+      },
+      { rootMargin: '150% 0px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   // which station is lit: the hovered one, else the keyboard-focused one, else the tapped one
   const [hover, setHover] = useState<string | null>(null)
@@ -81,7 +105,8 @@ export function StackMap() {
   )
 
   return (
-    <section id="stack" className="relative py-20 lg:py-28">
+    <section ref={root} id="stack" className="relative py-20 lg:py-28">
+      <IconsOn.Provider value={icons}>
       <div className="mx-auto max-w-[1440px] px-5 sm:px-6 lg:px-16">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <h2 className="sign-type text-[clamp(3.2rem,7vw,4.8rem)]">{t('stack.title')}</h2>
@@ -170,7 +195,7 @@ export function StackMap() {
             <ul className="mt-3 flex flex-wrap gap-2">
               {ROADMAP.map((r) => (
                 <li key={r.label} className="st" data-works="">
-                  <TechLogo label={r.label} className="st-ic" />
+                  <Logo label={r.label} className="st-ic" />
                   {r.labelKey ? t(r.labelKey) : r.label}
                 </li>
               ))}
@@ -187,7 +212,7 @@ export function StackMap() {
           <div className="flex w-max animate-marquee gap-3 loop-anim group-hover:[animation-play-state:paused] motion-reduce:animate-none">
             {[...TECH_MARQUEE, ...TECH_MARQUEE].map((x, i) => (
               <span key={`${x}-${i}`} className="inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-full border border-rule bg-paper-card px-4 font-sign text-[18px] font-bold text-ink">
-                <TechLogo label={x} mono className="h-4 w-4 text-ink-2" />
+                <Logo label={x} mono className="h-4 w-4 text-ink-2" />
                 {x}
               </span>
             ))}
@@ -197,6 +222,7 @@ export function StackMap() {
       ) : (
         <div className="mt-10 h-11" aria-hidden="true" />
       )}
+      </IconsOn.Provider>
     </section>
   )
 }
@@ -221,7 +247,7 @@ function Station({
   const isStar = star ?? starred.has(label)
   const body = (
     <>
-      <TechLogo label={label} className="st-ic" />
+      <Logo label={label} className="st-ic" />
       {label}
       {isStar && (
         <>
