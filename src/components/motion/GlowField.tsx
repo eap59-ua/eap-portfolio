@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { useFinePointer, useReducedMotion } from '../../lib/motion'
 
-const PROXIMITY = 150
+// only the card under the pointer lights up (a short run-up as the pointer approaches its edge)
+const PROXIMITY = 40
 
 // The author's proximity-lit card border (design-rationale §2.1: "on every
 // card"), rebuilt so it never forces layout: one pointer listener + one rAF for
@@ -43,13 +44,19 @@ export function GlowField() {
       raf = 0
       const cards = [...visible]
       const rects = cards.map((c) => c.getBoundingClientRect()) // reads
+      const dists = rects.map((r) => Math.hypot(Math.max(r.left - px, 0, px - r.right), Math.max(r.top - py, 0, py - r.bottom)))
+      // one card at a time: the nearest (the innermost if the pointer is inside nested cards)
+      let pick = -1
+      dists.forEach((d, i) => {
+        if (d > PROXIMITY) return
+        const area = rects[i].width * rects[i].height
+        if (pick < 0 || d < dists[pick] || (d === dists[pick] && area < rects[pick].width * rects[pick].height)) pick = i
+      })
       cards.forEach((card, i) => {
         // writes
         const r = rects[i]
-        const dx = Math.max(r.left - px, 0, px - r.right)
-        const dy = Math.max(r.top - py, 0, py - r.bottom)
-        const dist = Math.hypot(dx, dy)
-        const glow = dist > PROXIMITY ? '0' : (1 - dist / PROXIMITY).toFixed(2)
+        const dist = dists[i]
+        const glow = i !== pick ? '0' : (1 - dist / PROXIMITY).toFixed(2)
         if (lastGlow.get(card) !== glow) {
           card.style.setProperty('--glow', glow)
           lastGlow.set(card, glow)

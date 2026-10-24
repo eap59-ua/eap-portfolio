@@ -9,6 +9,7 @@ import { scrollToY } from '../layout/SmoothScroll'
 
 const N = JOURNEY.length
 const GAP = 320 // px between stations on the pinned line
+const STEP = 190 // px of scroll per station
 const BAR = 72 // --bar-h
 
 function useLang() {
@@ -92,9 +93,9 @@ function PinnedJourney() {
   const [active, setActive] = useState(0)
   const [travel, setTravel] = useState(0)
 
-  // scroll length: 1:1 with the horizontal distance, capped at 3 screens
+  // scroll length: ~190 px of wheel per station (the line still slides GAP px), capped at 2 screens
   useLayoutEffect(() => {
-    const measure = () => setTravel(Math.min((N - 1) * GAP, window.innerHeight * 3))
+    const measure = () => setTravel(Math.min((N - 1) * STEP, window.innerHeight * 2))
     measure()
     window.addEventListener('resize', measure)
     return () => window.removeEventListener('resize', measure)
