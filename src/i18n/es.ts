@@ -187,4 +187,10 @@ export const es = {
   'player.ecoDesktop': `Vista de escritorio: mapa, 2FA y panel de administración`,
   'contact.email_label': `Email`,
   'about.flip_qr_sr': ` de LinkedIn`,
+  'stack.best': `Correspondencias`,
+  'stack.best_sub': `lo que mejor manejo`,
+  'stack.lines': `Líneas de proyecto`,
+  'stack.hint': `Los puntos de color son proyectos. Pasa el cursor o toca una tecnología para ver dónde la usé.`,
+  'stack.active': `{{tech}} · en {{count}} de {{total}} proyectos`,
+  'stack.used_in': `Usada en:`,
 } as const

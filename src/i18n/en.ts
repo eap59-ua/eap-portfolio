@@ -187,4 +187,10 @@ export const en = {
   'player.ecoDesktop': `Desktop view: map, 2FA and admin panel`,
   'contact.email_label': `Email`,
   'about.flip_qr_sr': ` for LinkedIn`,
+  'stack.best': `Interchanges`,
+  'stack.best_sub': `what I handle best`,
+  'stack.lines': `Project lines`,
+  'stack.hint': `The coloured dots are projects. Hover or tap a technology to see where I used it.`,
+  'stack.active': `{{tech}} · in {{count}} of {{total}} projects`,
+  'stack.used_in': `Used in:`,
 } as const

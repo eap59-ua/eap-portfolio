@@ -1,0 +1,200 @@
+/* ── Mapa de la red (Stack) ──────────────────────────────────────────────
+   Stations = technologies. Brand colour lives only on the logo; colour on the
+   chip itself still means "a project line" (the dots and the platform row). */
+
+/* brand logo: official colour by day, its legible night variant by night */
+.tech-brand {
+  color: var(--tc-d);
+}
+[data-theme='night'] .tech-brand {
+  color: var(--tc-n);
+}
+
+/* ── a station (one technology) ─────────────────────────────────────────── */
+.st {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 2.25rem;
+  padding: 0 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    color 160ms var(--ease-out);
+}
+/* correspondencia (★): the thick ink ring of an interchange */
+.st[data-star] {
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-weight: 700;
+}
+/* a station that stops on project lines is a control: hover/focus/tap lights them */
+button.st {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  button.st:hover {
+    border-color: var(--ink-3);
+    color: var(--ink);
+  }
+  button.st[data-star]:hover {
+    border-color: var(--ink);
+  }
+}
+.st[data-on] {
+  background: var(--paper-2);
+  border-color: var(--ink);
+  color: var(--ink);
+}
+button.st:focus-visible {
+  outline: 3px solid var(--l1);
+  outline-offset: 2px;
+}
+
+/* the lines that stop here: one dot per project, in its line colour */
+.st-dots {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: 0.1rem;
+}
+.st-dots > i {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--lc);
+}
+/* yellow / coral: a thin ink casing, like their line badges */
+.st-dots > i[data-dark] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+/* ── the interchange line: the ★ stations on one trunk ──────────────────── */
+.st-trunk {
+  --row: 3.5rem; /* station height */
+  --gap: 1rem; /* row gap */
+  row-gap: var(--gap);
+  /* a 6px ink line through the middle of every row of stations */
+  background: linear-gradient(
+      to bottom,
+      transparent calc(var(--row) / 2 - 3px),
+      var(--ink) calc(var(--row) / 2 - 3px),
+      var(--ink) calc(var(--row) / 2 + 3px),
+      transparent calc(var(--row) / 2 + 3px)
+    )
+    0 0 / 100% calc(var(--row) + var(--gap)) repeat-y;
+}
+.st-trunk .st {
+  height: var(--row);
+  padding: 0 1.15rem 0 0.95rem;
+  gap: 0.6rem;
+  border-width: 3px;
+  font-family: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+.st-trunk .st-dots > i {
+  width: 8px;
+  height: 8px;
+}
+
+/* ── platform row: the six project lines ───────────────────────────────── */
+.st-platform {
+  position: sticky;
+  top: calc(var(--bar-h) + 10px);
+  z-index: 5;
+  box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.st-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 0.85rem 0 0.35rem;
+  border-radius: 999px;
+  border: 2px solid var(--rule);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    opacity 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out);
+}
+.st-platform[data-lit] .st-line {
+  opacity: 0.28;
+}
+.st-platform[data-lit] .st-line[data-on] {
+  opacity: 1;
+  border-color: var(--lc);
+  background: color-mix(in srgb, var(--lc) 12%, var(--card));
+}
+@media (max-width: 639px) {
+  .st-line {
+    height: auto;
+    padding: 0.2rem;
+    border-width: 2px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .st,
+  .st-line {
+    transition-duration: 0ms;
+  }
+}
+
+/* en obras: dashed, not in service yet */
+.st[data-works] {
+  border: 1px dashed var(--ink-3);
+  background: transparent;
+}
+section .st-platform {
+  position: sticky;
+}
+
+/* logos big enough to be told apart (18px in a station, 24px on the trunk) */
+.st-ic {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.st-trunk .st-ic {
+  width: 24px;
+  height: 24px;
+}
+
+/* phone: the interchange line runs down, like a line diagram on a platform wall */
+@media (max-width: 639px) {
+  .st-trunk {
+    --row: 2.75rem;
+    --gap: 0.6rem;
+    flex-direction: column;
+    align-items: flex-start;
+    background: linear-gradient(
+        to right,
+        transparent calc(var(--row) / 2 - 3px),
+        var(--ink) calc(var(--row) / 2 - 3px),
+        var(--ink) calc(var(--row) / 2 + 3px),
+        transparent calc(var(--row) / 2 + 3px)
+      )
+      0 calc(var(--row) / 2) / 100% calc(100% - var(--row)) no-repeat;
+  }
+  .st-trunk .st {
+    font-size: 19px;
+    padding: 0 0.95rem 0 0.7rem;
+  }
+  .st-trunk .st-ic {
+    width: 21px;
+    height: 21px;
+  }
+}
