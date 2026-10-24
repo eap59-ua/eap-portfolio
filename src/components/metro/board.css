@@ -1,0 +1,189 @@
+/* Desktop project board (lg+): the card keeps the list's height and the demo grows into it,
+   with the buttons at the bottom. The mobile accordion keeps its own Platform layout.
+   The card is a container ("anden"), so its layout follows the card's width, not the viewport's. */
+
+/* 1024–1279: the list gives some width back, so the card isn't a 380px sliver */
+.board-grid {
+  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+}
+@media (min-width: 1280px) {
+  .board-grid {
+    grid-template-columns: 470px minmax(0, 1fr);
+  }
+  /* as tall as the list, but never taller than the screen: on a 1366x768 laptop the
+     buttons stay in view (the demo gives up a little height) and the card holds still
+     under the bar while the last few px of the list go by */
+  .board-panel {
+    align-self: start;
+    position: sticky;
+    top: calc(var(--bar-h) + 16px);
+    height: min(100%, calc(100dvh - var(--bar-h) - 32px));
+    min-height: min-content; /* never shorter than its own content (the demo is what shrinks) */
+  }
+}
+.board-panel {
+  container: anden / inline-size;
+  display: flex;
+  flex-direction: column;
+}
+.pf {
+  flex: 1 1 auto;
+  display: grid;
+  column-gap: 2rem;
+  row-gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+/* route → buttons stay 1rem apart */
+.pf .pf-actions {
+  margin-top: -0.5rem;
+}
+/* proofs in a narrow cell: a pill may take two lines, balanced */
+.pf .pf-ev li {
+  height: auto;
+  min-height: 2rem;
+  padding-block: 0.3rem;
+  line-height: 1.3;
+  border-radius: 12px;
+  text-wrap: balance;
+}
+.pf .pf-media {
+  /* size container: its height is whatever the card has left, and the frame fits it */
+  container-type: size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── landscape demo: [demo | proofs] between the description and the route ── */
+.pf--landscape {
+  grid-template-columns: minmax(0, 1fr) clamp(230px, 35cqw, 290px);
+  grid-template-rows: auto minmax(170px, 1fr) auto auto;
+}
+.pf--landscape .pf-text,
+.pf--landscape .pf-route,
+.pf--landscape .pf-actions {
+  grid-column: 1 / -1;
+}
+.pf--landscape .pf-ev {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: center;
+}
+.pf--landscape .pf-media {
+  grid-column: 1;
+  grid-row: 2;
+  /* a very wide clip (EasyCab) splits the spare height above and below */
+  justify-content: flex-start;
+}
+/* as wide as the free height allows (8px frame on each side) */
+.pf--landscape .demo-fit {
+  width: min(100cqw, calc((100cqh - 16px) * var(--mw) / var(--mh) + 16px));
+}
+.pf--landscape .pf-route {
+  grid-row: 3;
+}
+.pf--landscape .pf-actions {
+  grid-row: 4;
+}
+
+/* ── portrait demo (EcoAlerta): the phone takes a column and the whole card height ── */
+.pf--portrait {
+  grid-template-columns: minmax(0, 1fr) clamp(150px, 44cqw, 330px);
+  /* text + proofs on top, one deliberate space, route + buttons as the footer */
+  grid-template-rows: auto auto 1fr auto auto;
+}
+.pf--portrait .pf-text,
+.pf--portrait .pf-ev,
+.pf--portrait .pf-route,
+.pf--portrait .pf-actions {
+  grid-column: 1;
+}
+.pf--portrait .pf-ev {
+  grid-row: 2;
+  align-self: start;
+}
+.pf--portrait .pf-route {
+  grid-row: 4;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.25rem;
+}
+.pf--portrait .pf-actions {
+  grid-row: 5;
+}
+.pf--portrait .pf-media {
+  grid-column: 2;
+  grid-row: 1 / -1;
+}
+.pf--portrait .demo-fit {
+  width: min(100cqw, calc(100cqh * 230 / 480));
+}
+
+/* ── no demo: the technical route, drawn large, takes the space ── */
+.pf--none {
+  grid-template-rows: auto auto 1fr auto;
+}
+.pf--none .pf-ev {
+  grid-row: 2;
+}
+.pf--none .pf-route--big {
+  grid-row: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pf--none .pf-actions {
+  grid-row: 4;
+}
+.pf-track-big {
+  zoom: 1.35;
+}
+
+/* ── narrow card (1024–1279) ── */
+@container anden (max-width: 599px) {
+  /* landscape: the demo across the full width at its natural height; the card follows content */
+  .pf--landscape {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr auto auto;
+  }
+  .pf--landscape .pf-media {
+    grid-column: 1;
+    grid-row: 2;
+    container-type: normal;
+  }
+  .pf--landscape .demo-fit {
+    width: 100%;
+  }
+  .pf--landscape .pf-ev {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+  }
+  .pf--landscape .pf-route {
+    grid-row: 4;
+  }
+  .pf--landscape .pf-actions {
+    grid-row: 5;
+  }
+  /* portrait: description across, then [proofs | phone ≥180px wide], route and buttons across */
+  .pf--portrait {
+    grid-template-columns: minmax(0, 1fr) clamp(180px, 42cqw, 200px);
+    grid-template-rows: auto minmax(390px, 1fr) auto auto;
+  }
+  .pf--portrait .pf-text,
+  .pf--portrait .pf-route,
+  .pf--portrait .pf-actions {
+    grid-column: 1 / -1;
+  }
+  .pf--portrait .pf-media {
+    grid-row: 2;
+  }
+  .pf--portrait .pf-route {
+    grid-row: 3;
+  }
+  .pf--portrait .pf-actions {
+    grid-row: 4;
+  }
+  .pf-track-big {
+    zoom: 1.15;
+  }
+}

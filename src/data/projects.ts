@@ -28,9 +28,6 @@ export interface Project {
   highlightKey?: string
   // false = no case-study page (card links only to the repo)
   caseStudy?: false
-  video?: string
-  poster?: string
-  captions?: string
 }
 
 export const PROJECTS: Project[] = [
@@ -44,8 +41,6 @@ export const PROJECTS: Project[] = [
     descKey: 'projects.p1',
     hero: true,
     highlightKey: 'projects.highlight.ecoalerta',
-    video: '/media/ecoalerta-demo.mp4',
-    captions: '/media/ecoalerta-demo.es.vtt',
     tags: [
       { label: 'React 18', tone: 'react' },
       { label: 'Node.js', tone: 'node' },
@@ -67,8 +62,6 @@ export const PROJECTS: Project[] = [
     iconColor: 'text-accent-pink',
     status: 'done',
     descKey: 'projects.p3',
-    video: '/media/food-donation-demo.mp4',
-    poster: '/media/food-donation-poster.webp',
     tags: [
       { label: 'FastAPI', tone: 'python' },
       { label: 'PostgreSQL async', tone: 'pg' },
@@ -87,8 +80,6 @@ export const PROJECTS: Project[] = [
     iconColor: 'text-sky-400',
     status: 'done',
     descKey: 'projects.p2',
-    video: '/media/hydrofulness-demo.mp4',
-    poster: '/media/hydrofulness-poster.webp',
     tags: [
       { label: 'FastAPI', tone: 'python' },
       { label: 'React + Vite', tone: 'react' },
@@ -127,8 +118,6 @@ export const PROJECTS: Project[] = [
     iconColor: 'text-amber-300',
     status: 'done',
     descKey: 'projects.p4',
-    video: '/media/easycab-demo.mp4',
-    poster: '/media/easycab-poster.webp',
     tags: [
       { label: 'Python', tone: 'python' },
       { label: 'Apache Kafka' },

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from '../../lib/motion'
 
 const GLYPHS = '!<>-_\\/[]{}=+*^?#·:;01'
 
@@ -21,10 +21,17 @@ export function ScrambleText({ text, className, duration = 1100 }: ScrambleTextP
     }
     const locks = Array.from(text, () => 0.1 + Math.random() * 0.78)
     let startTs = 0
+    let lastTs = 0
 
     const frame = (ts: number) => {
       if (!startTs) startTs = ts
       const progress = Math.min((ts - startTs) / duration, 1)
+      // fresh glyphs about every 45 ms: per-frame noise strobes and re-renders for nothing
+      if (progress < 1 && ts - lastTs < 45) {
+        rafRef.current = requestAnimationFrame(frame)
+        return
+      }
+      lastTs = ts
       let out = ''
       for (let i = 0; i < text.length; i++) {
         const ch = text[i]
@@ -43,5 +50,11 @@ export function ScrambleText({ text, className, duration = 1100 }: ScrambleTextP
     return () => cancelAnimationFrame(rafRef.current)
   }, [text, reduce, duration])
 
-  return <span className={className}>{display}</span>
+  // screen readers get the real text once, never the random glyphs
+  return (
+    <span className={className}>
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true">{display}</span>
+    </span>
+  )
 }

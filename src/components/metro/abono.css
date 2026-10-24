@@ -1,0 +1,505 @@
+/* ── Sobre mí · the "abono" (transit pass) ──────────────────────────────────
+   A physical object: plastic texture, chip, holographic band, punched slot,
+   perforated tear-off line, a validation stamp, a magnetic stripe on the back.
+   It tilts under the pointer (AboutPass.tsx writes transforms in rAF only
+   while the pointer moves or the spring settles) and flips to show a QR.
+   Only transform/opacity animate (plus a hue-rotate on the small holo foil).
+   Every colour is a token, except materials that are never themed: the photo
+   and what is printed on it, the gold chip, the black stripe, the QR plate. */
+
+.abono {
+  --abono-face: var(--card);
+  --abono-shadow:
+    0 0 0 1px rgb(22 24 29 / 0.02),
+    0 1px 1px rgb(22 24 29 / 0.06),
+    0 3px 6px -2px rgb(22 24 29 / 0.1),
+    0 12px 22px -12px rgb(22 24 29 / 0.22);
+  --abono-drop: rgb(22 24 29 / 0.42);
+  --abono-noise-o: 0.07;
+  --abono-holo-o: 0.55;
+  --abono-holo-ink: color-mix(in srgb, var(--l1) 78%, var(--ink));
+  --abono-holo-tint: 1;
+  --abono-stamp: #3b32b8;
+  --abono-stamp-blend: multiply;
+  --abono-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+  position: relative;
+  isolation: isolate;
+  perspective: 1100px;
+  -webkit-tap-highlight-color: transparent;
+}
+[data-theme='night'] .abono {
+  /* one step lighter than the page, with a lit edge, so it never dissolves */
+  --abono-face: color-mix(in oklab, var(--card), #fff 6%);
+  --abono-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.1),
+    0 1px 1px rgb(0 0 0 / 0.35),
+    0 3px 8px -2px rgb(0 0 0 / 0.45),
+    0 14px 26px -12px rgb(0 0 0 / 0.6);
+  --abono-drop: rgb(0 0 0 / 0.7);
+  --abono-noise-o: 0.09;
+  --abono-holo-o: 0.24;
+  --abono-holo-ink: var(--ink); /* ≥ 3:1 on the foil at night */
+  --abono-holo-tint: 0.55;
+  /* plain ink, not `screen`: screen washes the stamp out where it crosses
+     the light photo; a mid lavender reads on both the photo and the card */
+  --abono-stamp: #a294ff;
+  --abono-stamp-blend: normal;
+}
+
+/* the cast shadow: its own blurred layer, moved by transform (never an
+   animated box-shadow); it slides opposite to the tilt */
+.abono-drop {
+  position: absolute;
+  inset: 5% 7% -3% 7%;
+  border-radius: 28px;
+  background: var(--abono-drop);
+  filter: blur(22px);
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.abono[data-hover] .abono-drop {
+  opacity: 0.8;
+}
+/* on the turn the cast shadow narrows with the card's edge-on width, so no grey
+   slab is left behind it mid-flip (only the midpoint is keyed: the ends keep the
+   resting values, whatever the hover state) */
+@media (prefers-reduced-motion: no-preference) {
+  .abono[data-turning] .abono-drop {
+    animation: abono-drop-turn 0.7s cubic-bezier(0.34, 1.3, 0.64, 1);
+  }
+}
+@keyframes abono-drop-turn {
+  45% {
+    scale: 0.08 0.96;
+    opacity: 0.12;
+  }
+}
+
+/* the tilt layer (JS writes its transform) and the flip layer (CSS) */
+.abono-tilt {
+  position: relative;
+}
+.abono-tilt,
+.abono-flip {
+  transform-style: preserve-3d;
+}
+.abono-flip {
+  display: grid; /* both faces share one cell: the box is reserved, no CLS */
+  transition: transform 0.75s var(--abono-spring);
+}
+.abono[data-flipped] .abono-flip {
+  transform: rotateY(180deg);
+}
+
+.abono-face {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--abono-face);
+  box-shadow: var(--abono-shadow);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  cursor: pointer;
+}
+.abono-back {
+  transform: rotateY(180deg);
+}
+/* the proximity light border stays above the texture and the light */
+.abono-face::after {
+  z-index: 5;
+}
+
+/* plastic: a fine static noise, painted once */
+.abono-face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: var(--abono-noise-o);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* faint guilloche lines behind the data, like security print */
+.abono-guilloche {
+  background-image:
+    repeating-radial-gradient(circle at 110% 120%, transparent 0 9px, color-mix(in srgb, var(--l1) 7%, transparent) 9px 10px),
+    repeating-radial-gradient(circle at -10% 130%, transparent 0 13px, color-mix(in srgb, var(--l1) 5%, transparent) 13px 14px);
+}
+
+/* punched lanyard slot: shows the paper behind the card */
+.abono-slot {
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 46px;
+  height: 9px;
+  translate: -50% 0;
+  border-radius: 99px;
+  background: var(--paper);
+  box-shadow: inset 0 1.5px 2px rgb(0 0 0 / 0.35);
+}
+
+/* the photo */
+.abono-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+.abono-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* the asset is exported at the box's 4:5, so nothing is cropped here; if
+     the ratio ever drifts, keep the face and trim from the waist */
+  object-position: 50% 15%;
+}
+
+/* validation stamp: struck across the photo's bottom-right edge, onto the card */
+.abono-stamp {
+  position: absolute;
+  z-index: 2;
+  right: 30px;
+  bottom: -40px;
+  width: 100px;
+  height: 100px;
+  rotate: -12deg;
+  color: var(--abono-stamp);
+  opacity: 0.85;
+  mix-blend-mode: var(--abono-stamp-blend);
+  pointer-events: none;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.4 2.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.4 2.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  -webkit-mask-size: cover;
+  mask-size: cover;
+}
+
+/* holographic band: a static iridescent base + an oversized foil that the
+   pointer slides with a transform and tints with the angle (hue-rotate on
+   this small layer only) */
+.abono-holo {
+  position: relative;
+  overflow: hidden;
+  height: 22px;
+  flex-shrink: 0;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--l1) calc(22% * var(--abono-holo-tint)), var(--abono-face)),
+    color-mix(in srgb, var(--hydro) calc(18% * var(--abono-holo-tint)), var(--abono-face)) 35%,
+    color-mix(in srgb, var(--studysync) calc(16% * var(--abono-holo-tint)), var(--abono-face)) 65%,
+    color-mix(in srgb, var(--eco) calc(14% * var(--abono-holo-tint)), var(--abono-face))
+  );
+  border-block: 1px solid color-mix(in srgb, var(--l1) 22%, transparent);
+}
+.abono-holo-sheen {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 300%;
+  opacity: var(--abono-holo-o);
+  mix-blend-mode: color-dodge;
+  background: linear-gradient(
+    100deg,
+    transparent 18%,
+    #ff6ec7 28%,
+    #ffe66d 36%,
+    #6dffb0 44%,
+    #6dd3ff 52%,
+    #b06dff 60%,
+    transparent 72%
+  );
+  transform: translate3d(-33.333%, 0, 0);
+}
+.abono-holo-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding-inline: 14px;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--abono-holo-ink);
+}
+
+/* specular light: a soft highlight that follows the pointer.
+   Same look as radial-gradient(circle at var(--px) var(--py), …) but the
+   gradient is painted once and MOVED (transform), never repainted. */
+.abono-glare {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  width: 700px;
+  height: 700px;
+  margin: -350px 0 0 -350px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle closest-side, rgb(255 255 255 / 0.35), transparent 90%);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.abono[data-hover] .abono-glare {
+  opacity: 1;
+}
+
+/* perforated tear-off line, with half-moon notches cut in both edges */
+.abono-perf {
+  position: relative;
+  height: 10px;
+  flex-shrink: 0;
+  background: radial-gradient(circle, var(--paper) 2.4px, transparent 2.9px) 7px 50% / 12px 10px repeat-x;
+}
+.abono-perf::before,
+.abono-perf::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.abono-perf::before {
+  left: -10px;
+}
+.abono-perf::after {
+  right: -10px;
+}
+
+/* back: the magnetic stripe (a material, same in both themes) */
+.abono-stripe {
+  height: 36px;
+  flex-shrink: 0;
+  margin-top: 10px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 40%, rgb(255 255 255 / 0.04)),
+    repeating-linear-gradient(90deg, #15161a 0 3px, #1a1b20 3px 4px);
+  box-shadow: inset 0 1px 0 rgb(0 0 0 / 0.4);
+}
+
+/* the QR plate: dark on white in BOTH themes (scanners need contrast) */
+.abono-qr {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.06),
+    0 8px 24px -14px rgb(0 0 0 / 0.5);
+}
+.abono-qr img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* the flip control: a ↻ disc in the header (above both faces, so it never
+   turns inert) with a tag hanging from it — the tag is part of its name */
+.abono-turn {
+  position: absolute;
+  top: 19px;
+  right: 12px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transform: translateZ(2px);
+}
+.abono-turn:focus-visible {
+  outline: none;
+}
+.abono-turn-ring {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 2px 6px -1px rgb(0 0 0 / 0.35);
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 200ms ease,
+    color 200ms ease;
+}
+.abono-turn-ring svg {
+  transition: rotate 0.55s var(--abono-spring);
+}
+@media (hover: hover) {
+  .abono-turn:hover .abono-turn-ring {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .abono-turn:hover .abono-turn-ring svg {
+    rotate: 40deg;
+  }
+  .abono[data-flipped] .abono-turn:hover .abono-turn-ring svg {
+    rotate: 220deg;
+  }
+}
+.abono[data-flipped] .abono-turn-ring svg {
+  rotate: 180deg;
+}
+.abono-turn:active .abono-turn-ring {
+  transform: scale(0.94);
+}
+.abono-turn:focus-visible .abono-turn-ring {
+  box-shadow:
+    0 0 0 3px var(--l1),
+    0 0 0 6px var(--paper);
+}
+.abono-turn-tag {
+  position: relative;
+  padding: 4px 9px 3px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px -4px rgb(0 0 0 / 0.45);
+  transition:
+    opacity 0.25s ease 0.1s,
+    transform 0.25s var(--ease-out) 0.1s;
+}
+.abono-turn-tag::before {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: -4px;
+  width: 9px;
+  height: 9px;
+  background: inherit;
+  rotate: 45deg;
+  border-radius: 2px 0 0 0;
+}
+/* on the back the tag hangs over the black stripe: a white label (material) */
+.abono[data-flipped] .abono-turn-tag {
+  background: #fff;
+  color: #16181d;
+}
+.abono-turn:focus-visible .abono-turn-tag {
+  outline: 2px solid var(--l1);
+  outline-offset: 2px;
+}
+.abono[data-turning] .abono-turn-tag {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition-delay: 0s;
+}
+
+/* social pills: bigger, lit border, the icon in a line-coloured roundel */
+.pill-social {
+  border-radius: 999px;
+}
+.pill-social .pill-ico {
+  background: color-mix(in srgb, var(--l1) 13%, var(--card));
+  color: var(--l1);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    transform 200ms var(--ease-out);
+}
+.pill-social:hover .pill-ico,
+.pill-social:focus-visible .pill-ico {
+  background: var(--l1);
+  color: var(--on-line);
+}
+.pill-social:hover .pill-ico {
+  transform: scale(1.06);
+}
+.pill-social .pill-arrow {
+  transition: transform 200ms var(--ease-out);
+}
+.pill-social:hover .pill-arrow {
+  transform: translate(2px, -2px);
+}
+/* the whole row floats as one (same phase, 2 px) until the first hover */
+@media (prefers-reduced-motion: no-preference) {
+  .pill-float-sync {
+    animation: pill-float-sync 4s ease-in-out infinite;
+  }
+}
+@keyframes pill-float-sync {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* reduced motion: no rotation, the faces crossfade in place */
+@media (prefers-reduced-motion: reduce) {
+  .abono-flip,
+  .abono[data-flipped] .abono-flip {
+    transform: none;
+    transition: none;
+  }
+  .abono-back {
+    transform: none;
+  }
+  .abono-face {
+    transition: opacity 0.2s ease;
+  }
+  .abono[data-flipped] .abono-front,
+  .abono:not([data-flipped]) .abono-back {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .abono-turn-ring,
+  .abono-turn-ring svg,
+  .abono-turn-tag,
+  .pill-social .pill-ico,
+  .pill-social .pill-arrow {
+    transition: none;
+  }
+  .abono-turn-ring svg,
+  .abono[data-flipped] .abono-turn-ring svg,
+  .abono-turn:hover .abono-turn-ring svg,
+  .pill-social .pill-ico,
+  .pill-social .pill-arrow {
+    rotate: none !important;
+    transform: none !important;
+  }
+}
+
+/* With a mouse the tag is a tooltip (hover/focus), so it never sits on the header/photo
+   seam at rest; on touch there's no hover, so it stays visible. Its text is still part
+   of the button's accessible name either way (opacity, not display). */
+@media (hover: hover) and (pointer: fine) {
+  .abono-turn-tag {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  .abono-turn:hover .abono-turn-tag,
+  .abono-turn:focus-visible .abono-turn-tag {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-theme='night'] .abono-stamp {
+  opacity: 0.9;
+}

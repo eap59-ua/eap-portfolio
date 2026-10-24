@@ -1,48 +1,87 @@
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { follow, useFinePointer, useReducedMotion } from '../../lib/motion'
 
 interface MagneticProps {
   children: ReactNode
+  /** fraction of the pointer offset the content follows */
   strength?: number
+  /** hard cap, in px */
+  max?: number
   className?: string
 }
 
-export function Magnetic({ children, strength = 0.35, className }: MagneticProps) {
-  const ref = useRef<HTMLSpanElement>(null)
+// The author's magnetic buttons (kept, design-rationale §2.1), rebuilt cheaper:
+// the hit area never moves (only the inner content does), the rect is read once
+// on pointerenter, and the pull eases with a short spring so it has weight.
+export function Magnetic({ children, strength = 0.25, max = 6, className }: MagneticProps) {
+  const outer = useRef<HTMLSpanElement>(null)
+  const inner = useRef<HTMLSpanElement>(null)
   const reduce = useReducedMotion()
+  const fine = useFinePointer()
 
   useEffect(() => {
-    if (reduce) return
-    if (window.matchMedia('(pointer: coarse)').matches) return
-    const el = ref.current
-    if (!el) return
+    if (reduce || !fine) return
+    const o = outer.current
+    const el = inner.current
+    if (!o || !el) return
+    let rect: DOMRect | null = null
+    let raf = 0
+    let prev = 0
+    const target = { x: 0, y: 0 }
+    const cur = { x: 0, y: 0 }
 
-    const onMove = (e: PointerEvent) => {
-      const rect = el.getBoundingClientRect()
-      const x = e.clientX - (rect.left + rect.width / 2)
-      const y = e.clientY - (rect.top + rect.height / 2)
-      el.style.transform = `translate(${x * strength}px, ${y * strength}px)`
+    const tick = (now: number) => {
+      const k = follow(0.25, prev ? now - prev : 1000 / 60)
+      prev = now
+      // critically-damped-ish approach: fast to start, settles without wobble
+      cur.x += (target.x - cur.x) * k
+      cur.y += (target.y - cur.y) * k
+      el.style.transform = `translate3d(${cur.x.toFixed(2)}px, ${cur.y.toFixed(2)}px, 0)`
+      if (Math.abs(target.x - cur.x) > 0.05 || Math.abs(target.y - cur.y) > 0.05) raf = requestAnimationFrame(tick)
+      else {
+        raf = 0
+        prev = 0
+        if (!target.x && !target.y) el.style.willChange = ''
+      }
     }
-    const onLeave = () => {
-      el.style.transform = 'translate(0px, 0px)'
+    const kick = () => {
+      if (!raf) raf = requestAnimationFrame(tick)
     }
-
-    el.addEventListener('pointermove', onMove)
-    el.addEventListener('pointerleave', onLeave)
+    const enter = () => {
+      rect = o.getBoundingClientRect()
+      el.style.willChange = 'transform'
+    }
+    const move = (e: PointerEvent) => {
+      if (!rect) rect = o.getBoundingClientRect()
+      const clamp = (v: number) => Math.max(-max, Math.min(max, v))
+      target.x = clamp((e.clientX - (rect.left + rect.width / 2)) * strength)
+      target.y = clamp((e.clientY - (rect.top + rect.height / 2)) * strength)
+      kick()
+    }
+    const leave = () => {
+      rect = null
+      target.x = 0
+      target.y = 0
+      kick()
+    }
+    o.addEventListener('pointerenter', enter)
+    o.addEventListener('pointermove', move)
+    o.addEventListener('pointerleave', leave)
     return () => {
-      el.removeEventListener('pointermove', onMove)
-      el.removeEventListener('pointerleave', onLeave)
+      o.removeEventListener('pointerenter', enter)
+      o.removeEventListener('pointermove', move)
+      o.removeEventListener('pointerleave', leave)
+      cancelAnimationFrame(raf)
+      el.style.transform = ''
     }
-  }, [reduce, strength])
+  }, [reduce, fine, strength, max])
 
   return (
-    <span
-      ref={ref}
-      className={className}
-      style={{ display: 'inline-block', transition: 'transform 0.25s cubic-bezier(0.22,1,0.36,1)', willChange: 'transform' }}
-    >
-      {children}
+    <span ref={outer} className={`inline-block ${className ?? ''}`}>
+      <span ref={inner} className="inline-block w-full">
+        {children}
+      </span>
     </span>
   )
 }

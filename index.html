@@ -1,9 +1,20 @@
 <!doctype html>
-<html lang="es" class="dark">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0a0e1a" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <!-- theme before first paint: saved choice, else the system (src/lib/theme.ts); ?theme=night previews -->
+    <script>
+      try {
+        var t = new URLSearchParams(location.search).get('theme') || localStorage.getItem('theme')
+        if (t !== 'day' && t !== 'night') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
+        if (t === 'night') {
+          document.documentElement.dataset.theme = 'night'
+          document.querySelector('meta[name="theme-color"]').content = '#0e1320'
+        }
+      } catch (e) {}
+    </script>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%236366f1'/%3E%3Ctext x='50' y='71' font-size='58' font-family='monospace' font-weight='700' text-anchor='middle' fill='white'%3EE%3C/text%3E%3C/svg%3E"
@@ -34,22 +45,11 @@
     <meta name="twitter:description" content="Desarrollador backend (Python · FastAPI · PostgreSQL) y full-stack con React y TypeScript. Ingeniero Informático (UA, 2026), TFG con Matrícula de Honor." />
     <meta name="twitter:image" content="https://eap-portfolio.vercel.app/og.png" />
     <link rel="canonical" href="https://eap-portfolio.vercel.app/" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Load font CSS without blocking render: fetch as a preload, then flip to a
-         stylesheet once it arrives (display=swap already avoids invisible text). -->
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-      />
-    </noscript>
+    <link rel="preload" href="/fonts/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/barlow-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -67,39 +67,9 @@
     </script>
   </head>
   <body>
-    <div id="root">
-      <!-- Mobile-only static hero: paints from HTML+CSS before the JS boots, so
-           phones don't stare at a blank screen while React downloads/executes.
-           Hidden on desktop (md:hidden) — desktop keeps its animated entrance
-           untouched. React's createRoot replaces this on mount; on mobile the
-           Hero renders without its entrance animation so the swap is seamless. -->
-      <div class="md:hidden">
-        <section class="relative flex min-h-screen items-center overflow-hidden pb-20 pt-28">
-          <div class="container flex max-w-4xl flex-col items-center text-center">
-            <p class="mb-6 font-mono text-sm tracking-[0.12em] text-accent">DESARROLLADOR_FULL_STACK.execute()<span class="ml-0.5 inline-block animate-blink text-accent-violet">_</span></p>
-            <h1 class="text-balance text-5xl font-black leading-[1.05] tracking-tightest sm:text-6xl md:text-7xl"><span class="gradient-text">Erardo Aldana Pessoa</span></h1>
-            <p class="mt-6 text-lg font-medium text-slate-200 sm:text-xl">Desarrollador Backend (Python) · Full-Stack</p>
-            <p class="mt-2.5 font-mono text-sm text-slate-400">Ingeniero Informático (UA, 2026) · Gandía y Alicante · disponible para reubicarme en cualquier punto de España</p>
-            <div class="mt-6 max-w-2xl">
-              <p class="text-pretty text-base leading-relaxed text-slate-400 sm:text-lg">Desarrollo backends con <strong class="text-accent">Python, FastAPI y PostgreSQL</strong>, y me muevo con soltura en frontend con <strong class="text-accent-violet">React y TypeScript</strong>. Me importan la arquitectura limpia, los tests y el código que otros pueden leer.</p>
-            </div>
-            <div class="mt-10 flex flex-col gap-3 sm:flex-row">
-              <a href="#projects" class="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-[15px] font-semibold bg-accent-strong text-white shadow-[0_10px_34px_-12px_rgba(99,102,241,0.75)]">Ver proyectos</a>
-              <a href="/Erardo-Aldana-Pessoa-CV-ES.pdf" class="inline-flex items-center justify-center gap-2 rounded-lg border border-line-strong px-6 py-3 text-[15px] font-semibold text-white">Descargar CV</a>
-              <a href="https://github.com/eap59-ua" class="inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-white/[0.05] px-6 py-3 text-[15px] font-semibold text-slate-200">GitHub</a>
-            </div>
-            <div class="mt-16 grid w-full max-w-3xl grid-cols-2 gap-3 md:grid-cols-4">
-              <div class="card-surface px-4 py-5"><div class="gradient-text text-3xl font-bold">10/10</div><div class="mt-1 text-sm text-slate-400">TFG · Matrícula de Honor</div></div>
-              <div class="card-surface px-4 py-5"><div class="gradient-text text-3xl font-bold">14</div><div class="mt-1 text-sm text-slate-400">Meses de prácticas en empresa</div></div>
-              <div class="card-surface px-4 py-5"><div class="gradient-text text-3xl font-bold">B2</div><div class="mt-1 text-sm text-slate-400">Inglés · Cambridge First</div></div>
-              <div class="card-surface px-4 py-5"><div class="gradient-text text-3xl font-bold">6</div><div class="mt-1 text-sm text-slate-400">Proyectos con código público</div></div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
+    <div id="root"></div>
     <noscript>
-      <div style="max-width: 720px; margin: 2rem auto; padding: 0 1rem; font-family: system-ui, sans-serif; color: #e9edf5">
+      <div style="max-width: 720px; margin: 2rem auto; padding: 0 1rem; font-family: system-ui, sans-serif; color: #16181d">
         <h1>Erardo Aldana Pessoa — Desarrollador Backend (Python) · Full-Stack</h1>
         <p>
           Ingeniero Informático por la Universidad de Alicante (2026), TFG con Matrícula de Honor.

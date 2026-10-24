@@ -1,51 +1,50 @@
 import { useEffect, useRef } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { follow, useFinePointer, useMotionPaused, useReducedMotion } from '../../lib/motion'
 
+// Night only (design-rationale §2.2): ambient light over the lit-up map that
+// follows the cursor. No permanent loop: the rAF runs while it is catching up
+// with the pointer and stops as soon as it arrives.
 export function AuroraCursor() {
   const ref = useRef<HTMLDivElement>(null)
+  const fine = useFinePointer()
   const reduce = useReducedMotion()
+  const paused = useMotionPaused()
+  const off = !fine || reduce || paused
 
   useEffect(() => {
-    if (reduce) return
-    if (window.matchMedia('(pointer: coarse)').matches) return
     const el = ref.current
-    if (!el) return
-
+    if (!el || off) return
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
-    const current = { ...target }
+    const cur = { ...target }
     let raf = 0
-
+    let prev = 0
+    const step = (now: number) => {
+      const k = follow(0.08, prev ? now - prev : 1000 / 60)
+      prev = now
+      cur.x += (target.x - cur.x) * k
+      cur.y += (target.y - cur.y) * k
+      el.style.transform = `translate3d(${cur.x - 170}px, ${cur.y - 170}px, 0)`
+      raf = Math.hypot(target.x - cur.x, target.y - cur.y) > 0.5 ? requestAnimationFrame(step) : 0
+      if (!raf) prev = 0
+    }
     const onMove = (e: PointerEvent) => {
       target.x = e.clientX
       target.y = e.clientY
+      if (!raf) raf = requestAnimationFrame(step)
     }
-    const loop = () => {
-      current.x += (target.x - current.x) * 0.06
-      current.y += (target.y - current.y) * 0.06
-      el.style.transform = `translate3d(${current.x - 150}px, ${current.y - 150}px, 0)`
-      raf = requestAnimationFrame(loop)
-    }
-
-    window.addEventListener('pointermove', onMove)
-    raf = requestAnimationFrame(loop)
+    window.addEventListener('pointermove', onMove, { passive: true })
     return () => {
-      cancelAnimationFrame(raf)
       window.removeEventListener('pointermove', onMove)
+      cancelAnimationFrame(raf)
     }
-  }, [reduce])
+  }, [off])
 
+  if (off) return null
   return (
-    <div
-      ref={ref}
-      aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 -z-10 h-[300px] w-[300px] will-change-transform"
-    >
+    <div ref={ref} aria-hidden="true" className="pointer-events-none fixed left-0 top-0 -z-10 h-[340px] w-[340px] will-change-transform">
       <div
-        className="h-full w-full animate-spin-slow rounded-full opacity-[0.28] blur-[64px]"
-        style={{
-          background: 'conic-gradient(from 0deg, #6366f1, #a78bfa, #f0abfc, #22d3ee, #34d399, #6366f1)',
-          mixBlendMode: 'screen',
-        }}
+        className="h-full w-full rounded-full opacity-[0.16] blur-[70px]"
+        style={{ background: 'conic-gradient(from 0deg, var(--l1), var(--studysync), var(--donation), var(--hydro), var(--eco), var(--l1))' }}
       />
     </div>
   )

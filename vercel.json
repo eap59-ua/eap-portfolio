@@ -7,8 +7,7 @@
     { "source": "/projects/hydrofulness", "destination": "/projects/hydrofulness/index.html" },
     { "source": "/projects/food-donation", "destination": "/projects/food-donation/index.html" },
     { "source": "/projects/studysync", "destination": "/projects/studysync/index.html" },
-    { "source": "/projects/easycab", "destination": "/projects/easycab/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/projects/easycab", "destination": "/projects/easycab/index.html" }
   ],
   "headers": [
     {

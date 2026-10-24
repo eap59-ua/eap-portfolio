@@ -1,0 +1,547 @@
+/* Contacto · one anatomy, four identities.
+   Every card: an 84 px brand header (the only place brand colour lives), a
+   neutral body (label · value · note) and an action footer pinned to the
+   bottom so the four footers line up. Phones: the same parts as a compact row
+   (brand column | text | action). Border, hover and proximity glow are the
+   site's own (--lc = L1), so brand colours never compete with the line colours. */
+
+.cc {
+  --gh-bg: #24292f;
+  --gh-bd: transparent;
+  --gh-sq: 0.1;
+  --li-band: #0a66c2;
+  --li-band-2: #004182;
+  --env: #fbfaf6;
+  --flap: #f0ece1;
+  --ok: #137333;
+  --bad: #c5221f;
+  /* Maps tile (Google's day palette) */
+  --m-land: #eef0f2;
+  --m-road: #ffffff;
+  --m-hwy: #fde293;
+  --m-hwy-edge: #f2c046;
+  --m-water: #aecbfa;
+  --m-park: #ceead6;
+}
+[data-theme='night'] .cc {
+  --gh-bg: #0d1117;
+  --gh-bd: #30363d;
+  --gh-sq: 0.2;
+  /* toned down: never the brightest block on the night page */
+  --li-band: #004182; /* LinkedIn dark blue: white "in" still 10:1 */
+  --li-band-2: #0a66c2; /* hover: back to the brand blue */
+  --env: var(--paper-2);
+  --flap: #222a3e;
+  --ok: #81c995;
+  --bad: #f28b82;
+  /* Maps' own night style */
+  --m-land: #242f3e;
+  --m-road: #38414e;
+  --m-hwy: #746855;
+  --m-hwy-edge: #1f2835;
+  --m-water: #17263c;
+  --m-park: #263c3f;
+}
+
+/* the magnet wrapper must not break the equal-height grid */
+.cc-mag,
+.cc-mag > span {
+  display: block;
+  height: 100%;
+}
+
+/* ── anatomy ───────────────────────────────────────────────────────────── */
+.card.cc {
+  height: 100%;
+  color: var(--ink);
+  text-align: left;
+  transition: border-color 0.2s ease;
+}
+.cc-main {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 72px;
+  width: 100%;
+}
+.cc-head {
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px 0 0 15px;
+  overflow: hidden;
+}
+.cc-mark {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+.cc-body {
+  position: relative;
+  min-width: 0;
+  padding: 12px 6px 12px 12px;
+}
+.cc-label {
+  display: block;
+  font-family: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+}
+.cc-value {
+  display: block;
+  margin-top: 5px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+.cc-note {
+  display: block;
+  margin-top: 3px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--ink-3);
+}
+.cc-act {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 0 4px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--ink);
+  text-align: left;
+}
+/* phones: the icon alone is the action; the words stay in the accessible name */
+.cc-act-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.cc-arrow {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: transform 0.22s var(--ease-out);
+}
+
+@media (min-width: 640px) {
+  .cc-main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 84px auto 1fr;
+    align-items: start;
+  }
+  .cc-head {
+    height: 84px;
+    border-radius: 15px 15px 0 0;
+    justify-content: flex-start;
+    align-items: flex-end;
+    padding: 0 18px 10px;
+  }
+  .cc-body {
+    padding: 16px 20px 0;
+  }
+  .cc-label {
+    font-size: 22px;
+  }
+  .cc-value {
+    margin-top: 7px;
+    font-size: 13px;
+  }
+  .cc-note {
+    margin-top: 4px;
+    font-size: 12px;
+  }
+  .cc-act {
+    align-self: end;
+    margin: 16px 20px 0;
+    padding: 12px 0 16px;
+    border-top: 1px solid var(--rule);
+  }
+  .cc-act-text {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+  .cc-act .cc-arrow {
+    margin-left: auto;
+  }
+}
+
+/* system hover: the same border + L1 proximity glow as every other card */
+@media (hover: hover) {
+  .card.cc:hover {
+    border-color: var(--ink-3);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .cc:hover .cc-arrow {
+    transform: translate(2px, -2px);
+  }
+}
+
+/* ── GitHub: an inverted-ink header with a square texture (texture, not data) */
+.cc--gh .cc-head {
+  background: var(--gh-bg);
+  box-shadow: inset 0 0 0 1px var(--gh-bd);
+  color: #fff;
+}
+.cc-tex {
+  position: absolute;
+  inset: 0 0 0 25%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect x='1.5' y='1.5' width='11' height='11' rx='2.5' fill='%23fff'/%3E%3C/svg%3E");
+  background-size: 14px 14px;
+  background-position: right 6px top 6px;
+  -webkit-mask-image: linear-gradient(to left, #000 15%, transparent 95%);
+  mask-image: linear-gradient(to left, #000 15%, transparent 95%);
+  opacity: var(--gh-sq);
+  transition: opacity 0.3s ease;
+}
+@media (hover: hover) {
+  .cc--gh:hover .cc-tex {
+    opacity: calc(var(--gh-sq) * 1.6);
+  }
+}
+.cc--gh .cc-mark svg,
+.cc--li .cc-mark svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* ── LinkedIn: the blue header ─────────────────────────────────────────── */
+.cc--li .cc-head {
+  background: var(--li-band);
+  color: #fff;
+  transition: background-color 0.2s ease;
+}
+@media (hover: hover) {
+  .cc--li:hover .cc-head {
+    background: var(--li-band-2);
+  }
+}
+
+/* ── Gmail: an envelope, its flap traced in the four colours ───────────── */
+.cc--mail .cc-head {
+  background: var(--env);
+  box-shadow: inset 0 -1px 0 var(--rule);
+}
+.cc-flap {
+  display: none;
+}
+.cc--mail .cc-mark svg {
+  width: 30px;
+  height: 22px;
+}
+/* phones: the four colours run down the brand column instead */
+.cc--mail .cc-head::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(#4285f4 0 25%, #ea4335 25% 50%, #fbbc05 50% 75%, #34a853 75%);
+}
+/* the copy button's hit area covers the whole card; the mailto link sits above it */
+.cc-hit {
+  position: static;
+}
+.cc-hit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 15px;
+}
+.cc-hit:focus-visible {
+  outline: none;
+}
+.cc-hit:focus-visible::before {
+  outline: 3px solid var(--l1);
+  outline-offset: 3px;
+}
+/* phones: a round icon button */
+.cc-hit .cc-swap {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.cc--mail .cc-act {
+  padding-right: 14px;
+}
+.cc--mail[data-state='done'] .cc-hit .cc-swap {
+  border-color: color-mix(in srgb, var(--ok) 55%, transparent);
+  color: var(--ok);
+}
+.cc--mail[data-state='fail'] .cc-hit .cc-swap {
+  color: var(--bad);
+}
+.cc-tapnote {
+  transition: color 0.2s ease;
+}
+.cc--mail[data-state='done'] .cc-tapnote {
+  color: var(--ok);
+}
+.cc--mail[data-state='fail'] .cc-tapnote {
+  color: var(--bad);
+}
+/* icons and words morph in place: stacked in one cell, only opacity/transform move */
+.cc-swap {
+  display: inline-grid;
+  align-items: center;
+}
+.cc-swap > * {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  transition:
+    opacity 0.18s ease,
+    transform 0.26s var(--ease-out);
+}
+.cc-swap > :not(.is-on) {
+  opacity: 0;
+  transform: scale(0.5);
+}
+.cc-swap.is-text > :not(.is-on) {
+  transform: translateY(5px);
+}
+.cc-swap > .is-on {
+  transition-delay: 0.04s;
+}
+.cc-swap svg {
+  width: 16px;
+  height: 16px;
+}
+/* the confirmation pill: only there after a copy */
+.cc-pill {
+  display: none;
+}
+.cc-alt {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .cc-flap {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .cc--mail .cc-head::before {
+    display: none;
+  }
+  /* the M sits on a paper tile, so the flap line runs behind it */
+  .cc--mail .cc-mark {
+    width: 44px;
+    height: 44px;
+    margin-left: -2px;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--card);
+  }
+  .cc--mail .cc-main,
+  .card.cc--mail {
+    grid-template-rows: 84px auto 1fr;
+  }
+  .cc-tapnote {
+    display: none;
+  }
+  .cc-alt {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--ink-2) 40%, transparent);
+    text-underline-offset: 3px;
+    border-radius: 4px;
+  }
+  .cc-alt svg {
+    width: 14px;
+    height: 14px;
+  }
+  .cc-alt:hover {
+    color: var(--ink);
+    text-decoration-color: currentColor;
+  }
+  .cc-hit .cc-swap {
+    width: auto;
+    height: auto;
+    border: 0;
+  }
+  .cc--mail .cc-act {
+    padding-right: 0;
+  }
+  /* from sm the footer stays "Copiar email": the pill alone confirms */
+  .cc-hit .cc-swap > * {
+    opacity: 0;
+  }
+  .cc-hit .cc-swap > :first-child {
+    opacity: 1;
+    transform: none;
+  }
+  .cc--mail[data-state] .cc-hit .cc-swap {
+    color: inherit;
+  }
+  .cc-pill {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: auto;
+    padding: 6px 12px;
+    border: 1px solid color-mix(in srgb, var(--ok) 50%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, #34a853 12%, var(--card));
+    color: var(--ok);
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.92);
+    transition:
+      opacity 0.18s ease,
+      transform 0.26s var(--ease-out);
+  }
+  .cc-pill svg {
+    width: 15px;
+    height: 15px;
+  }
+  .cc--mail[data-state='done'] .cc-pill,
+  .cc--mail[data-state='fail'] .cc-pill {
+    opacity: 1;
+    transform: none;
+  }
+  .cc--mail[data-state='fail'] .cc-pill {
+    border-color: color-mix(in srgb, var(--bad) 50%, transparent);
+    background: color-mix(in srgb, #ea4335 10%, var(--card));
+    color: var(--bad);
+  }
+}
+@media (hover: hover) {
+  .cc--mail:hover .cc-hit .cc-act-text {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+/* ── Maps: a stylised tile (the coast on the east, like both cities) + pin ── */
+.cc--map .cc-head {
+  box-shadow: inset 0 -1px 0 var(--rule);
+}
+.cc-tile {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.cc-pin {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 37px;
+  margin-top: -10px;
+  isolation: isolate;
+}
+.cc-pin svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+}
+.cc-pin::after {
+  /* the shadow where the tip lands */
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 12px;
+  height: 4px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+  z-index: -1;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .cc-pin svg {
+    transition: transform 0.25s var(--ease-out);
+  }
+  .cc--map:hover .cc-pin svg {
+    transform: translateY(-3px);
+  }
+}
+/* drops in once when the card comes into view (never with reduced motion) */
+@media (prefers-reduced-motion: no-preference) {
+  .cc-head[data-drop='wait'] .cc-pin {
+    opacity: 0;
+    transform: translateY(-26px);
+  }
+  .cc-head[data-drop='go'] .cc-pin {
+    animation: cc-pin-drop 0.62s cubic-bezier(0.3, 0.9, 0.35, 1) 0.15s both;
+  }
+  .cc-head[data-drop='go'] .cc-pin::after {
+    animation: cc-pin-shadow 0.62s ease-out 0.15s both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cc-swap > *,
+  .cc-pill,
+  .cc-arrow {
+    transition: none;
+  }
+}
+@keyframes cc-pin-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-26px);
+  }
+  45% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(1.5px) scaleY(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes cc-pin-shadow {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}

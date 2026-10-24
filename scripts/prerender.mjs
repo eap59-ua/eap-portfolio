@@ -1,12 +1,21 @@
 // Post-build step: for each project route, emit a static
 // dist/projects/<slug>/index.html whose <head> carries that project's own
-// title / description / canonical / OG + Twitter meta (with its own og:image).
-// The body is the untouched SPA shell, so real users still hydrate the app;
-// crawlers (LinkedIn, WhatsApp, Slack…) that never run JS get correct previews.
+// title / description / canonical / OG + Twitter meta (with its own og:image),
+// and whose #root holds that case study already rendered (marked data-ssr, so
+// main.tsx hydrates it). Crawlers that never run JS get correct previews too.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { pathToFileURL } from 'node:url'
 import { PROJECT_SEO, SITE_URL } from './seo-data.mjs'
 
 const template = readFileSync('dist/index.html', 'utf8')
+if (!template.includes('<div id="root"></div>')) throw new Error('prerender: empty #root not found in dist/index.html')
+const { render } = await import(pathToFileURL('dist-ssr/entry-server.js').href)
+/** #root with the markup and the route it was rendered for (see src/lib/ssr.ts) */
+/** The page's <title>/<meta> (React 19 hoistables) come out inline in renderToString's
+ *  string; <head> already carries them (swapped below), so they're dropped from the body.
+ *  Hydration doesn't look for hoistables in place, and on the client React puts its own in <head>. */
+const stripHoistables = (app) => app.replace(/<title>[\s\S]*?<\/title>|<meta\b[^>]*>/g, '')
+const withApp = (html, route, app) => html.replace('<div id="root"></div>', `<div id="root" data-ssr="${route}">${stripHoistables(app)}</div>`)
 
 const esc = (s) =>
   s
@@ -31,9 +40,6 @@ for (const p of PROJECT_SEO) {
   const d = esc(desc)
 
   let html = template
-  // The home template carries a mobile-only static hero inside #root — strip it
-  // from project pages so they don't flash the home hero before React renders.
-  html = html.replace(/<div id="root">[\s\S]*?<\/div>(\s*<noscript>)/, '<div id="root"></div>$1')
   html = swap(html, /<title>[\s\S]*?<\/title>/, `<title>${t}</title>`, 'title')
   html = swap(html, /<meta\s+name="description"[\s\S]*?\/>/, `<meta name="description" content="${d}" />`, 'description')
   html = swap(html, /<meta\s+property="og:type"[\s\S]*?\/>/, `<meta property="og:type" content="article" />`, 'og:type')
@@ -46,7 +52,24 @@ for (const p of PROJECT_SEO) {
   html = swap(html, /<meta\s+name="twitter:image"[\s\S]*?\/>/, `<meta name="twitter:image" content="${img}" />`, 'twitter:image')
   html = swap(html, /<link\s+rel="canonical"[\s\S]*?\/>/, `<link rel="canonical" href="${url}" />`, 'canonical')
 
+  const route = `/projects/${p.slug}`
+  const app = await render(route)
+  html = withApp(html, route, app)
+
   mkdirSync(`dist/projects/${p.slug}`, { recursive: true })
   writeFileSync(`dist/projects/${p.slug}/index.html`, html)
-  console.log(`prerendered /projects/${p.slug}`)
+  console.log(`prerendered ${route} (${Math.round(app.length / 1024)} KB of HTML)`)
 }
+
+// Unknown routes: Vercel serves dist/404.html with a real 404 status (no SPA
+// catch-all in vercel.json). Empty shell, not indexed; the app renders "Vía muerta".
+let notFound = swap(template, /<title>[\s\S]*?<\/title>/, '<title>Vía muerta · Erardo Aldana Pessoa</title>', 'title')
+notFound = notFound.replace('</head>', '  <meta name="robots" content="noindex" />\n  </head>')
+writeFileSync('dist/404.html', notFound)
+console.log('prerendered /404.html')
+
+// Home: render the app at build time so the first paint doesn't wait for the
+// JS bundle (fonts + HTML paint first; main.tsx hydrates the same markup).
+const appHtml = await render('/')
+writeFileSync('dist/index.html', withApp(template, '/', appHtml))
+console.log(`prerendered / (${Math.round(appHtml.length / 1024)} KB of HTML)`)

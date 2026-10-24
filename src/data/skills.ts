@@ -170,3 +170,56 @@ export const TECH_MARQUEE: string[] = [
   'MySQL',
   'Vite',
 ]
+
+// Where each technology was used, by project slug (same order as the project lines).
+// Taken only from the project data, never guessed: tags + footnote in projects.ts and
+// stack + diagram in caseStudies.ts; the concepts marked "(architecture)" come from the
+// case study's own architecture paragraph. A technology with no entry lights no project.
+export const TECH_PROJECTS: Record<string, string[]> = {
+  TypeScript: ['hydrofulness', 'studysync'],
+  // confirmed by the author (2026-10-24): EcoAlerta's Node/React 18 is plain JavaScript
+  JavaScript: ['ecoalerta'],
+  Python: ['food-donation', 'hydrofulness', 'studysync', 'easycab'],
+  Kotlin: ['studysync'],
+  'C / C++': ['chaos-crew'],
+  React: ['ecoalerta', 'hydrofulness', 'studysync'],
+  Tailwind: ['ecoalerta', 'hydrofulness', 'studysync'],
+  Vite: ['hydrofulness', 'studysync'],
+  FastAPI: ['food-donation', 'hydrofulness', 'studysync'],
+  'Node.js': ['ecoalerta', 'easycab'],
+  // (architecture) "Express REST API", "REST routes", "~14 REST endpoints"; EasyCab: "REST audit API"
+  'REST APIs': ['ecoalerta', 'food-donation', 'hydrofulness', 'easycab'],
+  WebSockets: ['studysync'],
+  JWT: ['ecoalerta', 'food-donation', 'easycab'],
+  PostgreSQL: ['ecoalerta', 'food-donation', 'studysync', 'easycab'],
+  PostGIS: ['ecoalerta'],
+  Redis: ['studysync'],
+  SQLAlchemy: ['food-donation', 'hydrofulness', 'studysync'],
+  Docker: ['ecoalerta', 'food-donation', 'hydrofulness', 'studysync'],
+  'GitHub Actions': ['studysync', 'chaos-crew'],
+  // StudySync (architecture) "gated by GitHub Actions CI"; Chaos Crew footnote "ECS · CI"
+  'CI/CD': ['studysync', 'chaos-crew'],
+  Nginx: ['ecoalerta'],
+  Kafka: ['easycab'],
+  // (architecture) "hexagonal layers" / "hexagonal architecture"
+  Hexagonal: ['food-donation', 'studysync'],
+  Pytest: ['food-donation'],
+  Jest: ['ecoalerta'],
+  Playwright: ['ecoalerta'],
+  'scikit-learn': ['hydrofulness'],
+  // StudySync's stack: "PWA / Android" (Kotlin + Jetpack Compose client)
+  Android: ['studysync'],
+  // confirmed by the author (2026-10-24): every project lives in Git
+  Git: ['ecoalerta', 'food-donation', 'hydrofulness', 'studysync', 'easycab', 'chaos-crew'],
+}
+
+// The interchanges (★) shown first, as one line: backend first, since that is the job he's after.
+// Only reorders the starred chips above; it never adds or removes one.
+const BEST_ORDER = ['Python', 'FastAPI', 'PostgreSQL', 'Docker', 'Hexagonal', 'Pytest', 'TypeScript', 'React']
+const bestRank = (label: string) => {
+  const i = BEST_ORDER.indexOf(label)
+  return i === -1 ? BEST_ORDER.length : i
+}
+export const BEST: string[] = SKILL_GROUPS.flatMap((g) => g.chips.filter((c) => c.star).map((c) => c.label)).sort(
+  (a, b) => bestRank(a) - bestRank(b),
+)
