@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import type { CSSProperties, KeyboardEvent, RefObject } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { CSSProperties, KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Award, ChevronDown } from 'lucide-react'
 import { PROJECTS, type Project } from '../../data/projects'
@@ -17,7 +17,7 @@ function useT() {
   return { t, lang }
 }
 
-/** the platform's pieces, shared by the default layout and the ?board=a|b prototypes */
+/** the platform's pieces, shared by the mobile accordion (Platform) and the desktop card (DeskPlatform) */
 function Head({ p, compact }: { p: Project; compact?: boolean }) {
   const { t } = useT()
   const L = PROJECT_LINE[p.slug]
@@ -66,13 +66,13 @@ function Evidence({ p, className = 'mt-5' }: { p: Project; className?: string })
   )
 }
 
-function Route({ p }: { p: Project }) {
+function Route({ p, trackClass = '' }: { p: Project; trackClass?: string }) {
   const { t } = useT()
   const L = PROJECT_LINE[p.slug]
   return (
     <>
       <p className="sign-label text-sm text-ink-3">{t('projects.route')}</p>
-      <div className="mt-3 pr-2">
+      <div className={`mt-3 pr-2 ${trackClass}`}>
         <StationTrack stops={p.tags.map((x) => x.label)} line={L.line} dashed={L.dashed} />
         {/* the drawn track is decorative; the same stops, for screen readers */}
         <ul className="sr-only">
@@ -129,53 +129,36 @@ function Platform({ p, compact }: { p: Project; compact?: boolean }) {
   )
 }
 
-// ── ?board=a|b: temporary prototype switch (fase 2b, ronda 4) ─────────────────────────────
-// The prerender and the first client render use the default layout; the query is read only
-// after hydration (useSyncExternalStore's server snapshot), so hydration never mismatches.
-//   a → "llenar": the card keeps the list's height and the media grows into it; buttons at the bottom
-//   b → "ficha fija": the card is as tall as its content and sticks below the top bar
-type BoardVariant = 'a' | 'b'
-const noSubscribe = () => () => {}
-const readBoard = (): BoardVariant | null => {
-  const q = new URLSearchParams(window.location.search).get('board')
-  return q === 'a' || q === 'b' ? q : null
-}
-const serverBoard = () => null
-
-/** desktop platform for the prototypes; the layout lives in board.css (container queries on the card) */
-function PlatformProto({ p, v }: { p: Project; v: BoardVariant }) {
+/** desktop platform: the card keeps the list's height and the demo grows into it, buttons at the
+ *  bottom. Layout in board.css, by container queries on the card ("anden"), not on the viewport. */
+function DeskPlatform({ p }: { p: Project }) {
   const { t } = useT()
-  const L = PROJECT_LINE[p.slug]
   const title = p.titleKey ? t(p.titleKey) : p.title
   const media = MEDIA[p.slug]
   const kind = media ? (media.portrait ? 'portrait' : 'landscape') : 'none'
   return (
-    <div className={`pf pf-${v} pf--${kind}`}>
+    <div className={`pf pf--${kind}`}>
       <div className="pf-text min-w-0">
         <Head p={p} />
         <Desc p={p} />
-        {v === 'b' && <Evidence p={p} />}
       </div>
-      {/* (a): the proofs are their own cell, so they can sit beside the demo and leave it the height */}
-      {v === 'a' && <Evidence p={p} className="pf-ev min-w-0" />}
+      {/* the proofs are their own cell, so they can sit beside the demo and leave it the height */}
+      <Evidence p={p} className="pf-ev min-w-0" />
       {media ? (
         <div className="pf-media">
           <DemoVideo slug={p.slug} title={`${title} — demo`} fit />
         </div>
       ) : (
-        v === 'a' && (
-          // no demo to grow: the space becomes the platform's station sign (decorative, existing data only)
-          <div className="pf-media pf-sign" aria-hidden="true" style={{ ['--lc' as string]: `var(--${L.line})` } as CSSProperties}>
-            <span className="pf-sign-plate">
-              <LineBadge line={L.line} n={`L${L.n}`} dark={L.dark} />
-              <span className="sign-type">{title}</span>
-            </span>
-          </div>
-        )
+        // no demo: the technical route itself takes the space, drawn large (it is the card's only route)
+        <div className="pf-route pf-route--big min-w-0">
+          <Route p={p} trackClass="pf-track-big" />
+        </div>
       )}
-      <div className="pf-route min-w-0">
-        <Route p={p} />
-      </div>
+      {media && (
+        <div className="pf-route min-w-0">
+          <Route p={p} />
+        </div>
+      )}
       <Actions p={p} className="pf-actions" />
     </div>
   )
@@ -226,9 +209,6 @@ export function ProjectsBoard() {
   }
   const cur = PROJECTS[sel]
   const curL = PROJECT_LINE[cur.slug]
-  const board = useSyncExternalStore(noSubscribe, readBoard, serverBoard)
-  const panel = useRef<HTMLDivElement>(null)
-  useStickyTop(panel, board === 'b', cur.slug)
 
   return (
     <section id="proyectos" className="relative scroll-mt-[var(--bar-h)] py-20 lg:py-28">
@@ -239,7 +219,7 @@ export function ProjectsBoard() {
         </div>
 
         {/* desktop: board (tabs) + platform */}
-        <div className={`mt-10 hidden gap-10 lg:grid ${board ? `board-grid board-grid--${board}` : 'lg:grid-cols-[470px_1fr]'}`}>
+        <div className="board-grid mt-10 hidden gap-10 lg:grid">
           <div role="tablist" aria-orientation="vertical" aria-label={t('projects.title')} className="flex flex-col gap-2.5">
             {PROJECTS.map((p, i) => {
               const L = PROJECT_LINE[p.slug]
@@ -272,13 +252,12 @@ export function ProjectsBoard() {
             role="tabpanel"
             aria-labelledby={`tt-${cur.slug}`}
             key={cur.slug}
-            ref={panel}
             data-glow
             data-line={curL.line}
-            className={`card glow-card platform-in p-7 ${board ? `board-panel board-panel--${board}` : 'min-h-[640px]'}`}
+            className="board-panel card glow-card platform-in p-7"
             style={{ ['--lc' as string]: `var(--${curL.line})` } as CSSProperties}
           >
-            {board ? <PlatformProto p={cur} v={board} /> : <Platform p={cur} />}
+            <DeskPlatform p={cur} />
           </div>
         </div>
 
@@ -324,28 +303,6 @@ export function ProjectsBoard() {
       }} />
     </section>
   )
-}
-
-/** ?board=b: sticks below the top bar; a card taller than the viewport sticks by its bottom edge
- *  instead (negative top), so its buttons are never stranded below the fold while the list scrolls */
-function useStickyTop(ref: RefObject<HTMLDivElement | null>, on: boolean, slug: string) {
-  useEffect(() => {
-    const el = ref.current
-    if (!on || !el) return
-    const update = () => {
-      const bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 72
-      const gap = 16
-      el.style.setProperty('--stick-top', `${Math.round(Math.min(bar + gap, window.innerHeight - el.offsetHeight - gap))}px`)
-    }
-    update()
-    const ro = new ResizeObserver(update)
-    ro.observe(el)
-    window.addEventListener('resize', update)
-    return () => {
-      ro.disconnect()
-      window.removeEventListener('resize', update)
-    }
-  }, [ref, on, slug])
 }
 
 function HashSelect({ onSelect }: { onSelect: (slug: string) => void }) {

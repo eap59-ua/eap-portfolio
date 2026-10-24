@@ -5,7 +5,7 @@ import { MEDIA } from '../../data/media'
 import { useMotionPaused, useReducedMotion } from '../../lib/motion'
 
 /** plays muted while on screen; never with reduced motion or the pause button (WCAG 2.2.2): poster + controls instead.
- *  fit: no fixed width — the parent sizes the frame (board prototype ?board=a|b, see board.css); it gets the clip's ratio as --mw/--mh */
+ *  fit: no fixed width — the parent sizes the frame (desktop project board, see board.css); it gets the clip's ratio as --mw/--mh */
 export function DemoVideo({ slug, title, fit }: { slug: string; title: string; fit?: boolean }) {
   const m = MEDIA[slug]
   const lang = useTranslation().i18n.resolvedLanguage === 'en' ? 'en' : 'es'

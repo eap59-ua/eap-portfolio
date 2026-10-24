@@ -1,5 +1,5 @@
-/* ?board=a|b: temporary prototype of the desktop project board (fase 2b, ronda 4).
-   Only the desktop board (lg+) uses these classes; the mobile accordion keeps the default Platform.
+/* Desktop project board (lg+): the card keeps the list's height and the demo grows into it,
+   with the buttons at the bottom. The mobile accordion keeps its own Platform layout.
    The card is a container ("anden"), so its layout follows the card's width, not the viewport's. */
 
 /* 1024–1279: the list gives some width back, so the card isn't a 380px sliver */
@@ -13,249 +13,167 @@
 }
 .board-panel {
   container: anden / inline-size;
-}
-.pf {
-  display: grid;
-  column-gap: 2rem;
-  row-gap: 1.5rem;
-}
-/* route → buttons stay 1rem apart, as in the default card */
-.pf .pf-actions {
-  margin-top: -0.5rem;
-}
-
-/* ── (a) fill the height: the card keeps the list's height, the media grows into it ── */
-.board-panel--a {
   display: flex;
   flex-direction: column;
 }
-.pf-a {
+.pf {
   flex: 1 1 auto;
+  display: grid;
+  column-gap: 2rem;
+  row-gap: 1.5rem;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(170px, 1fr) auto auto;
 }
-.pf-a .pf-text {
-  grid-row: 1;
+/* route → buttons stay 1rem apart */
+.pf .pf-actions {
+  margin-top: -0.5rem;
 }
-.pf-a .pf-media {
-  grid-row: 2;
+/* proofs in a narrow cell: a pill may take two lines, balanced */
+.pf .pf-ev li {
+  height: auto;
+  min-height: 2rem;
+  padding-block: 0.3rem;
+  line-height: 1.3;
+  border-radius: 12px;
+  text-wrap: balance;
+}
+.pf .pf-media {
   /* size container: its height is whatever the card has left, and the frame fits it */
   container-type: size;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.pf-a .pf-route {
-  grid-row: 3;
+
+/* ── landscape demo: [demo | proofs] between the description and the route ── */
+.pf--landscape {
+  grid-template-columns: minmax(0, 1fr) clamp(230px, 35cqw, 290px);
+  grid-template-rows: auto minmax(170px, 1fr) auto auto;
 }
-.pf-a .pf-actions {
-  grid-row: 4;
-}
-/* landscape / no demo: [demo | proofs] between the description and the route */
-.pf-a.pf--landscape,
-.pf-a.pf--none {
-  grid-template-columns: minmax(0, 1fr) clamp(210px, 33cqw, 270px);
-}
-.pf-a.pf--landscape .pf-text,
-.pf-a.pf--none .pf-text,
-.pf-a .pf-route,
-.pf-a .pf-actions {
+.pf--landscape .pf-text,
+.pf--landscape .pf-route,
+.pf--landscape .pf-actions {
   grid-column: 1 / -1;
 }
-.pf-a .pf-ev {
+.pf--landscape .pf-ev {
   grid-column: 2;
-  grid-row: 2;
-}
-.pf-a.pf--landscape .pf-media {
-  grid-column: 1;
-  align-items: flex-start;
-  justify-content: flex-start;
-}
-.pf-a.pf--none .pf-media {
-  grid-column: 1;
-}
-/* as wide as the free height allows (8px frame on each side) */
-.pf-a.pf--landscape .demo-fit {
-  width: min(100cqw, calc((100cqh - 16px) * var(--mw) / var(--mh) + 16px));
-  margin: 0;
-}
-@container anden (max-width: 599px) {
-  .pf-a.pf--landscape,
-  .pf-a.pf--none {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(170px, 1fr) auto auto auto;
-  }
-  .pf-a .pf-ev {
-    grid-column: 1;
-    grid-row: 3;
-  }
-  .pf-a.pf--landscape .pf-route,
-  .pf-a.pf--none .pf-route {
-    grid-row: 4;
-  }
-  .pf-a.pf--landscape .pf-actions,
-  .pf-a.pf--none .pf-actions {
-    grid-row: 5;
-  }
-}
-/* portrait: the phone takes a column and the whole card height; text, proofs and buttons on the left */
-.pf-a.pf--portrait {
-  grid-template-columns: minmax(0, 1fr) clamp(150px, 44cqw, 330px);
-  /* the leftover height is split around the proofs instead of one hole above the route */
-  grid-template-rows: auto 1fr auto auto;
-}
-.pf-a.pf--portrait .pf-text,
-.pf-a.pf--portrait .pf-ev,
-.pf-a.pf--portrait .pf-route,
-.pf-a.pf--portrait .pf-actions {
-  grid-column: 1;
-}
-.pf-a.pf--portrait .pf-ev {
   grid-row: 2;
   align-self: center;
 }
-.pf-a.pf--portrait .pf-route {
+.pf--landscape .pf-media {
+  grid-column: 1;
+  grid-row: 2;
+  /* a very wide clip (EasyCab) splits the spare height above and below */
+  justify-content: flex-start;
+}
+/* as wide as the free height allows (8px frame on each side) */
+.pf--landscape .demo-fit {
+  width: min(100cqw, calc((100cqh - 16px) * var(--mw) / var(--mh) + 16px));
+}
+.pf--landscape .pf-route {
   grid-row: 3;
 }
-.pf-a.pf--portrait .pf-actions {
+.pf--landscape .pf-actions {
   grid-row: 4;
 }
-.pf-a.pf--portrait .pf-media {
+
+/* ── portrait demo (EcoAlerta): the phone takes a column and the whole card height ── */
+.pf--portrait {
+  grid-template-columns: minmax(0, 1fr) clamp(150px, 44cqw, 330px);
+  /* text + proofs on top, one deliberate space, route + buttons as the footer */
+  grid-template-rows: auto auto 1fr auto auto;
+}
+.pf--portrait .pf-text,
+.pf--portrait .pf-ev,
+.pf--portrait .pf-route,
+.pf--portrait .pf-actions {
+  grid-column: 1;
+}
+.pf--portrait .pf-ev {
+  grid-row: 2;
+  align-self: start;
+}
+.pf--portrait .pf-route {
+  grid-row: 4;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.25rem;
+}
+.pf--portrait .pf-actions {
+  grid-row: 5;
+}
+.pf--portrait .pf-media {
   grid-column: 2;
   grid-row: 1 / -1;
 }
-.pf-a.pf--portrait .demo-fit {
+.pf--portrait .demo-fit {
   width: min(100cqw, calc(100cqh * 230 / 480));
 }
-/* narrow card (1024–1279): description across, then [proofs | phone], route and buttons across */
-@container anden (max-width: 599px) {
-  .pf-a.pf--portrait {
-    grid-template-columns: minmax(0, 1fr) clamp(130px, 40cqw, 190px);
-    grid-template-rows: auto minmax(280px, 1fr) auto auto;
-  }
-  .pf-a.pf--portrait .pf-text,
-  .pf-a.pf--portrait .pf-route,
-  .pf-a.pf--portrait .pf-actions {
-    grid-column: 1 / -1;
-  }
-  .pf-a.pf--portrait .pf-ev {
-    grid-row: 2;
-    margin-top: 0;
-  }
-  .pf-a.pf--portrait .pf-media {
-    grid-row: 2;
-  }
-  .pf-a.pf--portrait .pf-route {
-    grid-row: 3;
-  }
-  .pf-a.pf--portrait .pf-actions {
-    grid-row: 4;
-  }
-}
-/* proofs in a narrow cell: the pills may take two lines */
-.pf-a .pf-ev li {
-  height: auto;
-  min-height: 2rem;
-  padding-block: 0.3rem;
-  line-height: 1.3;
-}
-/* no demo: the free space becomes the platform's station sign */
-.pf-sign {
-  border-radius: 14px;
-  border: 1px dashed color-mix(in srgb, var(--lc) 40%, transparent);
-  background:
-    linear-gradient(var(--lc), var(--lc)) center / 100% 7px no-repeat,
-    color-mix(in srgb, var(--lc) 6%, transparent);
-}
-.pf-sign-plate {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.7rem 1.25rem;
-  border-radius: 12px;
-  border: 1px solid var(--rule);
-  background: var(--card);
-  box-shadow: 0 10px 30px -22px rgba(22, 24, 29, 0.6);
-}
-.pf-sign-plate .sign-type {
-  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
-}
-@container (max-height: 110px) {
-  .pf-sign-plate {
-    display: none;
-  }
-}
 
-/* ── (b) sticky card: as tall as its content, stuck below the top bar while the list scrolls ── */
-.board-grid--b {
-  align-items: start;
+/* ── no demo: the technical route, drawn large, takes the space ── */
+.pf--none {
+  grid-template-rows: auto auto 1fr auto;
 }
-.board-panel--b {
-  position: sticky;
-  /* set by useStickyTop: bar + 16px, or negative when the card is taller than the viewport */
-  top: var(--stick-top, calc(var(--bar-h) + 16px));
-}
-.pf-b {
-  grid-template-columns: minmax(0, 1fr) auto;
-}
-.pf-b .pf-text {
-  grid-column: 1;
-  grid-row: 1;
-}
-.pf-b .pf-media {
-  grid-column: 2;
-  grid-row: 1;
-}
-.pf-b .pf-route {
-  grid-column: 1 / -1;
+.pf--none .pf-ev {
   grid-row: 2;
 }
-.pf-b .pf-actions {
-  grid-column: 1 / -1;
+.pf--none .pf-route--big {
   grid-row: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.pf-b.pf--landscape .demo-fit {
-  width: 340px;
+.pf--none .pf-actions {
+  grid-row: 4;
 }
-.pf-b.pf--portrait .pf-media {
-  grid-row: 1 / span 3;
+.pf-track-big {
+  zoom: 1.35;
 }
-.pf-b.pf--portrait .pf-route,
-.pf-b.pf--portrait .pf-actions {
-  grid-column: 1;
-}
-.pf-b.pf--portrait .demo-fit {
-  width: 210px;
-}
-.pf-b.pf--none {
-  grid-template-columns: minmax(0, 1fr);
-}
+
+/* ── narrow card (1024–1279) ── */
 @container anden (max-width: 599px) {
-  .pf-b.pf--landscape {
+  /* landscape: the demo across the full width at its natural height; the card follows content */
+  .pf--landscape {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr auto auto;
   }
-  .pf-b.pf--landscape .pf-media {
+  .pf--landscape .pf-media {
     grid-column: 1;
     grid-row: 2;
+    container-type: normal;
   }
-  .pf-b.pf--landscape .pf-route {
-    grid-row: 3;
-  }
-  .pf-b.pf--landscape .pf-actions {
-    grid-row: 4;
-  }
-  .pf-b.pf--landscape .demo-fit {
+  .pf--landscape .demo-fit {
     width: 100%;
   }
-  .pf-b.pf--portrait .demo-fit {
-    width: 160px;
+  .pf--landscape .pf-ev {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
   }
-  /* the phone stays beside the text only; route and buttons get the full width back */
-  .pf-b.pf--portrait .pf-media {
-    grid-row: 1;
+  .pf--landscape .pf-route {
+    grid-row: 4;
   }
-  .pf-b.pf--portrait .pf-route,
-  .pf-b.pf--portrait .pf-actions {
+  .pf--landscape .pf-actions {
+    grid-row: 5;
+  }
+  /* portrait: description across, then [proofs | phone ≥180px wide], route and buttons across */
+  .pf--portrait {
+    grid-template-columns: minmax(0, 1fr) clamp(180px, 42cqw, 200px);
+    grid-template-rows: auto minmax(390px, 1fr) auto auto;
+  }
+  .pf--portrait .pf-text,
+  .pf--portrait .pf-route,
+  .pf--portrait .pf-actions {
     grid-column: 1 / -1;
+  }
+  .pf--portrait .pf-media {
+    grid-row: 2;
+  }
+  .pf--portrait .pf-route {
+    grid-row: 3;
+  }
+  .pf--portrait .pf-actions {
+    grid-row: 4;
+  }
+  .pf-track-big {
+    zoom: 1.15;
   }
 }
