@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MEDIA } from '../../data/media'
 import { useMotionPaused, useReducedMotion } from '../../lib/motion'
 
-/** plays muted while on screen; never with reduced motion or the pause button (WCAG 2.2.2): poster + controls instead */
-export function DemoVideo({ slug, title }: { slug: string; title: string }) {
+/** plays muted while on screen; never with reduced motion or the pause button (WCAG 2.2.2): poster + controls instead.
+ *  fit: no fixed width — the parent sizes the frame (board prototype ?board=a|b, see board.css); it gets the clip's ratio as --mw/--mh */
+export function DemoVideo({ slug, title, fit }: { slug: string; title: string; fit?: boolean }) {
   const m = MEDIA[slug]
   const lang = useTranslation().i18n.resolvedLanguage === 'en' ? 'en' : 'es'
   const ref = useRef<HTMLVideoElement>(null)
@@ -57,6 +59,15 @@ export function DemoVideo({ slug, title }: { slug: string; title: string }) {
       {near && m.captions && <track key={lang} kind="descriptions" srcLang={lang} src={`${m.captions}.${lang}.vtt`} />}
     </video>
   )
+  if (fit)
+    return (
+      <div
+        className={m.portrait ? 'demo-fit demo-fit--portrait aspect-[230/480] rounded-[30px] bg-ink p-[9px] shadow-[0_18px_40px_-24px_rgba(22,24,29,.6)]' : 'demo-fit rounded-2xl bg-ink p-2'}
+        style={{ ['--mw' as string]: m.w, ['--mh' as string]: m.h } as CSSProperties}
+      >
+        {video}
+      </div>
+    )
   return m.portrait ? (
     <div className="mx-auto aspect-[230/480] w-[min(160px,44vw)] rounded-[30px] bg-ink p-[9px] shadow-[0_18px_40px_-24px_rgba(22,24,29,.6)] md:w-[210px]">{video}</div>
   ) : (
