@@ -214,9 +214,9 @@
   font-size: 16px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  /* no color transition: state changes (e.g. "no sound" after the metadata loads) snap */
   transition:
     background-color 160ms ease,
-    color 160ms ease,
     transform 120ms var(--ease-out);
 }
 .vp-btn:active {
