@@ -1,19 +1,21 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, FocusEvent, PointerEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TechLogo } from '../../data/techIcons'
 import { BEST, ROADMAP, SKILL_GROUPS, TECH_MARQUEE, TECH_PROJECTS } from '../../data/skills'
 import { PROJECTS } from '../../data/projects'
 import { PROJECT_LINE, lineVar } from '../../data/lines'
 import { LineBadge } from './buttons'
 import './stack.css'
 
-// The brand logos are ~70 % of this section's HTML (≈35 KB gzip of inline SVG paths) and
-// sit far below the fold: the prerender ships the names with a same-size empty slot, and
-// the logos are drawn once the section comes within ~1.5 screens. Same box, so no shift.
-const IconsOn = createContext(false)
+// The brand logos are heavy (≈35 KB gzip of inline SVG in the HTML, ≈28 KB gzip of path
+// data in the JS) and sit far below the fold: the prerender ships the names with a
+// same-size empty slot, and the logo module is fetched and drawn once the section comes
+// within ~1.5 screens. Same box, so no shift.
+type TechIcons = typeof import('../../data/techIcons')
+const IconsOn = createContext<TechIcons | null>(null)
 function Logo(props: { label: string; className?: string; mono?: boolean }) {
-  return useContext(IconsOn) ? <TechLogo {...props} /> : <span className={`inline-block ${props.className ?? ''}`} aria-hidden="true" />
+  const icons = useContext(IconsOn)
+  return icons ? <icons.TechLogo {...props} /> : <span className={`inline-block ${props.className ?? ''}`} aria-hidden="true" />
 }
 
 const ZONES = 'ABCDEFGH'
@@ -39,15 +41,15 @@ export function StackMap() {
   const [client, setClient] = useState(false)
   useEffect(() => setClient(true), [])
   const root = useRef<HTMLElement>(null)
-  const [icons, setIcons] = useState(false)
+  const [icons, setIcons] = useState<TechIcons | null>(null)
   useEffect(() => {
     const el = root.current
     if (!el) return
     const io = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return
-        setIcons(true)
         io.disconnect()
+        void import('../../data/techIcons').then(setIcons)
       },
       { rootMargin: '150% 0px' },
     )

@@ -126,9 +126,11 @@ export function CaseStudy() {
             )}
           </div>
           {media?.portrait && (
-            <figure>
+            // a fixed column: as `auto` it took the caption's width, which changes when the web
+            // font swaps in, and the whole header reflowed (CLS ≈ 0.08 on desktop)
+            <figure className="md:w-[340px]">
               <VideoPlayer media={media} title={title} label={t('player.ecoPhone')} accent={accent} dark={L.dark} />
-              <figcaption className="sign-label mt-3 text-center text-[14px] text-ink-3">{t('player.ecoPhone')}</figcaption>
+              <figcaption className="sign-label mt-3 text-balance text-center text-[14px] text-ink-3">{t('player.ecoPhone')}</figcaption>
             </figure>
           )}
         </header>

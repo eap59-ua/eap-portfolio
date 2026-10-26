@@ -3,9 +3,9 @@
 // title / description / canonical / OG + Twitter meta (with its own og:image),
 // and whose #root holds that case study already rendered (marked data-ssr, so
 // main.tsx hydrates it). Crawlers that never run JS get correct previews too.
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
-import { PROJECT_SEO, SITE_URL } from './seo-data.mjs'
+import { PROJECT_SEO, SITE_URL, ogProject } from './seo-data.mjs'
 
 const template = readFileSync('dist/index.html', 'utf8')
 if (!template.includes('<div id="root"></div>')) throw new Error('prerender: empty #root not found in dist/index.html')
@@ -16,6 +16,18 @@ const { render } = await import(pathToFileURL('dist-ssr/entry-server.js').href)
  *  Hydration doesn't look for hoistables in place, and on the client React puts its own in <head>. */
 const stripHoistables = (app) => app.replace(/<title>[\s\S]*?<\/title>|<meta\b[^>]*>/g, '')
 const withApp = (html, route, app) => html.replace('<div id="root"></div>', `<div id="root" data-ssr="${route}">${stripHoistables(app)}</div>`)
+
+// The case study is a lazy chunk with its own stylesheet (the video player's), which Vite
+// only links once that chunk's JS runs — after the prerendered page has painted, so the
+// header reflowed (CLS ≈ 0.28 on desktop). Project pages link it up front, and preload the
+// chunk itself; Vite's loader then finds the stylesheet already there and doesn't add it again.
+const assets = readdirSync('dist/assets')
+const csCss = assets.filter((f) => /^CaseStudy-.*\.css$/.test(f))
+const csJs = assets.filter((f) => /^CaseStudy-.*\.js$/.test(f))
+if (csCss.length !== 1 || csJs.length !== 1) throw new Error(`prerender: expected one CaseStudy chunk, got ${csCss} / ${csJs}`)
+const caseStudyHead = `<link rel="stylesheet" crossorigin href="/assets/${csCss[0]}">
+    <link rel="modulepreload" crossorigin href="/assets/${csJs[0]}">
+  </head>`
 
 const esc = (s) =>
   s
@@ -33,7 +45,7 @@ function swap(html, re, next, label) {
 
 for (const p of PROJECT_SEO) {
   const url = `${SITE_URL}/projects/${p.slug}`
-  const img = `${SITE_URL}/og/${p.slug}.png`
+  const img = `${SITE_URL}${ogProject(p.slug)}`
   const title = `${p.ogTitle} · Erardo Aldana Pessoa`
   const desc = p.description
   const t = esc(title)
@@ -49,8 +61,11 @@ for (const p of PROJECT_SEO) {
   html = swap(html, /<meta\s+property="og:image"\s+content="[\s\S]*?\/>/, `<meta property="og:image" content="${img}" />`, 'og:image')
   html = swap(html, /<meta\s+name="twitter:title"[\s\S]*?\/>/, `<meta name="twitter:title" content="${t}" />`, 'twitter:title')
   html = swap(html, /<meta\s+name="twitter:description"[\s\S]*?\/>/, `<meta name="twitter:description" content="${d}" />`, 'twitter:description')
+  html = swap(html, /<meta\s+property="og:image:alt"[\s\S]*?\/>/, `<meta property="og:image:alt" content="${esc(`${p.name} · caso de estudio de Erardo Aldana Pessoa`)}" />`, 'og:image:alt')
   html = swap(html, /<meta\s+name="twitter:image"[\s\S]*?\/>/, `<meta name="twitter:image" content="${img}" />`, 'twitter:image')
   html = swap(html, /<link\s+rel="canonical"[\s\S]*?\/>/, `<link rel="canonical" href="${url}" />`, 'canonical')
+
+  html = html.replace('</head>', caseStudyHead)
 
   const route = `/projects/${p.slug}`
   const app = await render(route)
